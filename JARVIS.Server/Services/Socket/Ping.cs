@@ -8,7 +8,7 @@ namespace JARVIS.Server.Services.Socket
     {
         public override void ExecuteCommand(AppSession session, StringRequestInfo requestInfo)
         {
-            session.Send("PONG");
+            session.Send("PONG" + Shared.Net.SocketTerminator);
         }
     }
 }

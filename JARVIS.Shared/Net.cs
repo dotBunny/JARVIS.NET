@@ -5,6 +5,8 @@ namespace JARVIS.Shared
 {
     public static class Net
     {
+        public const string SocketTerminator = "||";
+
         public static string GetIPAddress(string hostname)
         {
             // Resolve hostname into IP of not IP

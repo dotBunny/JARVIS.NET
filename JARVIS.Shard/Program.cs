@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
+using SuperSocket.ClientEngine;
+using SuperSocket.ProtoBase;
 
 namespace JARVIS.Shard
 {
     class Program
     {
         private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
-        private static string ServerAddress = "localhost";
+        private static ServerConnection Server = new ServerConnection();
 
         public static void Main(string[] args)
         {
@@ -14,30 +17,26 @@ namespace JARVIS.Shard
             // Startup 
             Shared.Log.Message("system", "Starting up ... ");
 
+            // Determine server address / port
+            Server = new ServerConnection();
 
-            // Determine server address
             if ( args.Length > 0 ) 
             {
-                ServerAddress = args[0];    
+                
+                Server.Host = args[0];
+                if ( args.Length > 1 ) {
+                    int.TryParse(args[1], out Server.Port);   
+                }
             }
-
-            // Connect to server
-
-
 
             Console.CancelKeyPress += (sender, eArgs) => {
                 QuitEvent.Set();
                 eArgs.Cancel = true;
             };
 
-
-            // Wait for commands
-
-
-
-
-            // This waits for CTRL-C, or whatever signal is sent to terminate the shell
+            Server.Start();
             QuitEvent.WaitOne();
+            Server.Stop();
 
             Shared.Log.Message("system", "Shutdown.");
         }
