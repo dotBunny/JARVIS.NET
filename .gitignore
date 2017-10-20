@@ -1,0 +1,7 @@
+JARVIS.Server/bin
+JARVIS.Server/obj
+JARVIS.Shared/bin
+JARVIS.Shared/obj
+JARVIS.userprefs
+packages
+*.csproj.user
