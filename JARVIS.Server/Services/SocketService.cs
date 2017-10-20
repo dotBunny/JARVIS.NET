@@ -48,9 +48,30 @@ namespace JARVIS.Server.Services
             Server.Stop();
         }
 
+        public void SendToAllSessions(string command, string arguments)
+        {
+            var sessions = Server.GetAllSessions();
+
+            // Send to sessions
+            foreach(AppSession session in sessions) {
+                
+                SendToSession(session, command, arguments);
+            }
+        }
+
+
+        public static void SendToSession(AppSession session, string command, string arguments)
+        {
+            Shared.Log.Message("socket", "Sending to " + session.RemoteEndPoint + " [" + command.ToUpper() + Shared.Net.SocketDeliminator + arguments + Shared.Net.SocketTerminator + "]");
+            session.Send(command.ToUpper() + Shared.Net.SocketDeliminator + arguments + Shared.Net.SocketTerminator);
+        }
+
+
         static void HandleConnection(AppSession session)
         {
-            session.Send("Welcome to JARVIS.");
+            Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
+
+            SendToSession(session, "INFO", "Welcome to JARVIS.");
         }
     }
 }

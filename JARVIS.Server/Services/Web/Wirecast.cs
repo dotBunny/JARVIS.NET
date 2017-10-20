@@ -15,15 +15,18 @@ namespace JARVIS.Server.Services.Web
 		{
 
             string[] parameters = Shared.Web.GetParameters(context.Request.RawUrl, context.Request.PathInfo);
+
+            // Build argument list
             string args = "";
-
-            foreach(string s in parameters) {
-                args += " " + s;
+            foreach (string s in parameters)
+            {
+                args += s.Trim() + " ";
             }
+            args.Trim();
 
-            Shared.Platform.Run(System.IO.Path.Combine(Shared.Platform.GetBaseDirectory(), "Resources", "macOS", "Wirecast.appleScript"), args, true);
+            Program.Socket.SendToAllSessions("wire", args);
 
-            context.Response.SendResponse("Changed.");
+            context.Response.SendResponse("OK");
 			return context;
 		}
 	}

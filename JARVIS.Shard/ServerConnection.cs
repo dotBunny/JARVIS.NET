@@ -24,11 +24,16 @@ namespace JARVIS.Shard
 
             Connection.Initialize(new SocketFilter(), (request) => {
 
-                // Handle Requests
+                Shared.Log.Message("socket", "Request Received ->" + request.Key.ToUpper());
+                switch(request.Key.ToUpper()) {
 
-                // handle the received request
-                Console.WriteLine(request.Key);
-
+                    case "INFO":
+                        Commands.Info.Command(request.Body);
+                        break;
+                    case "WIRE":
+                        Commands.Wire.Command(request.Body);
+                        break;
+                }
             });
         }
 
@@ -69,7 +74,11 @@ namespace JARVIS.Shard
 
             public override StringPackageInfo ResolvePackage(IBufferStream bufferStream)
             {
-                throw new NotImplementedException();
+                string package = bufferStream.ReadString((int)bufferStream.Length - Shared.Net.SocketTerminator.Length, Encoding.UTF8);
+
+                string[] split = package.Split(new string[] { Shared.Net.SocketDeliminator }, StringSplitOptions.None);
+
+                return new StringPackageInfo(split[0].Trim(), split[1].Trim(), null);
             }
         }
     }

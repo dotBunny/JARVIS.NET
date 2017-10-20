@@ -36,5 +36,17 @@
     <Compile Include="Log.cs" />
     <Compile Include="Net.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\jarvis.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Icons\jarvis.icns">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
