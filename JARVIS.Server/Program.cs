@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -9,8 +10,12 @@ namespace JARVIS.Server
     {
 
         public static Settings Config = new Settings();
+        public static Database DB;
+
         public static Services.WebService Web;
-        public static Services.DatabaseService DB;
+        public static Services.SocketService Socket;
+
+        public static List<Services.IService> Services = new List<Services.IService>();
 
         private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
 
@@ -18,11 +23,13 @@ namespace JARVIS.Server
         public static void Main(string[] args)
         {
             // Default database path
-            Config.DatabaseFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), Config.DatabaseFilePath);    
+            Config.DatabaseFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), Config.DatabaseFilePath);
 
             // Custom database path
-            if ( args.Length > 0 ) {
-                if (File.Exists(args[0])) {
+            if (args.Length > 0)
+            {
+                if (File.Exists(args[0]))
+                {
                     Config.DatabaseFilePath = args[0];
                 }
             }
@@ -30,30 +37,41 @@ namespace JARVIS.Server
             JARVIS.Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
 
             // Need to initialize database service before all else
-            DB = new Services.DatabaseService();
+            DB = new Database();
             DB.Start();
 
             // Load our configuration values
             Config.Load();
 
-			Console.CancelKeyPress += (sender, eArgs) => {
-				QuitEvent.Set();
-				eArgs.Cancel = true;
-			};
+            Console.CancelKeyPress += (sender, eArgs) =>
+            {
+                QuitEvent.Set();
+                eArgs.Cancel = true;
+            };
 
             // Initialize Services
             Web = new Services.WebService();
+            Socket = new Services.SocketService();
 
             // Start Services
-            Web.Start();
+            foreach (Services.IService service in Services){
+                Shared.Log.Message("start", service.GetName()+" Service");
+                service.Start();
+            }
+        
 
             // This waits for CTRL-C, or whatever signal is sent to terminate the shell
             QuitEvent.WaitOne();
 
-            JARVIS.Shared.Log.Message("System", "Shutting down ... ");
 
             // Stop Services
-            Web.Stop();
+            foreach (Services.IService service in Services){
+                Shared.Log.Message("stop", service.GetName() + " Service");
+                service.Stop();
+            }
+        
+
+            JARVIS.Shared.Log.Message("System", "Shutting down.");
         }
 
     }

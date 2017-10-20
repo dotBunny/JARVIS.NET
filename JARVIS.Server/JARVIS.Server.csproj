@@ -60,6 +60,19 @@
     <Reference Include="SQLite.Net.Platform.Generic">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\net40\SQLite.Net.Platform.Generic.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Common">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Facility">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.Facility.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -68,10 +81,11 @@
     <Compile Include="Routes\Wirecast.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Services\WebService.cs" />
-    <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Tables\Settings.cs" />
     <Compile Include="Tables\ITable.cs" />
+    <Compile Include="Services\SocketService.cs" />
+    <Compile Include="Database.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

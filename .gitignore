@@ -5,3 +5,5 @@ JARVIS.Shared/obj
 JARVIS.userprefs
 packages
 *.csproj.user
+JARVIS.Shard/bin
+JARVIS.Shard/obj

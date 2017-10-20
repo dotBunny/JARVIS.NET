@@ -7,7 +7,13 @@ namespace JARVIS.Shared
         public static void Message(string section, string content)
         {
            
-            Console.WriteLine(GetCurrentTimeStamp() + "\t" + section + "\t" + content);
+            Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+        }
+
+        public static void Error(string section, string content)
+        {
+
+            Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
         }
 
         private static string GetCurrentTimeStamp() 

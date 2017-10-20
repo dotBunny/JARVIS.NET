@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JARVIS.Server", "JARVIS.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JARVIS.Shared", "JARVIS.Shared\JARVIS.Shared.csproj", "{FDBF1698-FC18-4DE1-914D-344953FBE24F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JARVIS.Shard", "JARVIS.Shard\JARVIS.Shard.csproj", "{483E409C-0475-446A-B9E9-54AC0CEF3C6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,5 +21,9 @@ Global
 		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Debug|x86.Build.0 = Debug|Any CPU
 		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Release|x86.ActiveCfg = Release|Any CPU
 		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Release|x86.Build.0 = Release|Any CPU
+		{483E409C-0475-446A-B9E9-54AC0CEF3C6B}.Debug|x86.ActiveCfg = Debug|x86
+		{483E409C-0475-446A-B9E9-54AC0CEF3C6B}.Debug|x86.Build.0 = Debug|x86
+		{483E409C-0475-446A-B9E9-54AC0CEF3C6B}.Release|x86.ActiveCfg = Release|x86
+		{483E409C-0475-446A-B9E9-54AC0CEF3C6B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

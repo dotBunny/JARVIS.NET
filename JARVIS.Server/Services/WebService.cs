@@ -11,13 +11,20 @@ namespace JARVIS.Server.Services
         {
             Server = new RestServer();
             Server.Host = Program.Config.Host;
-            Server.Port = Program.Config.Port;
+            Server.Port = Program.Config.WebPort.ToString();
+
+            Program.Services.Add(this);
         }
 
         ~WebService()
         {
             Server.Dispose();
             Server = null;
+        }
+
+        public string GetName()
+        {
+            return "Web";
         }
 
         public void Start()
