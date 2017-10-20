@@ -12,7 +12,7 @@ namespace JARVIS.Server.Services
             Server = new RestServer();
             Server.Host = Program.Config.Host;
             Server.Port = Program.Config.WebPort.ToString();
-
+            Shared.Log.Message("web", "Attempting to listen on " + Server.Host + ":" + Server.Port);
             Program.Services.Add(this);
         }
 
