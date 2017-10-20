@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JARVIS.Server", "JARVIS.Server\JARVIS.Server.csproj", "{CF34F473-ECEF-487B-AF1D-79C3AF01155F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JARVIS.Shared", "JARVIS.Shared\JARVIS.Shared.csproj", "{FDBF1698-FC18-4DE1-914D-344953FBE24F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF34F473-ECEF-487B-AF1D-79C3AF01155F}.Debug|x86.ActiveCfg = Debug|x86
+		{CF34F473-ECEF-487B-AF1D-79C3AF01155F}.Debug|x86.Build.0 = Debug|x86
+		{CF34F473-ECEF-487B-AF1D-79C3AF01155F}.Release|x86.ActiveCfg = Release|x86
+		{CF34F473-ECEF-487B-AF1D-79C3AF01155F}.Release|x86.Build.0 = Release|x86
+		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Debug|x86.Build.0 = Debug|Any CPU
+		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Release|x86.ActiveCfg = Release|Any CPU
+		{FDBF1698-FC18-4DE1-914D-344953FBE24F}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
