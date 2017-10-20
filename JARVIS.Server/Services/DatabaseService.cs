@@ -23,7 +23,9 @@ namespace JARVIS.Server.Services
             Database = new SQLiteConnectionWithLock(
                 new SQLite.Net.Platform.Generic.SQLitePlatformGeneric(),
                 new SQLiteConnectionString(Program.Config.DatabaseFilePath, false));
-            
+
+
+            Database.CreateTable<Tables.Settings>();
         }
 
         public void Stop()

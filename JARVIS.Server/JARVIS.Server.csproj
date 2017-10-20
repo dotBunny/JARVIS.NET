@@ -70,6 +70,8 @@
     <Compile Include="Services\WebService.cs" />
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\IService.cs" />
+    <Compile Include="Tables\Settings.cs" />
+    <Compile Include="Tables\ITable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,7 +80,7 @@
     <Folder Include="Routes\" />
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
-    <Folder Include="Datastore\" />
+    <Folder Include="Tables\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">

@@ -30,6 +30,5 @@ namespace JARVIS.Server.Services
             Server.Stop();   
 
         }
-
     }
 }
