@@ -24,7 +24,7 @@ namespace JARVIS.Server.Services.Web
             }
             args.Trim();
 
-            Program.Socket.SendToAllSessions("wire", args);
+            Program.Socket.SendToAllSessions("Wirecast.Layers", args);
 
             context.Response.SendResponse("OK");
 			return context;

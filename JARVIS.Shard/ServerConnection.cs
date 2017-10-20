@@ -30,8 +30,8 @@ namespace JARVIS.Shard
                     case "INFO":
                         Commands.Info.Command(request.Body);
                         break;
-                    case "WIRE":
-                        Commands.Wire.Command(request.Body);
+                    case "WIRECAST.LAYERS":
+                        Commands.Wirecast.Layers(request.Body);
                         break;
                 }
             });
