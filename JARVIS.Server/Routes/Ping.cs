@@ -9,6 +9,7 @@ namespace JARVIS.Server.Routes
     public class Ping
     {
 		[RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/ping")]
+        [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/ping/")]
 		public IHttpContext Response(IHttpContext context)
 		{
 			context.Response.SendResponse("Pong");

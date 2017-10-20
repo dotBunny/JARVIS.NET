@@ -1,47 +1,59 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
-using Grapevine.Server;
+
 
 namespace JARVIS.Server
 {
     class Program
     {
-        public static string Port = "8080";
-        public static string Database = "JARVIS.db";
-        public static bool HasCustomDatabase = false;
-        public static bool HasCustomPort = false;
 
-        static ManualResetEvent _quitEvent = new ManualResetEvent(false);
+        public static Settings Config = new Settings();
+        public static Services.WebService Web;
+        public static Services.DatabaseService DB;
+
+        private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
 
 
         public static void Main(string[] args)
         {
-			// Handle Arguments
-			switch ( args.Length ) {
-                case 2:
-					Program.Port = args[0];
-                    Program.HasCustomPort = true;
-					Program.Database = args[1];
-                    Program.HasCustomDatabase = true;
-                    break;
-                case 1:
-                    Program.Port = args[0];
-                    Program.HasCustomPort = true;
-                    break;
+            // Default database path
+            Config.DatabaseFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), Config.DatabaseFilePath);    
+
+            // Custom database path
+            if ( args.Length > 0 ) {
+                if (File.Exists(args[0])) {
+                    Config.DatabaseFilePath = args[0];
+                }
             }
-          
+
+            JARVIS.Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
+
+            // Need to initialize database service before all else
+            DB = new Services.DatabaseService();
+            DB.Start();
+
+            // Load our configuration values
+            Config.Load();
+
 			Console.CancelKeyPress += (sender, eArgs) => {
-				_quitEvent.Set();
+				QuitEvent.Set();
 				eArgs.Cancel = true;
 			};
 
-			using (var server = new RestServer())
-			{
-                server.Port = Program.Port;
-				server.LogToConsole().Start();
-				_quitEvent.WaitOne();
-				server.Stop();
-			}
+            // Initialize Services
+            Web = new Services.WebService();
+
+            // Start Services
+            Web.Start();
+
+            // This waits for CTRL-C, or whatever signal is sent to terminate the shell
+            QuitEvent.WaitOne();
+
+            JARVIS.Shared.Log.Message("System", "Shutting down ... ");
+
+            // Stop Services
+            Web.Stop();
         }
 
     }
