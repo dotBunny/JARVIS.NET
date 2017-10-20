@@ -1,5 +1,6 @@
 ﻿using System;
 using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Protocol;
 
 namespace JARVIS.Server.Services
 {
@@ -40,6 +41,7 @@ namespace JARVIS.Server.Services
             // Setup handlers
             Server.NewSessionConnected += new SessionHandler<AppSession>(HandleConnection);
         }
+
 
         public void Stop()
         {

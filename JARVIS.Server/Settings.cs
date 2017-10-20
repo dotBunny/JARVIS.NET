@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace JARVIS.Server
 {
@@ -39,10 +38,7 @@ namespace JARVIS.Server
             }
 
             // Resolve hostname into IP of not IP
-            IPHostEntry host = Dns.GetHostEntry(Host);
-            Host = host.AddressList[0].ToString();
-
-
+            Host = Shared.Net.GetIPAddress(Host);
 
             // Web Port
             if (RawSettings.ContainsKey("Server.WebPort"))

@@ -34,7 +34,7 @@ namespace JARVIS.Server
                 }
             }
 
-            JARVIS.Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
+            Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
 
             // Need to initialize database service before all else
             DB = new Database();
@@ -71,7 +71,7 @@ namespace JARVIS.Server
             }
         
 
-            JARVIS.Shared.Log.Message("System", "Shutting down.");
+            Shared.Log.Message("System", "Shutting down.");
         }
 
     }

@@ -4,7 +4,7 @@ using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
 
-namespace JARVIS.Server.Routes
+namespace JARVIS.Server.Services.Web
 {
 	[RestResource]
 	public class Wirecast

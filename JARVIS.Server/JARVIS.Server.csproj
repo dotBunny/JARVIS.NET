@@ -60,8 +60,9 @@
     <Reference Include="SQLite.Net.Platform.Generic">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\net40\SQLite.Net.Platform.Generic.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.Common.dll</HintPath>
@@ -72,13 +73,16 @@
     <Reference Include="SuperSocket.SocketBase">
       <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.SocketBase.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
+    <Reference Include="SuperSocket.SocketEngine">
+      <HintPath>..\packages\SuperSocket.Engine.1.6.6.1\lib\net45\SuperSocket.SocketEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketService">
+      <HintPath>..\packages\SuperSocket.Engine.1.6.6.1\lib\net45\SuperSocket.SocketService.exe</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Routes\Ping.cs" />
-    <Compile Include="Routes\Wirecast.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Services\WebService.cs" />
     <Compile Include="Services\IService.cs" />
@@ -86,15 +90,19 @@
     <Compile Include="Tables\ITable.cs" />
     <Compile Include="Services\SocketService.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="Services\Web\Ping.cs" />
+    <Compile Include="Services\Web\Wirecast.cs" />
+    <Compile Include="Services\Socket\Ping.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Routes\" />
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
     <Folder Include="Tables\" />
+    <Folder Include="Services\Web\" />
+    <Folder Include="Services\Socket\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">
