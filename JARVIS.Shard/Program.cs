@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Net;
+using System.IO;
 using System.Threading;
-using SuperSocket.ClientEngine;
-using SuperSocket.ProtoBase;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace JARVIS.Shard
 {
@@ -11,32 +10,78 @@ namespace JARVIS.Shard
         private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
         private static ServerConnection Server = new ServerConnection();
 
+        public static string OutputPath = "";
+
+        public static bool HasWirecastSupport = false;
+
         public static void Main(string[] args)
         {
-
             // Startup 
             Shared.Log.Message("system", "Starting up ... ");
+
+            OutputPath = Path.Combine(Shared.Platform.GetBaseDirectory(), "Output");
+            Directory.CreateDirectory(OutputPath);
 
             // Determine server address / port
             Server = new ServerConnection();
 
-            if ( args.Length > 0 ) 
+            // Create parser and don't barf if we get an unrecognized argument
+            CommandLineApplication commandLine = new CommandLineApplication(false);
+
+            CommandOption useOutput = commandLine.Option("--output <PATH>", "Absolute path to output files too.", CommandOptionType.SingleValue);
+            CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
+            CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
+            CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
+
+            // Define help option
+            commandLine.HelpOption("--help");
+
+            commandLine.OnExecute(() =>
             {
-                
-                Server.Host = args[0];
-                if ( args.Length > 1 ) {
-                    int.TryParse(args[1], out Server.Port);   
+                // If we have a host value
+                if (useHost.HasValue()) {
+                    Server.Host = useHost.Value();
                 }
+                // If we have a port value
+                if (usePort.HasValue()) {
+                    int.TryParse(usePort.Value(), out Server.Port);       
+                }
+
+                // Handle output path setting
+                if (useOutput.HasValue()) 
+                {
+                    if ( Directory.Exists(useOutput.Value()) ) {
+                        OutputPath = useOutput.Value();
+                    } else {
+                        Shared.Log.Fatal("output", "The output directory must already exist.");
+                    }
+                }
+
+                // Update Wirecast
+                if(useWirecast.HasValue())
+                {
+                    HasWirecastSupport = true;
+                }
+
+                return 0;
+            });
+
+            // Parse Arguments
+            commandLine.Execute(args);
+
+            // Did we show help?
+            if (!commandLine.IsShowingInformation)
+            {
+                Console.CancelKeyPress += (sender, eArgs) =>
+                {
+                    QuitEvent.Set();
+                    eArgs.Cancel = true;
+                };
+
+                Server.Start();
+                QuitEvent.WaitOne();
+                Server.Stop();
             }
-
-            Console.CancelKeyPress += (sender, eArgs) => {
-                QuitEvent.Set();
-                eArgs.Cancel = true;
-            };
-
-            Server.Start();
-            QuitEvent.WaitOne();
-            Server.Stop();
 
             Shared.Log.Message("system", "Shutdown.");
         }

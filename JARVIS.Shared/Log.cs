@@ -12,8 +12,12 @@ namespace JARVIS.Shared
 
         public static void Error(string section, string content)
         {
-
             Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+        }
+        public static void Fatal(string section, string content)
+        {
+            Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+            Environment.Exit(1);
         }
 
         private static string GetCurrentTimeStamp() 

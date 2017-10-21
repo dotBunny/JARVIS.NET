@@ -31,7 +31,10 @@ namespace JARVIS.Shard
                         Commands.Info.Command(request.Body);
                         break;
                     case "WIRECAST.LAYERS":
-                        Commands.Wirecast.Layers(request.Body);
+                        if (Program.HasWirecastSupport)
+                        {
+                            Commands.Wirecast.Layers(request.Body);
+                        }
                         break;
                 }
             });
@@ -49,7 +52,7 @@ namespace JARVIS.Shard
             }
             else
             {
-                Shared.Log.Error("system", "Unable to server (" + Shared.Net.GetIPAddress(Host) + ":" + Port.ToString() + ").");
+                Shared.Log.Fatal("system", "Unable to server (" + Shared.Net.GetIPAddress(Host) + ":" + Port.ToString() + ").");
             }
         }
 
