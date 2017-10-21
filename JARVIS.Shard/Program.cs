@@ -25,6 +25,24 @@ namespace JARVIS.Shard
             // Determine server address / port
             Server = new ServerConnection();
 
+            // Process commandline and stop if we are showing stuff
+            ProcessCommandLine(args);
+
+            Console.CancelKeyPress += (sender, eArgs) =>
+            {
+                QuitEvent.Set();
+                eArgs.Cancel = true;
+            };
+
+            Server.Start();
+            QuitEvent.WaitOne();
+            Server.Stop();
+
+            Program.Shutdown();
+        }
+
+        static void ProcessCommandLine(string[] args)
+        {
             // Create parser and don't barf if we get an unrecognized argument
             CommandLineApplication commandLine = new CommandLineApplication(false);
 
@@ -39,26 +57,32 @@ namespace JARVIS.Shard
             commandLine.OnExecute(() =>
             {
                 // If we have a host value
-                if (useHost.HasValue()) {
+                if (useHost.HasValue())
+                {
                     Server.Host = useHost.Value();
                 }
                 // If we have a port value
-                if (usePort.HasValue()) {
-                    int.TryParse(usePort.Value(), out Server.Port);       
+                if (usePort.HasValue())
+                {
+                    int.TryParse(usePort.Value(), out Server.Port);
                 }
 
                 // Handle output path setting
-                if (useOutput.HasValue()) 
+                if (useOutput.HasValue())
                 {
-                    if ( Directory.Exists(useOutput.Value()) ) {
+                    if (Directory.Exists(useOutput.Value()))
+                    {
                         OutputPath = useOutput.Value();
-                    } else {
-                        Shared.Log.Fatal("output", "The output directory must already exist.");
+                    }
+                    else
+                    {
+                        Shared.Log.Error("output", "The output directory must already exist.");
+                        Program.Shutdown(1);
                     }
                 }
 
                 // Update Wirecast
-                if(useWirecast.HasValue())
+                if (useWirecast.HasValue())
                 {
                     HasWirecastSupport = true;
                 }
@@ -69,21 +93,17 @@ namespace JARVIS.Shard
             // Parse Arguments
             commandLine.Execute(args);
 
-            // Did we show help?
-            if (!commandLine.IsShowingInformation)
-            {
-                Console.CancelKeyPress += (sender, eArgs) =>
-                {
-                    QuitEvent.Set();
-                    eArgs.Cancel = true;
-                };
-
-                Server.Start();
-                QuitEvent.WaitOne();
-                Server.Stop();
+            // Shutdown if were showing help
+            if ( commandLine.IsShowingInformation ) {
+                Program.Shutdown();
             }
+        }
 
+        public static void Shutdown(int exitCode = 0)
+        {
             Shared.Log.Message("system", "Shutdown.");
+            Environment.Exit(exitCode);
         }
     }
+
 }

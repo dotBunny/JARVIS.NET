@@ -11,11 +11,14 @@ namespace JARVIS.Server
         public int SocketPort = 8081;
         public string Host = "localhost";
 
+
         public Dictionary<string, string> RawSettings = new Dictionary<string, string>();
 
         public void Save() {
             
         }
+
+
         public void Load() {
 
 

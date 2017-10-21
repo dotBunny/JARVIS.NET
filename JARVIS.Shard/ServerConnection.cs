@@ -52,7 +52,8 @@ namespace JARVIS.Shard
             }
             else
             {
-                Shared.Log.Fatal("system", "Unable to server (" + Shared.Net.GetIPAddress(Host) + ":" + Port.ToString() + ").");
+                Shared.Log.Error("system", "Unable to server (" + Shared.Net.GetIPAddress(Host) + ":" + Port.ToString() + ").");
+                Program.Shutdown(1);
             }
         }
 
