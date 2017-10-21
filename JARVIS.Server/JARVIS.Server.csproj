@@ -207,6 +207,8 @@
     <Compile Include="Services\Web\Ping.cs" />
     <Compile Include="Services\Web\Wirecast.cs" />
     <Compile Include="Services\Socket\Ping.cs" />
+    <Compile Include="Services\Web\Counter.cs" />
+    <Compile Include="Tables\Counters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
