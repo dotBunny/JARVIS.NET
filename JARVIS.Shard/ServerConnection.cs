@@ -25,7 +25,7 @@ namespace JARVIS.Shard
 
             Connection.Initialize(new SocketFilter(), (request) =>
             {
-                Shared.Log.Message("socket", "Request Received ->" + request.Key.ToUpper());
+                Shared.Log.Message("socket", "Request Received -> " + request.Key.ToUpper());
 
                 // Split out parameters
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
