@@ -2,23 +2,22 @@
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 
-namespace JARVIS.Server.Services
+namespace JARVIS.Core.Services.Socket
 {
-    public class SocketService : IService
+    public class SocketService : Core.Services.IService
     {
+
         private AppServer Server;
 
-        public SocketService()
+        public SocketService(int SocketPort = 8081)
         {
             Server = new AppServer();
 
-            if (!Server.Setup(Program.Config.SocketPort))
+            if (!Server.Setup(SocketPort))
             {
                 Shared.Log.Error(GetName(), "Unable to setup socket service.");
                 return;
             }
-
-            Program.Services.Add(this);
         }
 
         ~SocketService()

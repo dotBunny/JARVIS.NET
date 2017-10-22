@@ -1,5 +1,5 @@
 ﻿using System;
-namespace JARVIS.Server.Tables
+namespace JARVIS.Core.Database
 {
     public interface ITable
     {

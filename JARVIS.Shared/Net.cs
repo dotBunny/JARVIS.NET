@@ -7,6 +7,8 @@ namespace JARVIS.Shared
     {
         public const string SocketTerminator = "<EOL>";
         public const string SocketDeliminator = "||";
+        public const string WebSuccessCode = "OK";
+        public const string WebFailCode = "FAIL";
 
         public static string GetIPAddress(string hostname)
         {

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace JARVIS.Server.Services
+namespace JARVIS.Core.Services
 {
     public interface IService
     {

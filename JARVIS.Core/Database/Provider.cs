@@ -1,29 +1,34 @@
-﻿using System;
+﻿
+
+
 using SQLite.Net;
-namespace JARVIS.Server
+
+namespace JARVIS.Core.Database
 {
-    public class Database
+    public class Provider
     {
         public SQLiteConnection Connection;
 
-        ~Database()
+        ~Provider()
         {
             Connection.Dispose();
         }
 
-        public void Start()
+        public void Open(string path)
         {
+            
             // Open database connection
             // TODO: Make platform specific calls
             Connection = new SQLiteConnectionWithLock(
                 new SQLite.Net.Platform.Generic.SQLitePlatformGeneric(),
-                new SQLiteConnectionString(Program.Config.DatabaseFilePath, false));
+                new SQLiteConnectionString(path, false));
 
 
             Connection.CreateTable<Tables.Settings>();
+            Connection.CreateTable<Tables.Counters>();
         }
 
-        public void Stop()
+        public void Close()
         {
             Connection.Close();
         }

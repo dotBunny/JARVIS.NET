@@ -3,7 +3,7 @@ using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
 
-namespace JARVIS.Server.Services.Web
+namespace JARVIS.Core.Services.Web.Endpoints
 {
     [RestResource]
     public class Ping

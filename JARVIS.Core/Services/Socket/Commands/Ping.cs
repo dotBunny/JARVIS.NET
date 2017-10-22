@@ -2,7 +2,7 @@
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 
-namespace JARVIS.Server.Services.Socket
+namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Ping : CommandBase<AppSession, StringRequestInfo>
     {

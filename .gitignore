@@ -7,3 +7,8 @@ packages
 *.csproj.user
 JARVIS.Shard/bin
 JARVIS.Shard/obj
+deploy
+JARVIS.Core/bin
+JARVIS.Core/obj
+JARVIS/bin
+JARVIS/obj

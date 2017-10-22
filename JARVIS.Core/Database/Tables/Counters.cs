@@ -1,16 +1,19 @@
 ﻿using SQLite.Net.Attributes;
 
-namespace JARVIS.Server.Tables
+namespace JARVIS.Core.Database.Tables
 {
-    public class Settings : ITable
+    public class Counters : ITable
     {
         public static string GetTableName()
         {
-            return "Settings";
+            return "Counters";
         }
+
         [PrimaryKey, MaxLength(128), NotNull]
         public string Name { get; set; }
         [MaxLength(128)]
-        public string Value { get; set; }
+        public int Value { get; set; }
+
+        // TODO: Add Set/Get
     }
 }

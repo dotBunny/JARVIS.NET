@@ -4,7 +4,7 @@ using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
 
-namespace JARVIS.Server.Services.Web
+namespace JARVIS.Core.Services.Web.Endpoints
 {
 	[RestResource]
 	public class Wirecast
@@ -24,9 +24,9 @@ namespace JARVIS.Server.Services.Web
             }
             args.Trim();
 
-            Program.Socket.SendToAllSessions("Wirecast.Layers", args);
+            Server.Socket.SendToAllSessions("Wirecast.Layers", args);
 
-            context.Response.SendResponse("OK");
+            context.Response.SendResponse(Shared.Net.WebSuccessCode);
 			return context;
 		}
 	}

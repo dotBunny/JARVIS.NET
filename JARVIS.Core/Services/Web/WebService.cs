@@ -1,19 +1,20 @@
 ﻿using System;
 using Grapevine.Server;
 
-namespace JARVIS.Server.Services
+namespace JARVIS.Core.Services.Web
 {
-    public class WebService : IService
+    public class WebService : Services.IService
     {
+
         Grapevine.Server.RestServer Server;
 
-        public WebService()
+        // Pass by reference the config and hte ?
+        public WebService(string host, string port)
         {
             Server = new RestServer();
-            Server.Host = Program.Config.Host;
-            Server.Port = Program.Config.WebPort.ToString();
-            Shared.Log.Message("web", "Attempting to listen on " + Server.Host + ":" + Server.Port);
-            Program.Services.Add(this);
+            Server.Host = host;
+            Server.Port = port;
+            Shared.Log.Message("web", "Attempting to listen on " + host + ":" + port);
         }
 
         ~WebService()
