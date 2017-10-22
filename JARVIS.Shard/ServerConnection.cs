@@ -26,12 +26,16 @@ namespace JARVIS.Shard
             Connection.Initialize(new SocketFilter(), (request) =>
             {
                 Shared.Log.Message("socket", "Request Received ->" + request.Key.ToUpper());
+
+                // Split out parameters
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 foreach(string s in request.Parameters)
                 {
                     var param = s.Split(new string[] { Shared.Net.SocketDeliminator }, StringSplitOptions.RemoveEmptyEntries);
                     parameters.Add(param[0], param[1]);
                 }
+
+                // Send to commands
                 switch(request.Key.ToUpper()) {
 
                     case "INFO":
