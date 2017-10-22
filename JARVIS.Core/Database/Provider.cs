@@ -9,6 +9,10 @@ namespace JARVIS.Core.Database
     {
         public SQLiteConnection Connection;
 
+        public bool HasConnection {
+            get; private set;
+        }
+
         ~Provider()
         {
             Connection.Dispose();
@@ -23,6 +27,11 @@ namespace JARVIS.Core.Database
                 new SQLite.Net.Platform.Generic.SQLitePlatformGeneric(),
                 new SQLiteConnectionString(path, false));
 
+            if ( Connection != null ) {
+                HasConnection = true;
+            } else {
+                HasConnection = false;   
+            }
 
             Connection.CreateTable<Tables.Settings>();
             Connection.CreateTable<Tables.Counters>();
@@ -31,6 +40,7 @@ namespace JARVIS.Core.Database
         public void Close()
         {
             Connection.Close();
+            HasConnection = false;
         }
     }
 }

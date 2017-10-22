@@ -34,10 +34,16 @@ namespace JARVIS.Core
         }
 
 
-        public void Load(Database.Provider database ) {
+        public void Load() {
 
 
-            List<Database.Tables.Settings> settings = database.Connection.Query<Database.Tables.Settings>("SELECT * FROM \"" + Database.Tables.Settings.GetTableName() + "\"");
+            if (!Server.Database.HasConnection) 
+            {
+                Shared.Log.Error("config", "Failed to load as database connection was not present.");
+                return;
+            }
+
+            List<Database.Tables.Settings> settings = Server.Database.Connection.Query<Database.Tables.Settings>("SELECT * FROM \"" + Database.Tables.Settings.GetTableName() + "\"");
 
             // Convert into dictionary
             RawSettings.Clear();

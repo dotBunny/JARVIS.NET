@@ -29,11 +29,12 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
                 counterName = parameters[0].Trim();
 
-                List<Database.Tables.Counters> values = Server.Database.Connection.Query<Database.Tables.Counters>("select * from \"" + Database.Tables.Counters.GetTableName() + "\" where \"Name\" = \"" + counterName + "\"");
+                List<Database.Tables.Counters> values = Server.Database.Connection.Query<Database.Tables.Counters>("SELECT * FROM \"" + Database.Tables.Counters.GetTableName() + "\" WHERE \"Name\" = \"" + counterName + "\"");
                 if ( values.Count > 0 )
                 {
                     previousValue = values[0].Value;
                 }
+
 
                 // Increment Value
                 previousValue++;
@@ -73,7 +74,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
                 counterName = parameters[0].Trim();
 
-                List<Database.Tables.Counters> values = Server.Database.Connection.Query<Database.Tables.Counters>("select * from '" + Database.Tables.Counters.GetTableName() + "' where  'Name' = ?", counterName);
+                List<Database.Tables.Counters> values = Server.Database.Connection.Query<Database.Tables.Counters>("SELECT * FROM '" + Database.Tables.Counters.GetTableName() + "' WHERE \"Name\" = \"" + counterName + "\"");
                 if (values.Count > 0)
                 {
                     previousValue = values[0].Value;

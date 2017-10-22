@@ -50,7 +50,7 @@ namespace JARVIS.Core
             Shared.Log.Message("System", "Server Startup");
 
             // Load Config
-            Config.Load(Database);
+            Config.Load();
 
             //// Initialize Services
             Web = new Services.Web.WebService(Config.Host, Config.WebPort.ToString());
