@@ -85,7 +85,6 @@ namespace JARVIS
                 Program.Shutdown();
             }
 
-
             // Start server
             Core.Server.Start();
      

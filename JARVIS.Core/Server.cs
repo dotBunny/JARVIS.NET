@@ -47,19 +47,25 @@ namespace JARVIS.Core
 
         public static void Start()
         {
+            Shared.Log.Message("System", "Server Startup");
+
             // Load Config
             Config.Load(Database);
 
             //// Initialize Services
             Web = new Services.Web.WebService(Config.Host, Config.WebPort.ToString());
             ActiveServices.Add(Web);
+            Web.Start();
 
             Socket = new Services.Socket.SocketService(Config.SocketPort);
             ActiveServices.Add(Socket);
+            Socket.Start();
         }
 
         public static void Stop()
         {
+            Shared.Log.Message("System", "Server Shutdown");
+
             Socket.Stop();
             Web.Stop();
         }
