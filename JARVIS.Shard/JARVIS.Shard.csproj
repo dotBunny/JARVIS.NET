@@ -95,6 +95,7 @@
     <Compile Include="ServerConnection.cs" />
     <Compile Include="Commands\Wirecast.cs" />
     <Compile Include="Commands\Info.cs" />
+    <Compile Include="Commands\Counter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">

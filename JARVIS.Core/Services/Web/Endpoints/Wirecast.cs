@@ -3,6 +3,7 @@ using Grapevine.Interfaces.Server;
 using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
+using JARVIS.Shared;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
@@ -13,20 +14,16 @@ namespace JARVIS.Core.Services.Web.Endpoints
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/wirecast/layers/")]
 		public IHttpContext Layers(IHttpContext context)
 		{
+            // ?layer1=name&layer2=name&layer3=name&layer4=name&layer5=name
 
-            string[] parameters = Shared.Web.GetParameters(context.Request.RawUrl, context.Request.PathInfo);
+            // Send command via socket
+            Server.Socket.SendToAllSessions(
+                "Wirecast.Layers", 
+                Net.GetParameterString(
+                    Shared.Web.GetStringDictionary(
+                        context.Request.QueryString)));
 
-            // Build argument list
-            string args = "";
-            foreach (string s in parameters)
-            {
-                args += s.Trim() + " ";
-            }
-            args.Trim();
-
-            Server.Socket.SendToAllSessions("Wirecast.Layers", args);
-
-            context.Response.SendResponse(Shared.Net.WebSuccessCode);
+            context.Response.SendResponse(Net.WebSuccessCode);
 			return context;
 		}
 	}

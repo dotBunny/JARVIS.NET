@@ -6,7 +6,7 @@
     <ProjectGuid>{CF34F473-ECEF-487B-AF1D-79C3AF01155F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>JARVIS</RootNamespace>
-    <AssemblyName>JARVIS.Server</AssemblyName>
+    <AssemblyName>JARVIS</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <ApplicationIcon>..\JARVIS.Shared\Resources\Icons\jarvis.ico</ApplicationIcon>
     <ReleaseVersion>1.0</ReleaseVersion>

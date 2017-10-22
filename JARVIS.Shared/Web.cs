@@ -6,9 +6,17 @@ namespace JARVIS.Shared
     {
         private static char[] ParameterStart = { '?' };
         private static char[] ParameterDelimiter = { ',' };
-        public static string[] GetParameters(string rawUrl, string pathToRemove)
+
+        public static Dictionary<string, string> GetStringDictionary(System.Collections.Specialized.NameValueCollection parameters)
         {
-            return rawUrl.Replace(pathToRemove, string.Empty).TrimStart(ParameterStart).Split(ParameterDelimiter);
+            Dictionary<string, string> returnParameters = new Dictionary<string, string>();
+
+            foreach(string s in parameters.AllKeys)
+            {
+                returnParameters.Add(s, parameters[s]);
+            }
+
+            return returnParameters;
         }
     }
 }

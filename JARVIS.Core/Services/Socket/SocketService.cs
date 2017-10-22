@@ -29,6 +29,7 @@ namespace JARVIS.Core.Services.Socket
         {
             return "Socket";   
         }
+
         public void Start()
         {
             if (!Server.Start())
@@ -69,8 +70,7 @@ namespace JARVIS.Core.Services.Socket
         static void HandleConnection(AppSession session)
         {
             Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
-
-            SendToSession(session, "INFO", "Welcome to JARVIS.");
+            SendToSession(session, "INFO", "message" + Shared.Net.SocketDeliminator + "Welcome to JARVIS.");
         }
     }
 }

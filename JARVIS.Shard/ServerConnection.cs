@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,18 +23,24 @@ namespace JARVIS.Shard
             Connection = new EasyClient();
 
 
-            Connection.Initialize(new SocketFilter(), (request) => {
-
+            Connection.Initialize(new SocketFilter(), (request) =>
+            {
                 Shared.Log.Message("socket", "Request Received ->" + request.Key.ToUpper());
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                foreach(string s in request.Parameters)
+                {
+                    var param = s.Split(new string[] { Shared.Net.SocketDeliminator }, StringSplitOptions.RemoveEmptyEntries);
+                    parameters.Add(param[0], param[1]);
+                }
                 switch(request.Key.ToUpper()) {
 
                     case "INFO":
-                        Commands.Info.Command(request.Body);
+                        Commands.Info.Command(parameters);
                         break;
                     case "WIRECAST.LAYERS":
                         if (Program.HasWirecastSupport)
                         {
-                            Commands.Wirecast.Layers(request.Body);
+                            Commands.Wirecast.Layers(parameters);
                         }
                         break;
                 }
@@ -80,9 +87,18 @@ namespace JARVIS.Shard
             {
                 string package = bufferStream.ReadString((int)bufferStream.Length - Shared.Net.SocketTerminator.Length, Encoding.UTF8);
 
-                string[] split = package.Split(new string[] { Shared.Net.SocketDeliminator }, StringSplitOptions.None);
+                string[] split = package.Split(new string[] { Shared.Net.SocketDeliminator }, StringSplitOptions.RemoveEmptyEntries);
 
-                return new StringPackageInfo(split[0].Trim(), split[1].Trim(), null);
+                List<string> parameters = new List<string>();
+                for (int i = 1; i < split.Length; i+=2) {
+                    if ((i + 1) < split.Length)
+                    {
+                        parameters.Add(split[i] + Shared.Net.SocketDeliminator + split[i + 1]);
+                    }
+                }
+
+                // Return no body
+                return new StringPackageInfo(split[0].Trim(), null, parameters.ToArray());
             }
         }
     }
