@@ -81,6 +81,7 @@
     <Compile Include="Database\ITable.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Services\Web\Endpoints\Sequence.cs" />
+    <Compile Include="Services\Web\Endpoints\Broadcast.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
