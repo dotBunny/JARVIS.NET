@@ -47,6 +47,15 @@ namespace JARVIS.Shard
                             Commands.Wirecast.Layers(parameters);
                         }
                         break;
+                    case "COUNTER.SET":
+                    case "COUNTER.PLUS":
+                    case "COUNTER.MINUS":
+                        if (Program.HasOutputSupport)
+                        {
+                            Commands.Counter.Set(parameters);
+                        }
+                        break;
+                        
                 }
             });
         }

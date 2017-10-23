@@ -13,6 +13,7 @@ namespace JARVIS.Shard
         public static string OutputPath = "";
 
         public static bool HasWirecastSupport = false;
+        public static bool HasOutputSupport = false;
 
         public static void Main(string[] args)
         {
@@ -46,7 +47,7 @@ namespace JARVIS.Shard
             // Create parser and don't barf if we get an unrecognized argument
             CommandLineApplication commandLine = new CommandLineApplication(false);
 
-            CommandOption useOutput = commandLine.Option("--output <PATH>", "Absolute path to output files too.", CommandOptionType.SingleValue);
+            CommandOption useOutput = commandLine.Option("--output <PATH>", "Enable output, and set the absolute path to output files too.", CommandOptionType.SingleValue);
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
@@ -70,8 +71,10 @@ namespace JARVIS.Shard
                 // Handle output path setting
                 if (useOutput.HasValue())
                 {
+                    
                     if (Directory.Exists(useOutput.Value()))
                     {
+                        HasOutputSupport = true;
                         OutputPath = useOutput.Value();
                     }
                     else
