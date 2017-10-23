@@ -78,8 +78,9 @@ namespace JARVIS.Core.Services.Web.Endpoints
                         Shared.Log.Message("web", "Sequence -> " + touchURL);
 
                         // TODO: THIS BREAKS EVERYTHING 
+                        //  http://127.0.0.1:8080/sequence/?0=info||message||Sending%20First%20Message&1=wait||seconds||5&2=info||message||Sending%20Second%20Message
                         // is it because its already in a process thread? 
-                       // Shared.Web.Touch(touchURL);
+                        Shared.Web.Touch(touchURL);
                         
                         break;
                 }
