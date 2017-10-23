@@ -20,9 +20,7 @@ namespace JARVIS.Shared
         }
 
         public static void Touch(string URI) {
-
-            WebRequest request = WebRequest.Create(URI);
-            request.Method = "GET";
+            HttpWebRequest request = WebRequest.Create(URI) as HttpWebRequest;
             request.GetResponse();
         }
     }
