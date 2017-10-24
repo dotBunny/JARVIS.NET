@@ -8,12 +8,15 @@ namespace JARVIS.Shard
     class Program
     {
         private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
-        private static ServerConnection Server = new ServerConnection();
+        public static ServerConnection Server = new ServerConnection();
 
         public static string OutputPath = "";
 
         public static bool HasWirecastSupport = false;
         public static bool HasOutputSupport = false;
+
+        public static string Username = "JARVIS";
+        public static string Password = "demo";
 
         public static void Main(string[] args)
         {
@@ -23,11 +26,13 @@ namespace JARVIS.Shard
             OutputPath = Path.Combine(Shared.Platform.GetBaseDirectory(), "Output");
             Directory.CreateDirectory(OutputPath);
 
-            // Determine server address / port
-            Server = new ServerConnection();
 
             // Process commandline and stop if we are showing stuff
             ProcessCommandLine(args);
+
+            // Determine server address / port
+            Server = new ServerConnection();
+
 
             Console.CancelKeyPress += (sender, eArgs) =>
             {
@@ -36,6 +41,8 @@ namespace JARVIS.Shard
             };
 
             Server.Start();
+
+
             QuitEvent.WaitOne();
             Server.Stop();
 
@@ -51,6 +58,9 @@ namespace JARVIS.Shard
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
+            CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
+            CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
+
 
             // Define help option
             commandLine.HelpOption("--help");
@@ -66,6 +76,16 @@ namespace JARVIS.Shard
                 if (usePort.HasValue())
                 {
                     int.TryParse(usePort.Value(), out Server.Port);
+                }
+
+                if (useUsername.HasValue())
+                {
+                    Username = useUsername.Value();
+                }
+
+                if (usePassword.HasValue())
+                {
+                    Password = usePassword.Value();
                 }
 
                 // Handle output path setting

@@ -8,6 +8,7 @@ namespace JARVIS.Core.Services.Socket
     {
 
         private AppServer Server;
+        public System.Collections.Generic.List<AppSession> AuthenticatedSessions = new System.Collections.Generic.List<AppSession>();
 
         public SocketService(int SocketPort = 8081)
         {
@@ -40,6 +41,7 @@ namespace JARVIS.Core.Services.Socket
 
             // Setup handlers
             Server.NewSessionConnected += new SessionHandler<AppSession>(HandleConnection);
+            Server.SessionClosed += new SessionHandler<AppSession, CloseReason>(HandleDisconnect);
         }
 
 
@@ -50,6 +52,7 @@ namespace JARVIS.Core.Services.Socket
 
         public void SendToAllSessions(string command, string arguments)
         {
+            
             var sessions = Server.GetAllSessions();
 
             // Send to sessions
@@ -71,6 +74,13 @@ namespace JARVIS.Core.Services.Socket
         {
             Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
             SendToSession(session, "INFO", "message" + Shared.Net.SocketDeliminator + "Welcome to JARVIS.");
+
+            // Request AUTH
+            SendToSession(session, "AUTH", "");
+        }
+        static void HandleDisconnect(AppSession session, CloseReason reason)
+        {
+            Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint + " for " + reason.ToString());
         }
     }
 }

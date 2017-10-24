@@ -16,11 +16,11 @@ namespace JARVIS.Shard
 
         private static EasyClient Connection;
 
-
         public ServerConnection()
         {
             // Initialize Shard Connection
             Connection = new EasyClient();
+
 
 
             Connection.Initialize(new SocketFilter(), (request) =>
@@ -55,6 +55,9 @@ namespace JARVIS.Shard
                             Commands.Counter.Set(parameters);
                         }
                         break;
+                    case "AUTH":
+                        Commands.Auth.Command();
+                        break;
                         
                 }
             });
@@ -76,6 +79,16 @@ namespace JARVIS.Shard
                 Program.Shutdown(1);
             }
         }
+
+        public async void Send(string key, string body, Dictionary<string, string> parameters)
+        {
+            
+        }
+        public async void Send(byte[] data)
+        {
+            Connection.Send(data);   
+        }
+
 
         async Task<bool> Connect()
         {

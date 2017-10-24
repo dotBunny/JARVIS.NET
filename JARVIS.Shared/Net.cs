@@ -52,5 +52,12 @@ namespace JARVIS.Shared
             return returnParameters;
         }
 
+        public static byte[] GetSocketData(string key, Dictionary<string, string> parameters)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(key + SocketDeliminator + GetParameterString(parameters));
+        }
+
+
+
     }
 }

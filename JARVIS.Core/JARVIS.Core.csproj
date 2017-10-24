@@ -82,6 +82,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Services\Web\Endpoints\Sequence.cs" />
     <Compile Include="Services\Web\Endpoints\Broadcast.cs" />
+    <Compile Include="Services\Socket\Commands\Auth.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
