@@ -13,6 +13,7 @@ namespace JARVIS.Shared.Services.Socket
 
         public Protocol() : base(Encoding.ASCII.GetBytes(Terminator))
         {
+            
         }
 
         public override StringPackageInfo ResolvePackage(IBufferStream bufferStream)
@@ -82,7 +83,7 @@ namespace JARVIS.Shared.Services.Socket
 
         public static byte[] GetBytes(Commands.Types type, string body, Dictionary<string, string> parameters)
         {
-            return Encoding.UTF8.GetBytes(type.GetSocketCommand() + Deliminator + GetParameterString(parameters));
+            return Encoding.UTF8.GetBytes(type.GetSocketCommand() + Deliminator + GetParameterString(parameters) + Terminator);
         }
     }
 }

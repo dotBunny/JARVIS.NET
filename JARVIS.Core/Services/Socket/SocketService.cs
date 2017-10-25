@@ -24,6 +24,7 @@ namespace JARVIS.Core.Services.Socket
             Server.SessionClosed += HandleDisconnect;
             Server.NewRequestReceived += HandleRequestReceived;
 
+
             Port = SocketPort;
 
             if (!Server.Setup(SocketPort))
@@ -73,8 +74,15 @@ namespace JARVIS.Core.Services.Socket
         public static void SendToSession(AppSession session, Shared.Services.Socket.Commands.Types type, string body, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
+
+            // Create package
             byte[] data = Shared.Services.Socket.Protocol.GetBytes(type, body, arguments);
-            session.Send(data, 0, data.Length);
+
+            // Send and check for failure
+            if(!session.TrySend(data, 0, data.Length))
+            {
+                Shared.Log.Error("socket", "Failed to send " + type.ToString() + " to " + session.RemoteEndPoint);
+            }
         }
 
         static void HandleConnection(AppSession session)
@@ -94,7 +102,7 @@ namespace JARVIS.Core.Services.Socket
         }
         static void HandleDisconnect(AppSession session, CloseReason reason)
         {
-            Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint + " for " + reason.ToString());
+            Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint + " for " + reason);
         }
 
         static void HandleRequestReceived(AppSession session, StringRequestInfo requestInfo)

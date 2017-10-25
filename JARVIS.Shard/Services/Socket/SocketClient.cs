@@ -17,12 +17,11 @@ namespace JARVIS.Shard.Services.Socket
             get { return Connection.IsConnected;  }
         }
 
-        EasyClient<StringPackageInfo> Connection;
+        EasyClient<StringPackageInfo> Connection = new EasyClient<StringPackageInfo>();
 
         public SocketClient()
         {
-            // Initialize Shard Connection
-            Connection = new EasyClient<StringPackageInfo>();
+            // Initialize Protocol
             Connection.Initialize(new Protocol());
 
             // Setup event handlers
@@ -57,8 +56,8 @@ namespace JARVIS.Shard.Services.Socket
 
         void Connection_Connected(object sender, EventArgs e)
         {
-            
             Shared.Log.Message("socket", "Connected to " + Shared.Net.GetIPAddress(Host) + ":" + Port.ToString());
+
             //Send(Shared.Services.Socket.Commands.Types.AUTH, string.Empty, new Dictionary<string, string>() { });
         }
 
