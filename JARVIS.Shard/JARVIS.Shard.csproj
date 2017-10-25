@@ -93,11 +93,15 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerConnection.cs" />
-    <Compile Include="Commands\Wirecast.cs" />
-    <Compile Include="Commands\Info.cs" />
-    <Compile Include="Commands\Counter.cs" />
-    <Compile Include="Commands\Auth.cs" />
+    <Compile Include="Services\Socket\Commands\Auth.cs" />
+    <Compile Include="Services\Socket\Commands\Counter.cs" />
+    <Compile Include="Services\Socket\Commands\Info.cs" />
+    <Compile Include="Services\Socket\Commands\Wirecast.cs" />
+    <Compile Include="Services\Socket\ICommand.cs" />
+    <Compile Include="Services\Socket\SocketService.cs" />
+    <Compile Include="Services\Socket\CommandFactory.cs" />
+    <Compile Include="Services\Socket\Commands\Default.cs" />
+    <Compile Include="Services\Socket\Commands\Pong.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">
@@ -115,7 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="Commands\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Socket\" />
+    <Folder Include="Services\Socket\Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

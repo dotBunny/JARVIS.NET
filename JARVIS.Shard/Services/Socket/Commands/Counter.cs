@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JARVIS.Shard.Commands
+namespace JARVIS.Shard.Services.Socket.Commands
 {
-    public static class Counter
+    public class Counter : JARVIS.Shard.Services.Socket.ICommand
     {
-        public static void Set(Dictionary<string, string> parameters)
+        public bool CanExecute()
         {
+            return Program.HasOutputSupport;
+        }
+        public void Execute(Dictionary<string, string> parameters)
+        {
+            // Check Permission
+
+
             if ( parameters.ContainsKey("name") && parameters.ContainsKey("UPDATED_VALUE"))
             {
                 Shared.Log.Message("counter", "Setting " + parameters["name"] + " => " + parameters["UPDATED_VALUE"]);

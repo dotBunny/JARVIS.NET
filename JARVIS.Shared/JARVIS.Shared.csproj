@@ -37,6 +37,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.IO">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Extensions">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ProtoBase">
+      <HintPath>..\packages\SuperSocket.ProtoBase.1.7.0.17\lib\net45\SuperSocket.ProtoBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Web.cs" />
@@ -45,14 +56,21 @@
     <Compile Include="Log.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="IO.cs" />
+    <Compile Include="Services\Socket\SocketFilter.cs" />
+    <Compile Include="Services\Socket\Commands.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Resources\Icons\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Socket\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Icons\jarvis.icns" />
     <EmbeddedResource Include="Resources\Icons\jarvis.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@ namespace JARVIS.Shard
     class Program
     {
         private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
-        public static ServerConnection Server = new ServerConnection();
+        public static Services.Socket.SocketService Server = new Services.Socket.SocketService();
 
         public static string OutputPath = "";
 
@@ -31,7 +31,7 @@ namespace JARVIS.Shard
             ProcessCommandLine(args);
 
             // Determine server address / port
-            Server = new ServerConnection();
+            Server = new Services.Socket.SocketService();
 
 
             Console.CancelKeyPress += (sender, eArgs) =>

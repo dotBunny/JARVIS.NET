@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Grapevine.Interfaces.Server;
+﻿using Grapevine.Interfaces.Server;
 using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
-using JARVIS.Shared;
+using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
@@ -17,13 +16,12 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // ?layer1=name&layer2=name&layer3=name&layer4=name&layer5=name
 
             // Send command via socket
-            Server.Socket.SendToAllSessions(
-                "Wirecast.Layers", 
-                Net.GetParameterString(
-                    Shared.Web.GetStringDictionary(
-                        context.Request.QueryString)));
+            Server.Socket.SendToAllSessions(Commands.Types.WIRECAST_LAYERS, 
+                                            string.Empty,
+                                            Shared.Web.GetStringDictionary(
+                                                context.Request.QueryString));
 
-            context.Response.SendResponse(Net.WebSuccessCode);
+            context.Response.SendResponse(Shared.Web.SuccessCode);
 			return context;
 		}
 	}

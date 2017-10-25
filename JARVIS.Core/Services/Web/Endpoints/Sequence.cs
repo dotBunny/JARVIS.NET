@@ -25,7 +25,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Fire and forget sequence
             Task.Run(() => HandleSequence(parameters));
 
-            context.Response.SendResponse(Shared.Net.WebSuccessCode);
+            context.Response.SendResponse(Shared.Web.SuccessCode);
             return context;
         }
 
@@ -39,14 +39,14 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Iterate over commands
             foreach(string key in commands.Keys)
             {
-                currentCommand = commands[key].Split(new[] { Shared.Net.SocketDeliminator }, StringSplitOptions.None)[0];
+                currentCommand = commands[key].Split(new[] { Shared.Services.Socket.SocketFilter.Deliminator }, StringSplitOptions.None)[0];
 
                 currentParameters.Clear();
 
-                currentParameters = Shared.Net.GetStringDictionary(
+                currentParameters = Shared.Services.Socket.SocketFilter.GetStringDictionary(
                     commands[key].Substring(
                         currentCommand.Length + 
-                        Shared.Net.SocketDeliminator.Length));
+                        Shared.Services.Socket.SocketFilter.Deliminator.Length));
 
                 // Create parameters for individual command to be issued
                 urlParameters = "";

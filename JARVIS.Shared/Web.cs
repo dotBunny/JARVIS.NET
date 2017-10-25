@@ -7,6 +7,9 @@ namespace JARVIS.Shared
 {
     public static class Web
     {
+        public const string SuccessCode = "OK";
+        public const string FailCode = "FAIL";
+
         public static Dictionary<string, string> GetStringDictionary(System.Collections.Specialized.NameValueCollection parameters)
         {
             Dictionary<string, string> returnParameters = new Dictionary<string, string>();

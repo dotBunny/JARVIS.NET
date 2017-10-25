@@ -55,13 +55,16 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
                 Shared.Log.Message("DB", "Incremented Counter: " + parameters["name"]);
 
+                // Store value
+                parameters["UPDATED_VALUE"] = previousValue.ToString();
+
                 Server.Socket.SendToAllSessions(
-                    "Counter.Plus", Shared.Net.GetParameterString(
-                        Shared.Web.GetStringDictionary(context.Request.QueryString)) +
-                        Shared.Net.SocketDeliminator + "UPDATED_VALUE" + Shared.Net.SocketDeliminator + previousValue);
-                context.Response.SendResponse(Shared.Net.WebSuccessCode);
+                    Shared.Services.Socket.Commands.Types.COUNTER_PLUS, string.Empty,
+                    parameters);
+                
+                context.Response.SendResponse(Shared.Web.SuccessCode);
             } else {
-                context.Response.SendResponse(Shared.Net.WebFailCode);
+                context.Response.SendResponse(Shared.Web.FailCode);
             }
 
             return context;
@@ -108,16 +111,18 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
                 Shared.Log.Message("DB", "Decremented Counter: " + parameters["name"]);
 
+                // Store value
+                parameters["UPDATED_VALUE"] = previousValue.ToString();
+
                 Server.Socket.SendToAllSessions(
-                    "Counter.Minus", Shared.Net.GetParameterString(
-                        Shared.Web.GetStringDictionary(context.Request.QueryString)) +
-                        Shared.Net.SocketDeliminator + "UPDATED_VALUE" + Shared.Net.SocketDeliminator + previousValue);
-                
-                context.Response.SendResponse(Shared.Net.WebSuccessCode);
+                    Shared.Services.Socket.Commands.Types.COUNTER_MINUS, string.Empty,
+                    parameters);
+
+                context.Response.SendResponse(Shared.Web.SuccessCode);
             }
             else
             {
-                context.Response.SendResponse(Shared.Net.WebFailCode);
+                context.Response.SendResponse(Shared.Web.FailCode);
             }
 
             return context;
@@ -147,17 +152,20 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 });
 
                 Shared.Log.Message("DB", "Set Counter: " + parameters["name"] + " as " + setValue);
-                Server.Socket.SendToAllSessions(
-                   "Counter.Set", Shared.Net.GetParameterString(
-                       Shared.Web.GetStringDictionary(context.Request.QueryString)));
+               
+                // Store value
+                parameters["UPDATED_VALUE"] = setValue.ToString();
 
-                context.Response.SendResponse(Shared.Net.WebSuccessCode);
+                Server.Socket.SendToAllSessions(
+                    Shared.Services.Socket.Commands.Types.COUNTER_SET, string.Empty,
+                    parameters);
+
+                context.Response.SendResponse(Shared.Web.SuccessCode);
             }
             else
             {
-                context.Response.SendResponse(Shared.Net.WebFailCode);
+                context.Response.SendResponse(Shared.Web.FailCode);
             }
-
             return context;
         }
     }

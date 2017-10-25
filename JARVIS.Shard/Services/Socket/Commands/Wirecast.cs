@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JARVIS.Shard.Commands
+namespace JARVIS.Shard.Services.Socket.Commands
 {
-    public static class Wirecast
+    public class Wirecast : JARVIS.Shard.Services.Socket.ICommand
     {
-        public static void Layers(Dictionary<string, string> parameters) 
+        public bool CanExecute()
+        {
+            return Program.HasWirecastSupport;
+        }
+        public void Execute(Dictionary<string, string> parameters) 
         {
             string parsedArguments = "";
             foreach(string s in parameters.Keys)
