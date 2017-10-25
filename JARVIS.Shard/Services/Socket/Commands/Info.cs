@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JARVIS.Shard.Services.Socket.Commands
 {
-    public class Info : JARVIS.Shard.Services.Socket.ICommand
+    public class Info : ISocketCommand
     {
         public bool CanExecute()
         {

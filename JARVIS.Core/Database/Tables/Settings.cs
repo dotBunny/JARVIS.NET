@@ -21,7 +21,7 @@ namespace JARVIS.Core.Database.Tables
 
         public static void Set(string key, string newValue)
         {
-            Shared.Log.Message("DB", "Set " + key + ":" + newValue);
+            Shared.Log.Message("DB", "Set " + key + " to " + newValue);
             Server.Database.Connection.InsertOrReplace(new Settings()
             {
                 Name = key,

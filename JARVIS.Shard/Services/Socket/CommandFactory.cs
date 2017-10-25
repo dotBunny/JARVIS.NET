@@ -5,7 +5,7 @@ namespace JARVIS.Shard.Services.Socket
 {
     public static class CommandFactory
     {
-        public static ICommand CreateCommand(string key)
+        public static ISocketCommand CreateCommand(string key)
         {
             Shared.Services.Socket.Commands.Types commandType = Shared.Services.Socket.Commands.GetType(key);
 

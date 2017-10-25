@@ -56,7 +56,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="IO.cs" />
-    <Compile Include="Services\Socket\SocketFilter.cs" />
+    <Compile Include="Services\Socket\Protocol.cs" />
     <Compile Include="Services\Socket\Commands.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -39,14 +39,14 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Iterate over commands
             foreach(string key in commands.Keys)
             {
-                currentCommand = commands[key].Split(new[] { Shared.Services.Socket.SocketFilter.Deliminator }, StringSplitOptions.None)[0];
+                currentCommand = commands[key].Split(new[] { Shared.Services.Socket.Protocol.Deliminator }, StringSplitOptions.None)[0];
 
                 currentParameters.Clear();
 
-                currentParameters = Shared.Services.Socket.SocketFilter.GetStringDictionary(
+                currentParameters = Shared.Services.Socket.Protocol.GetStringDictionary(
                     commands[key].Substring(
                         currentCommand.Length + 
-                        Shared.Services.Socket.SocketFilter.Deliminator.Length));
+                        Shared.Services.Socket.Protocol.Deliminator.Length));
 
                 // Create parameters for individual command to be issued
                 urlParameters = "";

@@ -52,14 +52,16 @@ namespace JARVIS.Core
             // Load Config
             Config.Load();
 
-            //// Initialize Services
+            // Initialize Services
             Web = new Services.Web.WebService(Config.Host, Config.WebPort.ToString());
-            ActiveServices.Add(Web);
             Web.Start();
+            ActiveServices.Add(Web);
 
             Socket = new Services.Socket.SocketService(Config.SocketPort);
-            ActiveServices.Add(Socket);
             Socket.Start();
+            ActiveServices.Add(Socket);
+
+            Shared.Log.Message("System", "Startup Complete");
         }
 
         public static void Stop()

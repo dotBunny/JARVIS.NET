@@ -5,20 +5,21 @@ using SuperSocket.ProtoBase;
 
 namespace JARVIS.Shared.Services.Socket
 {
-    public class SocketFilter : TerminatorReceiveFilter<StringPackageInfo>
+    public class Protocol : TerminatorReceiveFilter<StringPackageInfo>
     {
         public const string Terminator = "<EOL>";
         public const string Deliminator = "||";
+        public string Content { get; set; }
 
-        public SocketFilter() : base(Encoding.ASCII.GetBytes(Terminator))
+        public Protocol() : base(Encoding.ASCII.GetBytes(Terminator))
         {
         }
 
         public override StringPackageInfo ResolvePackage(IBufferStream bufferStream)
         {
-            string package = bufferStream.ReadString((int)bufferStream.Length - Terminator.Length, Encoding.UTF8);
+            Content = bufferStream.ReadString((int)bufferStream.Length - Terminator.Length, Encoding.UTF8);
 
-            string[] split = package.Split(new string[] { Deliminator }, StringSplitOptions.RemoveEmptyEntries);
+            string[] split = Content.Split(new string[] { Deliminator }, StringSplitOptions.RemoveEmptyEntries);
 
             List<string> parameters = new List<string>();
             for (int i = 1; i < split.Length; i += 2)
@@ -44,8 +45,6 @@ namespace JARVIS.Shared.Services.Socket
             }
             return returnParams;
         }
-
-
 
         public static Dictionary<string, string> GetStringDictionary(string parameters)
         {
@@ -81,15 +80,9 @@ namespace JARVIS.Shared.Services.Socket
             return returnString;
         }
 
-        public static byte[] GetSocketBytes(Commands.Types type, string body, Dictionary<string, string> parameters)
+        public static byte[] GetBytes(Commands.Types type, string body, Dictionary<string, string> parameters)
         {
-            return Encoding.UTF8.GetBytes(GetSocketString(type, body, parameters));
+            return Encoding.UTF8.GetBytes(type.GetSocketCommand() + Deliminator + GetParameterString(parameters));
         }
-
-        public static string GetSocketString(Commands.Types type, string body, Dictionary<string, string> parameters)
-        {
-            return Commands.GetSocketCommand(type) + Deliminator + GetParameterString(parameters);
-        }
-
     }
 }

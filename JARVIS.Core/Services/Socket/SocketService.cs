@@ -5,15 +5,26 @@ using SuperSocket.SocketBase.Protocol;
 
 namespace JARVIS.Core.Services.Socket
 {
-    public class SocketService : Core.Services.IService
+    public class SocketService : IService
     {
 
-        private AppServer Server;
-        public System.Collections.Generic.List<AppSession> AuthenticatedSessions = new System.Collections.Generic.List<AppSession>();
+
+        public List<AppSession> AuthenticatedSessions = new List<AppSession>();
+        int Port = 8081;
+        AppServer Server;
 
         public SocketService(int SocketPort = 8081)
         {
             Server = new AppServer();
+
+            // Setup handlers
+
+            // new RequestHandler<AppSession, StringRequestInfo>(appServer_NewRequestReceived);
+            Server.NewSessionConnected += HandleConnection;
+            Server.SessionClosed += HandleDisconnect;
+            Server.NewRequestReceived += HandleRequestReceived;
+
+            Port = SocketPort;
 
             if (!Server.Setup(SocketPort))
             {
@@ -27,6 +38,7 @@ namespace JARVIS.Core.Services.Socket
             Server.Dispose();
         }
 
+
         public string GetName() 
         {
             return "Socket";   
@@ -39,13 +51,8 @@ namespace JARVIS.Core.Services.Socket
                 Shared.Log.Error(GetName(), "Unable to start socket service.");
                 return;
             }
-
-            // Setup handlers
-            Server.NewSessionConnected += new SessionHandler<AppSession>(HandleConnection);
-            Server.SessionClosed += new SessionHandler<AppSession, CloseReason>(HandleDisconnect);
-            Server.NewRequestReceived += new RequestHandler<AppSession, StringRequestInfo>(HandleRequestReceived);
+            Shared.Log.Message("socket", "Listening on " + Port.ToString());
         }
-
 
         public void Stop()
         {
@@ -63,13 +70,12 @@ namespace JARVIS.Core.Services.Socket
             }
         }
 
-
         public static void SendToSession(AppSession session, Shared.Services.Socket.Commands.Types type, string body, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
-            session.Send(Shared.Services.Socket.SocketFilter.GetSocketString(type, body, arguments));
+            byte[] data = Shared.Services.Socket.Protocol.GetBytes(type, body, arguments);
+            session.Send(data, 0, data.Length);
         }
-
 
         static void HandleConnection(AppSession session)
         {
@@ -78,13 +84,13 @@ namespace JARVIS.Core.Services.Socket
             SendToSession(session, 
                           Shared.Services.Socket.Commands.Types.INFO, 
                           string.Empty, 
-                          new Dictionary<string, string>() { { "message", "Welcome to JARVIS." } });
+                          new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
 
             // Request AUTH
-            SendToSession(session, 
-                          Shared.Services.Socket.Commands.Types.AUTH, 
-                          string.Empty, 
-                          null);
+            //SendToSession(session, 
+                          //Shared.Services.Socket.Commands.Types.AUTH, 
+                          //string.Empty, 
+                          //new Dictionary<string, string> { });
         }
         static void HandleDisconnect(AppSession session, CloseReason reason)
         {
@@ -93,6 +99,7 @@ namespace JARVIS.Core.Services.Socket
 
         static void HandleRequestReceived(AppSession session, StringRequestInfo requestInfo)
         {
+            Shared.Log.Message("request", "from " + session.RemoteEndPoint);
             //switch (requestInfo.Key.ToUpper())
             //{
             //    case ("ECHO"):

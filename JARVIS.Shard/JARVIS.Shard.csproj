@@ -97,8 +97,8 @@
     <Compile Include="Services\Socket\Commands\Counter.cs" />
     <Compile Include="Services\Socket\Commands\Info.cs" />
     <Compile Include="Services\Socket\Commands\Wirecast.cs" />
-    <Compile Include="Services\Socket\ICommand.cs" />
-    <Compile Include="Services\Socket\SocketService.cs" />
+    <Compile Include="Services\Socket\ISocketCommand.cs" />
+    <Compile Include="Services\Socket\SocketClient.cs" />
     <Compile Include="Services\Socket\CommandFactory.cs" />
     <Compile Include="Services\Socket\Commands\Default.cs" />
     <Compile Include="Services\Socket\Commands\Pong.cs" />

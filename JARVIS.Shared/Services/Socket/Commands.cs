@@ -9,6 +9,7 @@ namespace JARVIS.Shared.Services.Socket
             PING,
             PONG,
             AUTH,
+            LOGIN,
             INFO,
             COUNTER_SET,
             COUNTER_PLUS,

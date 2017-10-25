@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 
 namespace JARVIS.Shard.Services.Socket.Commands
 {
-    public class Auth : JARVIS.Shard.Services.Socket.ICommand
+    public class Auth : ISocketCommand
     {
         public bool CanExecute()
         {
@@ -12,7 +12,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
         public void Execute(Dictionary<string, string> parameters)
         {
             // Send Auth
-            Program.Server.Send(
+            Program.Client.Send(
                 Shared.Services.Socket.Commands.Types.AUTH, 
                 string.Empty, 
                 new Dictionary<string, string>() {

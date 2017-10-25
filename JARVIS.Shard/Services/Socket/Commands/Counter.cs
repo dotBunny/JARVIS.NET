@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JARVIS.Shard.Services.Socket.Commands
 {
-    public class Counter : JARVIS.Shard.Services.Socket.ICommand
+    public class Counter : ISocketCommand
     {
         public bool CanExecute()
         {
-            return Program.HasOutputSupport;
+            return Program.HasCounterSupport;
         }
         public void Execute(Dictionary<string, string> parameters)
         {

@@ -7,13 +7,17 @@ namespace JARVIS.Shard
 {
     class Program
     {
-        private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
-        public static Services.Socket.SocketService Server = new Services.Socket.SocketService();
 
-        public static string OutputPath = "";
+
+        private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
+        public static Services.Socket.SocketClient Client = new Services.Socket.SocketClient();
+
+
+        // TODO: Add to settings file
+        public static string OutputPath = "./";
 
         public static bool HasWirecastSupport = false;
-        public static bool HasOutputSupport = false;
+        public static bool HasCounterSupport = false;
 
         public static string Username = "JARVIS";
         public static string Password = "demo";
@@ -26,13 +30,8 @@ namespace JARVIS.Shard
             OutputPath = Path.Combine(Shared.Platform.GetBaseDirectory(), "Output");
             Directory.CreateDirectory(OutputPath);
 
-
             // Process commandline and stop if we are showing stuff
             ProcessCommandLine(args);
-
-            // Determine server address / port
-            Server = new Services.Socket.SocketService();
-
 
             Console.CancelKeyPress += (sender, eArgs) =>
             {
@@ -40,13 +39,18 @@ namespace JARVIS.Shard
                 eArgs.Cancel = true;
             };
 
-            Server.Start();
+            // Start the connection to the server
+            Client.Start().Wait();
 
-
+            // Sit and wait till we get the CTRL-C
             QuitEvent.WaitOne();
-            Server.Stop();
 
-            Program.Shutdown();
+            // Disconnect from the server
+            Client.Stop();
+
+            // Cleanly exit the program
+            Shared.Log.Message("system", "Shutdown");
+            Environment.Exit(0);
         }
 
         static void ProcessCommandLine(string[] args)
@@ -54,13 +58,13 @@ namespace JARVIS.Shard
             // Create parser and don't barf if we get an unrecognized argument
             CommandLineApplication commandLine = new CommandLineApplication(false);
 
-            CommandOption useOutput = commandLine.Option("--output <PATH>", "Enable output, and set the absolute path to output files too.", CommandOptionType.SingleValue);
+            CommandOption useOutput = commandLine.Option("--output <PATH>", "Set output path (Default: ./)", CommandOptionType.SingleValue);
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
+            CommandOption useCounters = commandLine.Option("--counters", "Enable Counter Support", CommandOptionType.NoValue);
             CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
             CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
             CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
-
 
             // Define help option
             commandLine.HelpOption("--help");
@@ -70,12 +74,12 @@ namespace JARVIS.Shard
                 // If we have a host value
                 if (useHost.HasValue())
                 {
-                    Server.Host = useHost.Value();
+                    Client.Host = useHost.Value();
                 }
                 // If we have a port value
                 if (usePort.HasValue())
                 {
-                    int.TryParse(usePort.Value(), out Server.Port);
+                    int.TryParse(usePort.Value(), out Client.Port);
                 }
 
                 if (useUsername.HasValue())
@@ -91,17 +95,16 @@ namespace JARVIS.Shard
                 // Handle output path setting
                 if (useOutput.HasValue())
                 {
-                    
                     if (Directory.Exists(useOutput.Value()))
                     {
-                        HasOutputSupport = true;
                         OutputPath = useOutput.Value();
                     }
-                    else
-                    {
-                        Shared.Log.Error("output", "The output directory must already exist.");
-                        Program.Shutdown(1);
-                    }
+                }
+
+                // Handle Counters
+                if (useCounters.HasValue())
+                {
+                    HasCounterSupport = true;
                 }
 
                 // Update Wirecast
@@ -118,14 +121,9 @@ namespace JARVIS.Shard
 
             // Shutdown if were showing help
             if ( commandLine.IsShowingInformation ) {
-                Program.Shutdown();
+                Shared.Log.Message("system", "Quick Shutdown.");
+                Environment.Exit(0);
             }
-        }
-
-        public static void Shutdown(int exitCode = 0)
-        {
-            Shared.Log.Message("system", "Shutdown.");
-            Environment.Exit(exitCode);
         }
     }
 
