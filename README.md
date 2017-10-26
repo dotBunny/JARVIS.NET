@@ -11,3 +11,13 @@ A _shard_ is a node that connects to the server allowing for commands to be exec
 
 ## JARVIS.Shared ##
 A collection of shared functionality used throughout the JARVIS.
+
+# System Requirements #
+
+## Pi ##
+```bash
+$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+$ echo "deb http://download.mono-project.com/repo/debian jessie main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+$ sudo apt-get update
+$ sudo apt-get install mono-runtime libmono-system-core4.0-cil libmono-system-runtime4.0-cil libmono-corlib4.0-cil
+```
