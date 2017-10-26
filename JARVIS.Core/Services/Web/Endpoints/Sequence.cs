@@ -31,7 +31,6 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
         static void HandleSequence(Dictionary<string,string> commands)
         {
-            Shared.Log.Message("thread", "handle sequence");
             string currentCommand;
             Dictionary<string, string> currentParameters = new Dictionary<string, string>();
             string urlParameters;
@@ -39,14 +38,14 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Iterate over commands
             foreach(string key in commands.Keys)
             {
-                currentCommand = commands[key].Split(new[] { Shared.Services.Socket.Protocol.Deliminator }, StringSplitOptions.None)[0];
+                currentCommand = commands[key].Split(new[] { Shared.Web.Deliminator }, StringSplitOptions.None)[0];
 
                 currentParameters.Clear();
 
-                currentParameters = Shared.Services.Socket.Protocol.GetStringDictionary(
+                currentParameters = Shared.Web.GetStringDictionaryEscaped(
                     commands[key].Substring(
                         currentCommand.Length + 
-                        Shared.Services.Socket.Protocol.Deliminator.Length));
+                        Shared.Web.Deliminator.Length));
 
                 // Create parameters for individual command to be issued
                 urlParameters = "";
@@ -73,7 +72,8 @@ namespace JARVIS.Core.Services.Web.Endpoints
                         string touchURL = "http://" + Server.Config.Host + ":" +
                             Server.Config.WebPort.ToString() +
                             "/" + currentCommand.ToLower().Replace(".", "/") + "/?" +
-                                           urlParameters;
+                      
+                                                            urlParameters;
 
                         Shared.Log.Message("web", "Sequence -> " + touchURL);
                         Shared.Web.Touch(touchURL);

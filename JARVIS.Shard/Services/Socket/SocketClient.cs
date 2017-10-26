@@ -12,6 +12,7 @@ namespace JARVIS.Shard.Services.Socket
     {
         public string Host = "localhost";
         public int Port = 8081;
+        public string EncryptionKey = "max";
 
         public bool IsConnected {
             get { return Connection.IsConnected;  }
@@ -22,7 +23,7 @@ namespace JARVIS.Shard.Services.Socket
         public SocketClient()
         {
             // Initialize Protocol
-            Connection.Initialize(new Protocol());
+            Connection.Initialize(new Protocol(EncryptionKey));
 
             // Setup event handlers
             Connection.Connected += Connection_Connected;

@@ -10,6 +10,7 @@ namespace JARVIS.Core
         public int WebPort = 8080;
         public int SocketPort = 8081;
         public string Host = "localhost";
+        public string SocketEncryptionKey = "max";
 
 
         public Dictionary<string, string> RawSettings = new Dictionary<string, string>();
@@ -74,6 +75,15 @@ namespace JARVIS.Core
             if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketPortID))
             {
                 int.TryParse(RawSettings[Database.Tables.Settings.ServerSocketPortID], out SocketPort);
+            }
+
+            // Socket Encryption Key
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionKeyID))
+            {
+                SocketEncryptionKey = RawSettings[Database.Tables.Settings.ServerSocketEncryptionKeyID];
+
+                // Set encryption key
+                Shared.Services.Socket.Protocol.EncryptionKey = SocketEncryptionKey;
             }
         }
     }

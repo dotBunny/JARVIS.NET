@@ -65,6 +65,7 @@ namespace JARVIS.Shard
             CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
             CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
             CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
+            CommandOption useEncryptionKey = commandLine.Option("--key <ENCRYPTION_KEY>", "Encryption Key", CommandOptionType.SingleValue);
 
             // Define help option
             commandLine.HelpOption("--help");
@@ -74,12 +75,12 @@ namespace JARVIS.Shard
                 // If we have a host value
                 if (useHost.HasValue())
                 {
-                    Client.Host = useHost.Value();
+                    Client.Host = useHost.Value().TrimEnd();
                 }
                 // If we have a port value
                 if (usePort.HasValue())
                 {
-                    int.TryParse(usePort.Value(), out Client.Port);
+                    int.TryParse(usePort.Value().Trim(), out Client.Port);
                 }
 
                 if (useUsername.HasValue())
@@ -89,7 +90,7 @@ namespace JARVIS.Shard
 
                 if (usePassword.HasValue())
                 {
-                    Password = usePassword.Value();
+                    Password = usePassword.Value().Trim();
                 }
 
                 // Handle output path setting
@@ -97,7 +98,7 @@ namespace JARVIS.Shard
                 {
                     if (Directory.Exists(useOutput.Value()))
                     {
-                        OutputPath = useOutput.Value();
+                        OutputPath = useOutput.Value().Trim();
                     }
                 }
 
@@ -111,6 +112,12 @@ namespace JARVIS.Shard
                 if (useWirecast.HasValue())
                 {
                     HasWirecastSupport = true;
+                }
+
+                // Handle Encryption Key
+                if (useEncryptionKey.HasValue())
+                {
+                    Client.EncryptionKey = useEncryptionKey.Value().Trim();
                 }
 
                 return 0;

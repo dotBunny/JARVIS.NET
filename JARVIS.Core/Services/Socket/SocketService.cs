@@ -95,10 +95,10 @@ namespace JARVIS.Core.Services.Socket
                           new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
 
             // Request AUTH
-            //SendToSession(session, 
-                          //Shared.Services.Socket.Commands.Types.AUTH, 
-                          //string.Empty, 
-                          //new Dictionary<string, string> { });
+            SendToSession(session, 
+                          Shared.Services.Socket.Commands.Types.AUTH, 
+                          string.Empty, 
+                          new Dictionary<string, string> { });
         }
         static void HandleDisconnect(AppSession session, CloseReason reason)
         {

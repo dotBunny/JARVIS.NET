@@ -8,6 +8,7 @@ namespace JARVIS.Core.Database.Tables
         public const string ServerHostID = "Server.Host";
         public const string ServerWebPortID = "Server.WebPort";
         public const string ServerSocketPortID = "Server.SocketPort";
+        public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
 
         public static string GetTableName()
         {
