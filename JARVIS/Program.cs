@@ -1,42 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Microsoft.Extensions.CommandLineUtils;
+using Plossum.CommandLine;
 
 namespace JARVIS
 {
     class Program
     {
-        /// <summary>
-        /// CommandLine parser
-        /// </summary>
-        private static CommandLineApplication commandLine = new CommandLineApplication(false);
-
-        /// <summary>
-        /// The database path command-line option
-        /// </summary>
-        private static CommandOption optionDatabase;
-
-        /// <summary>
-        /// The host command-line option
-        /// </summary>
-        private static CommandOption optionHost;
-
-        /// <summary>
-        /// The force quit after option execution of command-line option
-        /// </summary>
-        private static CommandOption optionQuit;
-
-        /// <summary>
-        /// The socket port command-line option
-        /// </summary>
-        private static CommandOption optionSocketPort;
-
-        /// <summary>
-        /// The web port command-line option
-        /// </summary>
-        private static CommandOption optionWebPort;
-
         /// <summary>
         /// The quit event listener
         /// </summary>
@@ -51,38 +21,47 @@ namespace JARVIS
             // Indicate that we're starting the party
             Shared.Log.Message("system", "Starting up ... ");
 
-
-            // Handle command line arguments - sort of
-            ProcessCommandLine(args);
+            // Process commandline and stop if we are showing stuff
+            CommandLineOptions options = new CommandLineOptions();
+            CommandLineParser parser = new CommandLineParser(options);
+            parser.Parse();
 
             // Initialize Server
             Core.Server.Initialize();
 
             // Handle special setting options from command line
-            if (optionHost.HasValue())
+            if (options.SetServerHost)
             {
                 Core.Database.Tables.Settings.Set(
-                    Core.Database.Tables.Settings.ServerHostID, 
-                    optionHost.Value());
+                  Core.Database.Tables.Settings.ServerHostID,
+                    options.ServerHost);
             }
-            if (optionSocketPort.HasValue())
+
+            if(options.SetSocketPort)
             {
                 Core.Database.Tables.Settings.Set(
-                    Core.Database.Tables.Settings.ServerSocketPortID, 
-                    optionSocketPort.Value());
+                    Core.Database.Tables.Settings.ServerSocketPortID,
+                    options.ServerSocketPort.ToString());
             }
-            if (optionWebPort.HasValue())
+            if (options.SetWebPort)
             {
                 Core.Database.Tables.Settings.Set(
-                    Core.Database.Tables.Settings.ServerWebPortID, 
-                    optionWebPort.Value());
+                    Core.Database.Tables.Settings.ServerWebPortID,
+                    options.ServerWebPort.ToString());
+            }
+
+            // Display help/errors
+            if (parser.HasErrors)
+            {
+                Shared.Log.Message("help", parser.UsageInfo.ToString(78));
+                Environment.Exit(-1);
             }
 
             // We have option'd to quit after setting values
-            if (optionQuit.HasValue())
+            if (options.QuitAfter)
             {
-                Shared.Log.Message("CLI", "Force Shutdown Detected.");
-                Program.Shutdown();
+                Shared.Log.Message("System", "Good Bye!");
+                Environment.Exit(0);
             }
 
             // Start server
@@ -100,53 +79,10 @@ namespace JARVIS
             // Stop server
             Core.Server.Stop();
 
-            Program.Shutdown(0);
-
-        }
-
-        /// <summary>
-        /// Processes the command line arguments.
-        /// </summary>
-        /// <param name="args">Arguments.</param>
-        static void ProcessCommandLine(string[] args)
-        {
-            // Setup Command Options
-            Program.optionDatabase = commandLine.Option("--database <PATH>", "Absolute path to the SQLite database.", CommandOptionType.SingleValue);
-            Program.optionHost = commandLine.Option("--host <IP>", "Sets the hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
-            Program.optionSocketPort = commandLine.Option("--socket-port <PORT>", "Sets the socket port of the JARVIS.Server", CommandOptionType.SingleValue);
-            Program.optionWebPort = commandLine.Option("--web-port <PORT>", "Sets the web port of the JARVIS.Server", CommandOptionType.SingleValue);
-            Program.optionQuit = commandLine.Option("--quit", "Quits application after evaluating commandline options (useful for just updating the database settings)", CommandOptionType.NoValue);
-
-            // Define help option
-            commandLine.HelpOption("--help");
-
-            // What to do when processing arguments
-            commandLine.OnExecute(() =>
-            {
-                // Handle output path setting
-                if (optionDatabase.HasValue())
-                {
-                    if (File.Exists(optionDatabase.Value()))
-                    {
-                        Core.Server.Config.DatabaseFilePath = optionDatabase.Value();
-                    }
-                }
-                return 0;
-            });
-
-            // Parse Arguments
-            commandLine.Execute(args);
-
-            if (commandLine.IsShowingInformation )
-            {
-                Program.Shutdown();
-            }
-        }
-
-        static void Shutdown(int errorCode = 0)
-        {
+            // Exit
             Shared.Log.Message("System", "Good Bye!");
-            Environment.Exit(errorCode);
+            Environment.Exit(0);
+
         }
     }
 }

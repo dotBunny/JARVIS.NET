@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Microsoft.Extensions.CommandLineUtils;
+using Plossum.CommandLine;
 
 namespace JARVIS.Shard
 {
@@ -31,8 +31,28 @@ namespace JARVIS.Shard
             Directory.CreateDirectory(OutputPath);
 
             // Process commandline and stop if we are showing stuff
-            ProcessCommandLine(args);
+            CommandLineOptions options = new CommandLineOptions();
+            CommandLineParser parser = new CommandLineParser(options);
+            parser.Parse();
 
+            // Assign options (defaulted as necessary)
+            Client.Host = options.ServerHost;
+            Client.Port = options.ServerSocketPort;
+            Client.EncryptionKey = options.ServerSocketEncryptionKey;
+            Username = options.SessionUsername;
+            Password = options.SessionPassword;
+            OutputPath = options.OutputPath;
+            HasCounterSupport = options.EnableCounters;
+            HasWirecastSupport = options.EnableWirecast;
+
+            // Display help/errors
+            if (parser.HasErrors)
+            {
+                Shared.Log.Message("help", parser.UsageInfo.ToString(78));
+                Environment.Exit(-1);
+            }
+
+            // Get this party started!
             Console.CancelKeyPress += (sender, eArgs) =>
             {
                 QuitEvent.Set();
@@ -51,86 +71,6 @@ namespace JARVIS.Shard
             // Cleanly exit the program
             Shared.Log.Message("system", "Shutdown");
             Environment.Exit(0);
-        }
-
-        static void ProcessCommandLine(string[] args)
-        {
-            // Create parser and don't barf if we get an unrecognized argument
-            CommandLineApplication commandLine = new CommandLineApplication(false);
-
-            CommandOption useOutput = commandLine.Option("--output <PATH>", "Set output path (Default: ./)", CommandOptionType.SingleValue);
-            CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
-            CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
-            CommandOption useCounters = commandLine.Option("--counters", "Enable Counter Support", CommandOptionType.NoValue);
-            CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
-            CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
-            CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
-            CommandOption useEncryptionKey = commandLine.Option("--key <ENCRYPTION_KEY>", "Encryption Key", CommandOptionType.SingleValue);
-
-            // Define help option
-            commandLine.HelpOption("--help");
-
-            commandLine.OnExecute(() =>
-            {
-                // If we have a host value
-                if (useHost.HasValue())
-                {
-                    Client.Host = useHost.Value().TrimEnd();
-                }
-                // If we have a port value
-                if (usePort.HasValue())
-                {
-                    int.TryParse(usePort.Value().Trim(), out Client.Port);
-                }
-
-                if (useUsername.HasValue())
-                {
-                    Username = useUsername.Value();
-                }
-
-                if (usePassword.HasValue())
-                {
-                    Password = usePassword.Value().Trim();
-                }
-
-                // Handle output path setting
-                if (useOutput.HasValue())
-                {
-                    if (Directory.Exists(useOutput.Value()))
-                    {
-                        OutputPath = useOutput.Value().Trim();
-                    }
-                }
-
-                // Handle Counters
-                if (useCounters.HasValue())
-                {
-                    HasCounterSupport = true;
-                }
-
-                // Update Wirecast
-                if (useWirecast.HasValue())
-                {
-                    HasWirecastSupport = true;
-                }
-
-                // Handle Encryption Key
-                if (useEncryptionKey.HasValue())
-                {
-                    Client.EncryptionKey = useEncryptionKey.Value().Trim();
-                }
-
-                return 0;
-            });
-
-            // Parse Arguments
-            commandLine.Execute(args);
-
-            // Shutdown if were showing help
-            if ( commandLine.IsShowingInformation ) {
-                Shared.Log.Message("system", "Quick Shutdown.");
-                Environment.Exit(0);
-            }
         }
     }
 

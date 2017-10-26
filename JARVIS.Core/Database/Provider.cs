@@ -1,13 +1,10 @@
-﻿
-
-
-using SQLite.Net;
+﻿using SQLite;
 
 namespace JARVIS.Core.Database
 {
     public class Provider
     {
-        public SQLiteConnection Connection;
+        public SQLiteAsyncConnection Connection;
 
         public bool HasConnection {
             get; private set;
@@ -15,17 +12,15 @@ namespace JARVIS.Core.Database
 
         ~Provider()
         {
-            Connection.Dispose();
+            Connection.GetConnection().Dispose();
         }
 
         public void Open(string path)
         {
-            
+
             // Open database connection
             // TODO: Make platform specific calls
-            Connection = new SQLiteConnectionWithLock(
-                new SQLite.Net.Platform.Generic.SQLitePlatformGeneric(),
-                new SQLiteConnectionString(path, false));
+            Connection = new SQLiteAsyncConnection(path, false);
 
             if ( Connection != null ) {
                 HasConnection = true;
@@ -33,13 +28,14 @@ namespace JARVIS.Core.Database
                 HasConnection = false;   
             }
 
-            Connection.CreateTable<Tables.Settings>();
-            Connection.CreateTable<Tables.Counters>();
+            // Wait for validation that the tables are there
+            Connection.CreateTableAsync<Tables.Settings>().Wait();
+            Connection.CreateTableAsync<Tables.Counters>().Wait();
         }
 
         public void Close()
         {
-            Connection.Close();
+            Connection.GetConnection().Close();
             HasConnection = false;
         }
     }

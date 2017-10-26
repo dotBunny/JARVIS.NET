@@ -44,17 +44,9 @@ namespace JARVIS.Core
                 return;
             }
 
-            List<Database.Tables.Settings> settings = Server.Database.Connection.Query<Database.Tables.Settings>("SELECT * FROM \"" + Database.Tables.Settings.GetTableName() + "\"");
 
             // Convert into dictionary
-            RawSettings.Clear();
-
-            // Add to raw settings dictionary
-            foreach(Database.Tables.Settings setting in settings) 
-            {
-                RawSettings.Add(setting.Name, setting.Value);
-            }
-
+            RawSettings = Database.Tables.Settings.GetAll();
 
             // Server Host Address
             if ( RawSettings.ContainsKey(Database.Tables.Settings.ServerHostID) )
