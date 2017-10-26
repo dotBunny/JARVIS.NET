@@ -3,6 +3,8 @@ Just A Rather Very Intelligent System
 
 A rebuilt version of JARVIS, utillizing .NET for cross-platform compatibility.
 
+Built to work with .NET 4.5 w/o .NET Core
+
 ## JARVIS.Server ##
 The central processing unit of the system, warehousing data, replaying commands, and anything else needed.
 
