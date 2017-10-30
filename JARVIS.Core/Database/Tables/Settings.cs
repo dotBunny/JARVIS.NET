@@ -58,11 +58,7 @@ namespace JARVIS.Core.Database.Tables
                 {
                     while (result.Data.Read())
                     {
-                        Settings row = result.Data.Single(
-                            r => new Settings(
-                                (string)r["Name"],
-                                (string)(r["Value"])));
-                        returnDictionary.Add(row.Name, row.Value);
+                        returnDictionary.Add(result.Data.GetString(0), result.Data.GetString(1));
                     }
                     result.Data.NextResult();
                 }
