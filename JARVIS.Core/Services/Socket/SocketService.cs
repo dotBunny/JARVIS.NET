@@ -1,6 +1,5 @@
-﻿
-using System.Collections.Generic;
-using GodSharp.Sockets;
+﻿using System.Collections.Generic;
+using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Core.Services.Socket
 {
@@ -8,7 +7,7 @@ namespace JARVIS.Core.Services.Socket
     {
         SocketServer Server;
 
-        public SocketService(int SocketPort = 8081)
+        public SocketService(string Host = "127.0.0.1", int SocketPort = 1331)
         {
             Server = new SocketServer();
 
@@ -19,6 +18,7 @@ namespace JARVIS.Core.Services.Socket
             Server.OnData += Server_OnData;
 
             // Set port
+            Server.Host = Host;
             Server.Port = SocketPort;
         }
 
@@ -85,7 +85,7 @@ namespace JARVIS.Core.Services.Socket
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
 
             // Create package
-            byte[] data = Shared.Services.Socket.Protocol.GetBytes(type, arguments);
+            byte[] data = Protocol.GetBytes(type, arguments);
 
             // TODO: Check for fail?
             session.Send(data);

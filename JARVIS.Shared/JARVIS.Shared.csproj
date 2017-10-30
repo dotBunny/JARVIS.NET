@@ -23,4 +23,8 @@
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\Icons\jarvis.icns" />
+    <None Remove="Resources\Icons\jarvis.ico" />
+  </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ namespace JARVIS.Shard.Services.Socket
             get { return Connection.Connected;  }
         }
 
-        GodSharp.Sockets.SocketClient Connection;
+        Shared.Services.Socket.SocketClient Connection;
 
         public SocketClient()
         {
@@ -23,9 +23,9 @@ namespace JARVIS.Shard.Services.Socket
             Parser = new Protocol(EncryptionKey);
 
             Host = Shared.Net.GetIPAddress(Host);
-                  
+
             // Create Client
-            Connection = new GodSharp.Sockets.SocketClient(Host, Port);
+            Connection = new Shared.Services.Socket.SocketClient(Host, Port);
 
             // Setup event handlers
             Connection.OnClosed += Connection_OnClosed;
@@ -34,20 +34,20 @@ namespace JARVIS.Shard.Services.Socket
             Connection.OnData += Connection_OnData;
         }
 
-        void Connection_OnClosed(GodSharp.Sockets.Sender session)
+        void Connection_OnClosed(Sender session)
         {
             Shared.Log.Message("socket", "Disconnected from " + Host + ":" + Port.ToString());
         }
-        void Connection_OnConnected(GodSharp.Sockets.Sender session)
+        void Connection_OnConnected(Sender session)
         {
             Shared.Log.Message("socket", "Connected to " + Host + ":" + Port.ToString());
         }
-        void Connection_OnException(GodSharp.Sockets.Sender session, Exception e)
+        void Connection_OnException(Sender session, Exception e)
         {
             Shared.Log.Error("socket", "An error occured. " + e.Message);
         }
 
-        void Connection_OnData(GodSharp.Sockets.Sender session, byte[] data)
+        void Connection_OnData(Sender session, byte[] data)
         {
 
             Protocol.Packet packet = Parser.GetPacket(data);

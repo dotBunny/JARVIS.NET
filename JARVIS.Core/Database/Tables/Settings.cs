@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JARVIS.Core.Database.Tables
 {
@@ -48,18 +49,22 @@ namespace JARVIS.Core.Database.Tables
         {
             Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
 
+
+
+
+
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT * FROM \"" + GetTableName() + "\"", 
-                System.Data.CommandBehavior.Default);
+                "SELECT Name, Value FROM " + GetTableName()
+            );
 
             if (result.Data != null && result.Data.HasRows)
             {
-                while (result.Data.HasRows)
+                //result.Data.
+                while (result.Data.Read())
                 {
-                    while (result.Data.Read())
-                    {
-                        returnDictionary.Add(result.Data.GetString(0), result.Data.GetString(1));
-                    }
+                    returnDictionary.Add(
+                        result.Data.GetString(0), 
+                        result.Data.GetString(1));
                     result.Data.NextResult();
                 }
             }

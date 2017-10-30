@@ -57,7 +57,7 @@ namespace JARVIS.Core
             Web.Start();
             ActiveServices.Add(Web);
 
-            Socket = new Services.Socket.SocketService(Config.SocketPort);
+            Socket = new Services.Socket.SocketService(Config.Host, Config.SocketPort);
             Socket.Start();
             ActiveServices.Add(Socket);
 

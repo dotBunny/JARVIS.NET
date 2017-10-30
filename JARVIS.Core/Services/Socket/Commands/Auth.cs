@@ -1,6 +1,4 @@
-﻿
-using GodSharp.Sockets;
-using JARVIS.Shared.Services.Socket;
+﻿using JARVIS.Shared.Services.Socket;
 namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Auth : ICommand

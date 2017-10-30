@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Grapevine" Version="4.1.1" />
-    <PackageReference Include="GodSharp.Socket" Version="1.0.1" />
     <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>

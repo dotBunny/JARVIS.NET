@@ -27,7 +27,7 @@ namespace JARVIS
         }
         public bool SetServerHost { get; private set; }
 
-        int serverSocketPort = 665;
+        int serverSocketPort = 1311;
         public int ServerSocketPort
         {
             get

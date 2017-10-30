@@ -28,10 +28,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GodSharp.Socket" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\macOS\Wirecast.appleScript" />
   </ItemGroup>
 </Project>

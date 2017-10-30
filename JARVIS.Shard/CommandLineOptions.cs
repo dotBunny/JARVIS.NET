@@ -113,7 +113,7 @@ namespace JARVIS.Shard
             }
         }
 
-        int serverSocketPort = 665;
+        int serverSocketPort = 1311;
         public int ServerSocketPort
         {
             get

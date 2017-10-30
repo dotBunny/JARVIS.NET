@@ -52,12 +52,30 @@ namespace JARVIS.Core.Database
             HasConnection = false;
         }
 
+        public ProviderResult ExecuteQuery(string sql)
+        {
+            List<SqliteParameter> dummyParameters = new List<SqliteParameter>();
+            Dictionary<string, object> dummyValues = new Dictionary<string, object>();
 
-        public ProviderResult ExecuteQuery(string sql, System.Data.CommandBehavior expected = System.Data.CommandBehavior.Default)
+            return ExecuteQuery(sql, dummyParameters, dummyValues);
+        }
+
+        public ProviderResult ExecuteQuery(string sql,
+                                           List<SqliteParameter> parameters,
+                                           Dictionary<string, object> values,
+                                           System.Data.CommandBehavior expected = System.Data.CommandBehavior.Default)
         {
             ProviderResult result = new ProviderResult();
             result.Command = Connection.CreateCommand();
             result.Command.CommandText = sql;
+            if (parameters.Count > 0)
+            {
+                result.Command.Parameters.AddRange(parameters);
+            }
+            foreach(KeyValuePair<string,object> item in values)
+            {
+                result.Command.Parameters[item.Key].Value = item.Value;
+            }
             result.Data = result.Command.ExecuteReader(expected);
             return result;
         }

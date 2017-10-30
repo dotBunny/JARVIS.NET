@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JARVIS.Shard.Services.Socket
+﻿namespace JARVIS.Shard.Services.Socket
 {
     public static class CommandFactory
     {
