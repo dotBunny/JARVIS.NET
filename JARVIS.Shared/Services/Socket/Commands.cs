@@ -29,10 +29,5 @@ namespace JARVIS.Shared.Services.Socket
             }
             return Types.DEFAULT;
         }
-
-        public static string GetSocketCommand(this Types type)
-        {
-            return type.ToString();
-        }
     }
 }

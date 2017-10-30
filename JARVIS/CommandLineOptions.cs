@@ -1,20 +1,11 @@
 ﻿using System;
-using Plossum.CommandLine;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace JARVIS
 {
-    [CommandLineManager(
-        ApplicationName = "JARVIS Server",
-        Copyright = "",
-        RequireExplicitAssignment = false,
-        EnabledOptionStyles = OptionStyles.LongUnix)]
-
     class CommandLineOptions
     {
         string serverHost = "localhost";
-        [CommandLineOption(Name = "host",
-                           Aliases = "h,hostname",
-                           Description = "The hostname or the IP address to listen on for connections.")]
         public string ServerHost
         {
             get
@@ -25,7 +16,7 @@ namespace JARVIS
             {
                 if (String.IsNullOrEmpty(value))
                 {
-                    throw new InvalidOptionValueException("You must provide a hostname.", false);
+                    //throw new InvalidOptionValueException("You must provide a hostname.", false);
                 }
                 else
                 {
@@ -36,10 +27,7 @@ namespace JARVIS
         }
         public bool SetServerHost { get; private set; }
 
-        int serverSocketPort = 8081;
-        [CommandLineOption(Name = "socketport",
-                           Aliases = "socket-port,s",
-                           Description = "The socket port of the server")]
+        int serverSocketPort = 665;
         public int ServerSocketPort
         {
             get
@@ -50,7 +38,7 @@ namespace JARVIS
             {
                 if (value == 0)
                 {
-                    throw new InvalidOptionValueException("You must provide a valid port.", false);
+                    //throw new InvalidOptionValueException("You must provide a valid port.", false);
                 }
                 else
                 {
@@ -61,10 +49,7 @@ namespace JARVIS
         }
         public bool SetSocketPort { get; private set; }
                            
-        int serverWebPort = 8080;
-        [CommandLineOption(Name = "webport",
-                           Aliases = "web-port,w",
-                           Description = "The web port of the server")]
+        int serverWebPort = 1310;
         public int ServerWebPort
         {
             get
@@ -75,7 +60,7 @@ namespace JARVIS
             {
                 if (value == 0)
                 {
-                    throw new InvalidOptionValueException("You must provide a valid port.", false);
+                    //throw new InvalidOptionValueException("You must provide a valid port.", false);
                 }
                 else
                 {
@@ -86,10 +71,20 @@ namespace JARVIS
         }
         public bool SetWebPort { get; private set; }
 
+        bool showHelp = false;
+        public bool ShowHelp
+        {
+            get
+            {
+                return showHelp;
+            }
+            set
+            {
+                showHelp = value;
+            }
+        }
+
         bool quitAfter = false;
-        [CommandLineOption(Name = "quit",
-                           Description = "Force quit after initilization.",
-                           Aliases = "q")]
         public bool QuitAfter
         {
             get
@@ -100,6 +95,59 @@ namespace JARVIS
             {
                 quitAfter = value;
             }
+        }
+
+        public CommandLineOptions(string[] args)
+        {
+            // Create parser and don't barf if we get an unrecognized argument
+            CommandLineApplication commandLine = new CommandLineApplication(false);
+
+            CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
+            CommandOption useSocketPort = commandLine.Option("--socket-port <PORT>", "Sets the socket port of the JARVIS Server", CommandOptionType.SingleValue);
+            CommandOption useWebPort = commandLine.Option("--web-port <PORT>", "Sets the web port of the JARVIS Server", CommandOptionType.SingleValue);
+            CommandOption useQuit = commandLine.Option("--quit", "Quit after updating database with set values", CommandOptionType.NoValue);
+            // Define help option
+            commandLine.HelpOption("--help");
+
+
+            commandLine.OnExecute(() =>
+            {
+                // If we have a host value
+                if (useHost.HasValue())
+                {
+                    ServerHost = useHost.Value();
+                    SetServerHost = true;
+                }
+
+                // If we have a socket port value
+                if (useSocketPort.HasValue())
+                {
+                    int.TryParse(useSocketPort.Value().Trim(), out serverSocketPort);
+                    SetSocketPort = true;
+                }
+
+                // If we have a socket port value
+                if (useWebPort.HasValue())
+                {
+                    int.TryParse(useWebPort.Value().Trim(), out serverWebPort);
+                    SetWebPort = true;
+                }
+
+                if (useQuit.HasValue())
+                {
+                    quitAfter = true;   
+                }
+
+                if (commandLine.OptionHelp.HasValue())
+                {
+                    ShowHelp = true;
+                }
+
+                return 0;
+            });
+
+            // Parse Arguments
+            commandLine.Execute(args);
         }
     }
 }

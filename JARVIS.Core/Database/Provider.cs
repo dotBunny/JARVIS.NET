@@ -1,10 +1,14 @@
-﻿using SQLite;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 
 namespace JARVIS.Core.Database
 {
     public class Provider
     {
-        public SQLiteAsyncConnection Connection;
+        SqliteConnection Connection;
+        SqliteConnectionStringBuilder ConnectionString;
+
 
         public bool HasConnection {
             get; private set;
@@ -12,7 +16,7 @@ namespace JARVIS.Core.Database
 
         ~Provider()
         {
-            Connection.GetConnection().Dispose();
+            Connection.Close();
         }
 
         public void Open(string path)
@@ -20,23 +24,129 @@ namespace JARVIS.Core.Database
 
             // Open database connection
             // TODO: Make platform specific calls
-            Connection = new SQLiteAsyncConnection(path, false);
 
-            if ( Connection != null ) {
-                HasConnection = true;
+
+            ConnectionString = new SqliteConnectionStringBuilder();
+            ConnectionString.DataSource = path;
+
+
+            Connection = new SqliteConnection(ConnectionString.ConnectionString);
+
+            Connection.Open();
+
+            if ( Connection.State == System.Data.ConnectionState.Closed )
+            {
+                HasConnection = false;
             } else {
-                HasConnection = false;   
+                HasConnection = true;
             }
 
             // Wait for validation that the tables are there
-            Connection.CreateTableAsync<Tables.Settings>().Wait();
-            Connection.CreateTableAsync<Tables.Counters>().Wait();
+            //Connection.CreateTableAsync<Tables.Settings>().Wait();
+           // Connection.CreateTableAsync<Tables.Counters>().Wait();
         }
 
         public void Close()
         {
-            Connection.GetConnection().Close();
+            Connection.Close();
             HasConnection = false;
         }
+
+
+        public ProviderResult ExecuteQuery(string sql, System.Data.CommandBehavior expected = System.Data.CommandBehavior.Default)
+        {
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+            result.Command.CommandText = sql;
+            result.Data = result.Command.ExecuteReader(expected);
+            return result;
+        }
+
+        public ProviderResult ExecuteQueryAsync(string sql, System.Data.CommandBehavior expected = System.Data.CommandBehavior.Default)
+        {
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+            result.Command.CommandText = sql;
+            result.TaskQuery = result.Command.ExecuteReaderAsync(expected);
+            result.IsAsync = true;
+            return result;
+        }
+
+        public ProviderResult ExecuteNonQuery(string sql)
+        {
+
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+
+            result.Command.CommandText = sql;
+
+            result.Return = result.Command.ExecuteNonQuery();
+            return result;
+        }
+
+        public ProviderResult ExecuteNonQuery(string sql, Dictionary<string, object> replace)
+        {
+
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+
+            result.Command.CommandText = sql;
+
+            foreach(KeyValuePair<string, object> item in replace)
+            {
+                result.Command.Parameters.AddWithValue(item.Key, item.Value);
+            }
+
+            result.Return = result.Command.ExecuteNonQuery();
+
+
+            return result;
+        }
+
+        public ProviderResult ExecuteNonQueryAsyc(string sql)
+        {
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+
+            result.Command.CommandText = sql;
+
+            result.IsAsync = true;
+            result.TaskNonQuery = result.Command.ExecuteNonQueryAsync();
+
+            return result;
+
+        }
+
+        public ProviderResult ExecuteNonQueryAsyc(string sql, Dictionary<string, object> replace)
+        {
+            ProviderResult result = new ProviderResult();
+            result.Command = Connection.CreateCommand();
+
+            result.Command.CommandText = sql;
+
+            foreach (KeyValuePair<string, object> item in replace)
+            {
+                result.Command.Parameters.AddWithValue(item.Key, item.Value);
+            }
+
+            result.IsAsync = true;
+            result.TaskNonQuery = result.Command.ExecuteNonQueryAsync();
+
+            return result;
+
+        }
+
+        public class ProviderResult
+        {
+            public SqliteCommand Command;
+            public SqliteDataReader Data = null;
+            public Task<int> TaskNonQuery;
+            public Task<SqliteDataReader> TaskQuery;
+            public bool IsAsync;
+            public int Return;
+        }
+
     }
+
+   
 }

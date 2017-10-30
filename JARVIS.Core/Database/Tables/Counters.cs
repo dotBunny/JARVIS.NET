@@ -1,37 +1,53 @@
-﻿using SQLite;
-
-namespace JARVIS.Core.Database.Tables
+﻿namespace JARVIS.Core.Database.Tables
 {
     public class Counters : ITable
     {
+        public string Name { get; private set; }
+        public int Value { get; private set;  }
+
+        public Counters(string name, int newValue)
+        {
+            Name = name;
+            Value = newValue;
+        }
+
         public static string GetTableName()
         {
             return "Counters";
         }
 
-        [PrimaryKey, MaxLength(128), NotNull]
-        public string Name { get; set; }
-        [MaxLength(128)]
-        public int Value { get; set; }
+        public static string GetCreation()
+        {
+            return "CREATE TABLE \"" + GetTableName() + "\" (\"Name\" varchar(128) NOT NULL, \"Value\" int PRIMARY KEY (\"Name\"))";
+        }
 
-        // TODO: Add Set/Get
 
         public static void Set(string name, int newValue)
         {
+            name = Shared.Strings.Truncate(name, 128);
+
             Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
-            Server.Database.Connection.InsertOrReplaceAsync(new Counters()
-            {
-                Name = name,
-                Value = newValue
-            });
+
+            Server.Database.ExecuteNonQueryAsyc(
+                "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue +")"
+            );
+
         }
 
         public static int Get(string name)
         {
-            var result = Server.Database.Connection.QueryAsync<Counters>("SELECT * FROM \"" + GetTableName() + "\" WHERE \"Name\" = \"" + name + "\" LIMIT 1").GetAwaiter();
-            if (result.GetResult().Count > 0) {
+            // Max length
+            name = Shared.Strings.Truncate(name, 128);
 
-                return result.GetResult()[0].Value;
+            Provider.ProviderResult result = Server.Database.ExecuteQuery("SELECT * FROM \"" + GetTableName() + "\" WHERE \"Name\" = \"" + name + "\" LIMIT 1");
+            if ( result.Data != null && result.Data.HasRows ) 
+            {
+                Counters row = result.Data.Single(
+                    r => new Counters(
+                        (string)r["Name"], 
+                        int.Parse(r["Value"].ToString())));
+
+                return row.Value;
             }
             return 0;
         }

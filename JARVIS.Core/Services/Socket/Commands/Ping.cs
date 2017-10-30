@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using SuperSocket.SocketBase;
-using SuperSocket.SocketBase.Command;
-using SuperSocket.SocketBase.Protocol;
+﻿
+using System.Collections.Generic;
+using GodSharp.Sockets;
+using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Core.Services.Socket.Commands
 {
-    public class Ping : CommandBase<AppSession, StringRequestInfo>
+    public class Ping : ICommand
     {
-        public override void ExecuteCommand(AppSession session, StringRequestInfo requestInfo)
+        public void ExecuteCommand(Sender session, Protocol.Packet packet)
         {
             SocketService.SendToSession(session, 
                                         Shared.Services.Socket.Commands.Types.PONG, 
-                                        string.Empty,
                                         new Dictionary<string, string>() { { "message", "Hi!" } });
         }
     }

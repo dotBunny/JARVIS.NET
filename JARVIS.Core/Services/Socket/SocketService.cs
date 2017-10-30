@@ -1,44 +1,53 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using SuperSocket.SocketBase;
-using SuperSocket.SocketBase.Protocol;
+using GodSharp.Sockets;
 
 namespace JARVIS.Core.Services.Socket
 {
     public class SocketService : IService
     {
-
-
-        public List<AppSession> AuthenticatedSessions = new List<AppSession>();
-        int Port = 8081;
-        AppServer Server;
+        SocketServer Server;
 
         public SocketService(int SocketPort = 8081)
         {
-            Server = new AppServer();
+            Server = new SocketServer();
 
             // Setup handlers
+            Server.OnConnected += Server_OnConnected;
+            Server.OnClosed += Server_OnClosed;
+            Server.OnException += Server_OnException;
+            Server.OnData += Server_OnData;
 
-            // new RequestHandler<AppSession, StringRequestInfo>(appServer_NewRequestReceived);
-            Server.NewSessionConnected += HandleConnection;
-            Server.SessionClosed += HandleDisconnect;
-            Server.NewRequestReceived += HandleRequestReceived;
-
-
-            Port = SocketPort;
-
-            if (!Server.Setup(SocketPort))
-            {
-                Shared.Log.Error(GetName(), "Unable to setup socket service.");
-                return;
-            }
+            // Set port
+            Server.Port = SocketPort;
         }
 
         ~SocketService()
         {
-            Server.Dispose();
+            Server = null;
         }
 
+        void Server_OnClosed(Sender session)
+        {
+            Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint);
+        }
+
+        void Server_OnConnected(Sender session)
+        {
+            Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
+            SendToSession(session, Shared.Services.Socket.Commands.Types.INFO, new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
+            SendToSession(session, Shared.Services.Socket.Commands.Types.AUTH);
+        }
+
+        void Server_OnException(Sender session, System.Exception e)
+        {
+            Shared.Log.Message("socket", "Exception from " + session.RemoteEndPoint + " of " + e.Message);
+        }
+
+        void Server_OnData(Sender session, byte[] data)
+        {
+            Shared.Log.Message("request", "from " + session.RemoteEndPoint);
+        }
 
         public string GetName() 
         {
@@ -47,12 +56,9 @@ namespace JARVIS.Core.Services.Socket
 
         public void Start()
         {
-            if (!Server.Start())
-            {
-                Shared.Log.Error(GetName(), "Unable to start socket service.");
-                return;
-            }
-            Shared.Log.Message("socket", "Listening on " + Port.ToString());
+            Server.Listen();
+            Server.Start();
+            Shared.Log.Message("socket", "Listening on " + Server.Port.ToString());
         }
 
         public void Stop()
@@ -60,76 +66,30 @@ namespace JARVIS.Core.Services.Socket
             Server.Stop();
         }
 
-        public void SendToAllSessions(Shared.Services.Socket.Commands.Types type, string body, Dictionary<string, string> arguments)
+        public void SendToAllSessions(Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
         {
-            var sessions = Server.GetAllSessions();
-
             // Send to sessions
-            foreach(AppSession session in sessions) 
+            foreach(Sender session in Server.Clients)
             {
-                SendToSession(session, type, body, arguments);
+                SendToSession(session, type, arguments);
             }
         }
 
-        public static void SendToSession(AppSession session, Shared.Services.Socket.Commands.Types type, string body, Dictionary<string, string> arguments)
+        public static void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type)
+        {
+            SendToSession(session, type, new Dictionary<string, string> { });
+        }
+
+        public static void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
 
             // Create package
-            byte[] data = Shared.Services.Socket.Protocol.GetBytes(type, body, arguments);
+            byte[] data = Shared.Services.Socket.Protocol.GetBytes(type, arguments);
 
-            // Send and check for failure
-            if(!session.TrySend(data, 0, data.Length))
-            {
-                Shared.Log.Error("socket", "Failed to send " + type.ToString() + " to " + session.RemoteEndPoint);
-            }
+            // TODO: Check for fail?
+            session.Send(data);
         }
 
-        static void HandleConnection(AppSession session)
-        {
-            Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
-
-            SendToSession(session, 
-                          Shared.Services.Socket.Commands.Types.INFO, 
-                          string.Empty, 
-                          new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
-
-            // Request AUTH
-            SendToSession(session, 
-                          Shared.Services.Socket.Commands.Types.AUTH, 
-                          string.Empty, 
-                          new Dictionary<string, string> { });
-        }
-        static void HandleDisconnect(AppSession session, CloseReason reason)
-        {
-            Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint + " for " + reason);
-        }
-
-        static void HandleRequestReceived(AppSession session, StringRequestInfo requestInfo)
-        {
-            Shared.Log.Message("request", "from " + session.RemoteEndPoint);
-            //switch (requestInfo.Key.ToUpper())
-            //{
-            //    case ("ECHO"):
-            //        session.Send(requestInfo.Body);
-            //        break;
-
-            //    case ("ADD"):
-            //        session.Send(requestInfo.Parameters.Select(p => Convert.ToInt32(p)).Sum().ToString());
-            //        break;
-
-            //    case ("MULT"):
-
-            //        var result = 1;
-
-            //        foreach (var factor in requestInfo.Parameters.Select(p => Convert.ToInt32(p)))
-            //        {
-            //            result *= factor;
-            //        }
-
-            //        session.Send(result.ToString());
-            //        break;
-            //}
-        }
     }
 }

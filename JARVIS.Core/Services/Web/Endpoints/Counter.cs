@@ -50,7 +50,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["UPDATED_VALUE"] = previousValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Services.Socket.Commands.Types.COUNTER_PLUS, string.Empty,
+                    Shared.Services.Socket.Commands.Types.COUNTER_PLUS,
                     parameters);
                 
                 context.Response.SendResponse(Shared.Web.SuccessCode);
@@ -98,7 +98,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["UPDATED_VALUE"] = previousValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Services.Socket.Commands.Types.COUNTER_MINUS, string.Empty,
+                    Shared.Services.Socket.Commands.Types.COUNTER_MINUS,
                     parameters);
 
                 context.Response.SendResponse(Shared.Web.SuccessCode);
@@ -136,7 +136,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["UPDATED_VALUE"] = setValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Services.Socket.Commands.Types.COUNTER_SET, string.Empty,
+                    Shared.Services.Socket.Commands.Types.COUNTER_SET,
                     parameters);
 
                 context.Response.SendResponse(Shared.Web.SuccessCode);

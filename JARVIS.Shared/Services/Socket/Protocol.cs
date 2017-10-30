@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using SuperSocket.ProtoBase;
 
 namespace JARVIS.Shared.Services.Socket
 {
     /// <summary>
     /// Custom 'Secure' JARVIS Protocol
     /// </summary>
-    public class Protocol : TerminatorReceiveFilter<StringPackageInfo>
+    public class Protocol
     {
+        public class Packet
+        {
+            public Commands.Types Command;
+            public Dictionary<string, string> Parameters = new Dictionary<string, string>();
+
+        }
+
         // Byte Codes
         public static byte[] Terminator = { 0x04 };
         public static byte EndOfCommand = 0x01;
@@ -20,17 +25,14 @@ namespace JARVIS.Shared.Services.Socket
 
         public static string EncryptionKey = "max";
 
-        public Protocol(string key = "max") : base(Terminator)
+        public Protocol(string key = "max")
         {
             EncryptionKey = key;
         }
 
-        public override StringPackageInfo ResolvePackage(IBufferStream bufferStream)
+        public Packet GetPacket(byte[] packet)
         {
-            // Get packet (cheat length)
-            byte[] packet = new byte[bufferStream.Length - 1];
-            bufferStream.Read(packet, 0, packet.Length);
-
+            Packet returnPacket = new Packet();
 #if !DEBUG  
             packet = Decrypt(packet);
 #endif
@@ -41,12 +43,8 @@ namespace JARVIS.Shared.Services.Socket
 
             // Identify command
             int commandEndIndex = workingPacket.IndexOf(EndOfCommand);
-            string command = Encoding.ASCII.GetString(workingPacket.GetRange(0, commandEndIndex).ToArray());
+            returnPacket.Command = Commands.GetType(Encoding.ASCII.GetString(workingPacket.GetRange(0, commandEndIndex).ToArray()));
             workingPacket.RemoveRange(0, commandEndIndex + 1);
-
-
-            // Create our working parameters
-            List<string> parameters = new List<string>();
 
             // Breakdown remaining parts of the packet
             bool parsing = true;
@@ -54,7 +52,8 @@ namespace JARVIS.Shared.Services.Socket
             {
                 int findNextChunkEnd = workingPacket.IndexOf(EndOfValue, 0);
 
-                if (findNextChunkEnd < 0 ) {
+                if (findNextChunkEnd < 0)
+                {
                     parsing = false;
                     continue;
                 }
@@ -64,17 +63,16 @@ namespace JARVIS.Shared.Services.Socket
                 // Split chunk
                 int endOfName = chunk.IndexOf(EndOfName);
 
-                parameters.Add(Encoding.ASCII.GetString(chunk.GetRange(0, endOfName).ToArray()));
-                parameters.Add(Encoding.ASCII.GetString(chunk.GetRange(endOfName, chunk.Count - endOfName).ToArray()));
+                returnPacket.Parameters.Add(
+                    Encoding.ASCII.GetString(chunk.GetRange(0, endOfName).ToArray()), 
+                    Encoding.ASCII.GetString(chunk.GetRange(endOfName, chunk.Count - endOfName).ToArray()));
 
                 workingPacket.RemoveRange(0, findNextChunkEnd + 1);
             }
 
-
-            // Return no body
-            return new StringPackageInfo(command, null, parameters.ToArray());
+            return returnPacket;
         }
-
+       
         public static Dictionary<string, string> GetStringDictionary(string[] parameters)
         {
             // Split out parameters
@@ -108,12 +106,12 @@ namespace JARVIS.Shared.Services.Socket
         }
 
         // TODO: Add encryption on the string before getting the bytes
-        public static byte[] GetBytes(Commands.Types type, string body, Dictionary<string, string> parameters)
+        public static byte[] GetBytes(Commands.Types type, Dictionary<string, string> parameters)
         {
             List<byte> byteBuilder = new List<byte>();
 
             // Add command to bytes
-            byteBuilder.AddRange(Encoding.ASCII.GetBytes(type.GetSocketCommand()));
+            byteBuilder.AddRange(Encoding.ASCII.GetBytes(type.ToString()));
 
             // Add end of command mark
             byteBuilder.Add(EndOfCommand);

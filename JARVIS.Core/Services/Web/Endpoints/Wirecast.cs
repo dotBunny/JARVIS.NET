@@ -17,7 +17,6 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
             // Send command via socket
             Server.Socket.SendToAllSessions(Commands.Types.WIRECAST_LAYERS, 
-                                            string.Empty,
                                             Shared.Web.GetStringDictionary(
                                                 context.Request.QueryString));
 

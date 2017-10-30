@@ -1,12 +1,11 @@
-﻿using SuperSocket.SocketBase;
-using SuperSocket.SocketBase.Command;
-using SuperSocket.SocketBase.Protocol;
-
+﻿
+using GodSharp.Sockets;
+using JARVIS.Shared.Services.Socket;
 namespace JARVIS.Core.Services.Socket.Commands
 {
-    public class AUTH : CommandBase<AppSession, StringRequestInfo>
+    public class Auth : ICommand
     {
-        public override void ExecuteCommand(AppSession session, StringRequestInfo requestInfo)
+        public void ExecuteCommand(Sender session, Protocol.Packet packet)
         {
             
             Shared.Log.Message("Login", "new login from ");

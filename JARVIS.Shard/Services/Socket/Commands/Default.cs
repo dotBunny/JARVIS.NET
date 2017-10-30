@@ -10,10 +10,6 @@ namespace JARVIS.Shard.Services.Socket.Commands
         }
         public void Execute(Dictionary<string, string> parameters)
         {
-            //foreach (string s in parameters.Keys)
-            //{
-            //    Shared.Log.Message("info", s + " => " + parameters[s]);
-            //}
         }
     }
 }

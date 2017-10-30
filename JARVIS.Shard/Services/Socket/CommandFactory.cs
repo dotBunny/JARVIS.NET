@@ -5,10 +5,8 @@ namespace JARVIS.Shard.Services.Socket
 {
     public static class CommandFactory
     {
-        public static ISocketCommand CreateCommand(string key)
+        public static ISocketCommand CreateCommand(Shared.Services.Socket.Commands.Types commandType)
         {
-            Shared.Services.Socket.Commands.Types commandType = Shared.Services.Socket.Commands.GetType(key);
-
             switch(commandType)
             {
                 case Shared.Services.Socket.Commands.Types.AUTH:

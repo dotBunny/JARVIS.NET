@@ -14,7 +14,6 @@ namespace JARVIS.Shard.Services.Socket.Commands
             // Send Auth
             Program.Client.Send(
                 Shared.Services.Socket.Commands.Types.AUTH, 
-                string.Empty, 
                 new Dictionary<string, string>() {
                     {"username",Program.Username},
                     {"password",Program.Password},

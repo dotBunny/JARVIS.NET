@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Plossum.CommandLine;
 
 namespace JARVIS.Shard
 {
     class Program
     {
-
-
-        private static ManualResetEvent QuitEvent = new ManualResetEvent(false);
         public static Services.Socket.SocketClient Client = new Services.Socket.SocketClient();
-
+        static ManualResetEvent QuitEvent = new ManualResetEvent(false);
 
         // TODO: Add to settings file
         public static string OutputPath = "./";
@@ -30,10 +26,8 @@ namespace JARVIS.Shard
             OutputPath = Path.Combine(Shared.Platform.GetBaseDirectory(), "Output");
             Directory.CreateDirectory(OutputPath);
 
-            // Process commandline and stop if we are showing stuff
-            CommandLineOptions options = new CommandLineOptions();
-            CommandLineParser parser = new CommandLineParser(options);
-            parser.Parse();
+            // Process commandline options
+            CommandLineOptions options = new CommandLineOptions(args);
 
             // Assign options (defaulted as necessary)
             Client.Host = options.ServerHost;
@@ -46,10 +40,9 @@ namespace JARVIS.Shard
             HasWirecastSupport = options.EnableWirecast;
 
             // Display help/errors
-            if (parser.HasErrors)
+            if (options.ShowHelp)
             {
-                Shared.Log.Message("help", parser.UsageInfo.ToString(78));
-                Environment.Exit(-1);
+                Environment.Exit(0);
             }
 
             // Get this party started!
@@ -60,7 +53,7 @@ namespace JARVIS.Shard
             };
 
             // Start the connection to the server
-            Client.Start().Wait();
+            Client.Start();
 
             // Sit and wait till we get the CTRL-C
             QuitEvent.WaitOne();

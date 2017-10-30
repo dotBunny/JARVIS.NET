@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
-using Plossum.CommandLine;
 
 namespace JARVIS
 {
@@ -22,9 +20,7 @@ namespace JARVIS
             Shared.Log.Message("system", "Starting up ... ");
 
             // Process commandline and stop if we are showing stuff
-            CommandLineOptions options = new CommandLineOptions();
-            CommandLineParser parser = new CommandLineParser(options);
-            parser.Parse();
+            CommandLineOptions options = new CommandLineOptions(args);
 
             // Initialize Server
             Core.Server.Initialize();
@@ -51,16 +47,8 @@ namespace JARVIS
             }
 
             // Display help/errors
-            if (parser.HasErrors)
+            if (options.ShowHelp || options.QuitAfter)
             {
-                Shared.Log.Message("help", parser.UsageInfo.ToString(78));
-                Environment.Exit(-1);
-            }
-
-            // We have option'd to quit after setting values
-            if (options.QuitAfter)
-            {
-                Shared.Log.Message("System", "Good Bye!");
                 Environment.Exit(0);
             }
 
