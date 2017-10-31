@@ -5,6 +5,8 @@ namespace JARVIS.Core.Services.Socket
 {
     public class SocketService : IService
     {
+        // TODO: Add ability to sub to events that get rebroadcasted
+        // TODO: Add REAUTH/AUTH
         SocketServer Server;
 
         public SocketService(string Host = "127.0.0.1", int SocketPort = 1331)
