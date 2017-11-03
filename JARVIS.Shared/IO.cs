@@ -8,5 +8,13 @@ namespace JARVIS.Shared
         {
             File.WriteAllText(file, contents, System.Text.Encoding.UTF8);
         }
+
+        public static void DeleteFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
     }
 }

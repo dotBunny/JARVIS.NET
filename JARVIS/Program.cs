@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace JARVIS
 {
     class Program
     {
+        public static int ProcessID = 0;
+        public static string ProcessIDFilePath = "JARVIS.pid";
         /// <summary>
         /// The quit event listener
         /// </summary>
@@ -18,6 +22,12 @@ namespace JARVIS
         {
             // Indicate that we're starting the party
             Shared.Log.Message("system", "Starting up ... ");
+
+            // Create PID File
+            ProcessID = Process.GetCurrentProcess().Id;
+            ProcessIDFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), ProcessIDFilePath); 
+            Shared.IO.WriteContents(ProcessIDFilePath, ProcessID.ToString());
+            Shared.Log.Message("system", "Process ID: " + ProcessID.ToString());
 
             // Process commandline and stop if we are showing stuff
             CommandLineOptions options = new CommandLineOptions(args);
@@ -49,7 +59,7 @@ namespace JARVIS
             // Display help/errors
             if (options.ShowHelp || options.QuitAfter)
             {
-                Environment.Exit(0);
+                Quit(0);
             }
 
             // Start server
@@ -68,9 +78,14 @@ namespace JARVIS
             Core.Server.Stop();
 
             // Exit
-            Shared.Log.Message("System", "Good Bye!");
-            Environment.Exit(0);
+            Quit(0);
+        }
 
+        public static void Quit(int code)
+        {
+            Shared.Log.Message("System", "Good Bye!");
+            Shared.IO.DeleteFile(ProcessIDFilePath);
+            Environment.Exit(code);
         }
     }
 }

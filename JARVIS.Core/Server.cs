@@ -34,7 +34,6 @@ namespace JARVIS.Core
         /// </summary>
         public static Services.Web.WebService Web;
 
-
         public static void Initialize()
         {
             Config = new Settings();
