@@ -116,7 +116,6 @@ namespace JARVIS
                 if (useHost.HasValue())
                 {
                     ServerHost = useHost.Value();
-                    SetServerHost = true;
                 }
 
                 // If we have a socket port value

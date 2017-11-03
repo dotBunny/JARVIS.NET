@@ -42,7 +42,7 @@ namespace JARVIS.Core.Database.Tables
             Shared.Log.Message("DB", "Set " + key + " to " + newValue);
 
             Server.Database.ExecuteNonQueryAsyc(
-                "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + key + "\", " + newValue +")"
+                "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + key + "\", \"" + newValue +"\")"
             );
         }
 
