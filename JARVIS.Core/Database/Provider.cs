@@ -8,6 +8,7 @@ namespace JARVIS.Core.Database
     {
         SqliteConnection Connection;
         SqliteConnectionStringBuilder ConnectionString;
+        public string Version;
 
 
         public bool HasConnection {
@@ -41,6 +42,12 @@ namespace JARVIS.Core.Database
                 HasConnection = true;
             }
 
+            string tempVersion = Tables.Settings.Get(Tables.Settings.DatabaseVersionID);
+            if (tempVersion != string.Empty)
+            {
+                Version = tempVersion;
+            }
+            
             // Wait for validation that the tables are there
             //Connection.CreateTableAsync<Tables.Settings>().Wait();
            // Connection.CreateTableAsync<Tables.Counters>().Wait();
@@ -58,6 +65,14 @@ namespace JARVIS.Core.Database
             Dictionary<string, object> dummyValues = new Dictionary<string, object>();
 
             return ExecuteQuery(sql, dummyParameters, dummyValues);
+        }
+
+        public ProviderResult ExecuteSingleQuery(string sql)
+        {
+            List<SqliteParameter> dummyParameters = new List<SqliteParameter>();
+            Dictionary<string, object> dummyValues = new Dictionary<string, object>();
+
+            return ExecuteQuery(sql, dummyParameters, dummyValues, System.Data.CommandBehavior.SingleResult);
         }
 
         public ProviderResult ExecuteQuery(string sql,

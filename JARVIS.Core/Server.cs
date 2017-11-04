@@ -42,6 +42,11 @@ namespace JARVIS.Core
             Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
             Database = new Database.Provider();
             Database.Open(Config.DatabaseFilePath);
+
+
+            Shared.Log.Message("DB", "Opened version " + Database.Version);
+            Shared.IO.WriteContents(Path.Combine(Shared.Platform.GetBaseDirectory(), "JARVIS.db.version"), Database.Version); 
+                
         }
 
         public static void Start()

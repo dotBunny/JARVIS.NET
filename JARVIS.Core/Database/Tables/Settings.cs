@@ -46,6 +46,20 @@ namespace JARVIS.Core.Database.Tables
             );
         }
 
+        public static string Get(string key)
+        {
+            Provider.ProviderResult result = Server.Database.ExecuteSingleQuery(
+                "SELECT Value FROM " + GetTableName() + " WHERE Name = \"" + key + "\" LIMIT 1");
+
+            if (result.Data != null && result.Data.HasRows)
+            {
+                result.Data.Read();
+                return result.Data.GetString(0);
+            }
+
+            return string.Empty;
+        }
+
         public static Dictionary<string, string> GetAll()
         {
             Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
