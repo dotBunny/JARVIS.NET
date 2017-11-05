@@ -1,12 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.IO;
+
 namespace JARVIS.Shared
 {
-    public static class Log
+    public static class Log 
     {
         public static DateTime Date;
+        static string OutputFileNameBase = "JARVIS.log";
+        static LogWriter Output;
+        static Timer PeriodicWriter;
+
+        public static void WriteCache()
+        {
+            Output.WriteCache();
+        }
+        public static void Capture(bool cache = true)
+        {
+            // Determine if we need to move old log files out of the way
+            string logPath = Path.Combine(Platform.GetBaseDirectory(), OutputFileNameBase);
+
+            if (File.Exists(logPath))
+            {
+                // Get count of log files
+                int count = Directory.GetFiles(Platform.GetBaseDirectory(), "JARVIS.log*").Length;
+
+                // Move the latest to its new number
+                File.Move(logPath, logPath + "." + count.ToString().PadLeft(3, '0'));
+            }
+
+            Output = new LogWriter(
+                logPath,
+                Console.OutputEncoding,
+                Console.Out);
+
+            Output.UseCache = cache;
+
+            Console.SetOut(Output);
+
+            // Setup safety thread
+            PeriodicWriter = new Timer(
+                e => WriteCache(),
+                null, TimeSpan.Zero,
+                TimeSpan.FromMinutes(1));
+        }
+
         public static void Message(string section, string content)
         {
-           
             Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
         }
 
@@ -20,7 +61,7 @@ namespace JARVIS.Shared
             Environment.Exit(1);
         }
 
-        private static string GetCurrentTimeStamp() 
+        static string GetCurrentTimeStamp() 
         {
             // Set our date to the current time
             Log.Date = DateTime.Now;
@@ -33,16 +74,15 @@ namespace JARVIS.Shared
                         (Date.Hour - 12).ToString().PadLeft(2, '0') + ":" +
                        Date.Minute.ToString().PadLeft(2, '0') + ":" +
                        Date.Second.ToString().PadLeft(2, '0') + " PM";    
-            } else {
-                return Date.Month.ToString().PadLeft(2, '0') + "-" +
-                       Date.Day.ToString().PadLeft(2, '0') + "-" +
-                       Date.Year + " " +
-                       Date.Hour.ToString().PadLeft(2, '0') + ":" +
-                       Date.Minute.ToString().PadLeft(2, '0') + ":" +
-                       Date.Second.ToString().PadLeft(2, '0') + " AM";
             }
 
-
+            return Date.Month.ToString().PadLeft(2, '0') + "-" +
+                   Date.Day.ToString().PadLeft(2, '0') + "-" +
+                   Date.Year + " " +
+                   Date.Hour.ToString().PadLeft(2, '0') + ":" +
+                   Date.Minute.ToString().PadLeft(2, '0') + ":" +
+                   Date.Second.ToString().PadLeft(2, '0') + " AM";
+            
         }
     }
 }

@@ -20,12 +20,20 @@ namespace JARVIS
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
+#if !DEBUG
+            try
+            {
+#endif
+            // Capture Log
+            Shared.Log.Capture(true);
+
+
             // Indicate that we're starting the party
             Shared.Log.Message("system", "Starting up ... ");
 
             // Create PID File
             ProcessID = Process.GetCurrentProcess().Id;
-            ProcessIDFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), ProcessIDFilePath); 
+            ProcessIDFilePath = Path.Combine(Shared.Platform.GetBaseDirectory(), ProcessIDFilePath);
             Shared.IO.WriteContents(ProcessIDFilePath, ProcessID.ToString());
             Shared.Log.Message("system", "Process ID: " + ProcessID.ToString());
 
@@ -43,7 +51,7 @@ namespace JARVIS
                     options.ServerHost);
             }
 
-            if(options.SetSocketPort)
+            if (options.SetSocketPort)
             {
                 Core.Database.Tables.Settings.Set(
                     Core.Database.Tables.Settings.ServerSocketPortID,
@@ -64,7 +72,7 @@ namespace JARVIS
 
             // Start server
             Core.Server.Start();
-     
+
             Console.CancelKeyPress += (sender, eArgs) =>
             {
                 quitEvent.Set();
@@ -76,7 +84,16 @@ namespace JARVIS
 
             // Stop server
             Core.Server.Stop();
-
+#if !DEBUG
+            } 
+            catch ( Exception e )
+            {
+                Shared.Log.Message("Exception", e.Message);
+                Shared.Log.Message("Exception", e.Source);
+                Shared.Log.Message("Exception", e.StackTrace);
+                Quit(1);
+            }
+#endif
             // Exit
             Quit(0);
         }
@@ -85,6 +102,7 @@ namespace JARVIS
         {
             Shared.Log.Message("System", "Good Bye!");
             Shared.IO.DeleteFile(ProcessIDFilePath);
+            Shared.Log.WriteCache();
             Environment.Exit(code);
         }
     }
