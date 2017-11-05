@@ -1,12 +1,15 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-
 # Get PID 
+PIDFile="/Users/reapazor/JARVIS/production/JARVIS/JARVIS.pid"
+CurrentPID=(<$PIDFile)
 
 # Remove PID file
+rm -rf $PIDFile
 
 # Kill active process (launchd wont restart)
+kill -9 $CurrentPID
 
 # Detect db? - use database version file
 
