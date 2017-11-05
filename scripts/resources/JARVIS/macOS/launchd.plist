@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>com.dotBunny.JARVIS</string>
+		<key>Program</key>
+		<string>/Users/reapazor/JARVIS/production/start.sh</string>
+		<key>KeepAlive</key>
+		<dict>
+            <key>PathState</key>
+            <dict>
+                <key>/Users/reapazor/JARVIS/production/JARVIS/JARVIS.pid</key>
+                <true/>
+            </dict>
+        </dict>
+		<key>RootDirectory</key>
+		<string>/Users/reapazor/JARVIS/production/</string>
+		<key>WorkingDirectory</key>
+		<string>/Users/reapazor/JARVIS/production/JARVIS/</string>
+		<key>RunAtLoad</key>
+		<true/>
+		<key>UserName</key>
+		<string>reapazor</string>
+		<key>GroupName</key>
+		<string>staff</string>
+		<key>InitGroups</key>
+		<true/>
+	</dict>
+</plist>
