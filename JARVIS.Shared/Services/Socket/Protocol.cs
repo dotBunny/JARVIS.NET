@@ -33,9 +33,7 @@ namespace JARVIS.Shared.Services.Socket
         public Packet GetPacket(byte[] packet)
         {
             Packet returnPacket = new Packet();
-#if !DEBUG  
             packet = Decrypt(packet);
-#endif
 
             // Create usable working list
             List<byte> workingPacket = new List<byte>();
@@ -119,11 +117,10 @@ namespace JARVIS.Shared.Services.Socket
             // Add parameters
             byteBuilder.AddRange(GetParameterBytes(parameters));
 
-#if !DEBUG
             byte[] encrypted = Encrypt(byteBuilder.ToArray());
             byteBuilder.Clear();
             byteBuilder.AddRange(encrypted);
-#endif
+
             // Add end of transmission
             byteBuilder.AddRange(Terminator);
 
@@ -147,6 +144,8 @@ namespace JARVIS.Shared.Services.Socket
 
         private static byte[] Encrypt(byte[] data)
         {
+            return data;
+
             var algorithm = GetAlgorithm();
             var encryptor = algorithm.CreateEncryptor();
             using (var ms = new MemoryStream())
@@ -160,16 +159,20 @@ namespace JARVIS.Shared.Services.Socket
 
         private static byte[] Decrypt(byte[] data)
         {
+            return data;
+
             var algorithm = GetAlgorithm();
             var decryptor = algorithm.CreateDecryptor();
 
             using (var ms = new MemoryStream())
-            using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
             {
-                cs.Write(data, 0, data.Length);
-                cs.Close();
-                return ms.ToArray();
+                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
+                {
+                    cs.Write(data, 0, data.Length);
+                    cs.Close();
+                    return ms.ToArray();
 
+                }
             }
         }
     }

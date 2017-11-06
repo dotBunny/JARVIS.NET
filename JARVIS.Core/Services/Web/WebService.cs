@@ -6,14 +6,18 @@ namespace JARVIS.Core.Services.Web
     public class WebService : Services.IService
     {
 
-        Grapevine.Server.RestServer Server;
+        RestServer Server;
+        ServerSettings Settings;
 
         // Pass by reference the config and hte ?
         public WebService(string host, string port)
         {
-            Server = new RestServer();
-            Server.Host = host;
-            Server.Port = port;
+            Settings = new ServerSettings();
+            Settings.Port = port;
+            Settings.Host = host;
+            Settings.UseHttps = false;
+
+            Server = new RestServer(Settings);
             Shared.Log.Message("web", "Attempting to listen on " + host + ":" + port);
         }
 

@@ -5,26 +5,27 @@
 		<key>Label</key>
 		<string>com.dotBunny.JARVIS</string>
 		<key>Program</key>
-		<string>/Users/reapazor/JARVIS/production/start.sh</string>
-		<key>KeepAlive</key>
-		<dict>
-            <key>PathState</key>
-            <dict>
-                <key>/Users/reapazor/JARVIS/production/JARVIS/JARVIS.pid</key>
-                <true/>
-            </dict>
-        </dict>
-		<key>RootDirectory</key>
-		<string>/Users/reapazor/JARVIS/production/</string>
-		<key>WorkingDirectory</key>
-		<string>/Users/reapazor/JARVIS/production/JARVIS/</string>
-		<key>RunAtLoad</key>
-		<true/>
+		<string>/usr/local/share/dotnet/dotnet</string>
+		<key>ProgramArguments</key>
+		<array>
+			<string>/usr/local/share/dotnet/dotnet</string>
+			<string>/Users/reapazor/JARVIS/production/JARVIS/JARVIS.dll</string>
+			<string>--host</string>
+			<string>192.168.1.114</string>
+		</array>
 		<key>UserName</key>
 		<string>reapazor</string>
 		<key>GroupName</key>
 		<string>staff</string>
-		<key>InitGroups</key>
+		<key>RunAtLoad</key>
 		<true/>
+		<key>KeepAlive</key>
+		<true />
+		<key>WorkingDirectory</key>
+		<string>/Users/reapazor/JARVIS/production/JARVIS/</string>
+		<key>StandardErrorPath</key>
+		<string>/Users/reapazor/JARVIS/production/launchctl.log</string>
+		<key>StandardOutPath</key>
+		<string>/Users/reapazor/JARVIS/production/launchctl.log</string>
 	</dict>
 </plist>

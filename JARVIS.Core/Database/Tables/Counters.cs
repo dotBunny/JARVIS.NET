@@ -28,7 +28,7 @@
 
             Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
 
-            Server.Database.ExecuteNonQueryAsyc(
+            Server.Database.ExecuteNonQuery(
                 "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue +")"
             );
 
