@@ -33,6 +33,7 @@ namespace JARVIS.Shard
             Client.Host = options.ServerHost;
             Client.Port = options.ServerSocketPort;
             Client.EncryptionKey = options.ServerSocketEncryptionKey;
+            Client.Encryption = options.ServerSocketEncryption;
             Username = options.SessionUsername;
             Password = options.SessionPassword;
             OutputPath = options.OutputPath;

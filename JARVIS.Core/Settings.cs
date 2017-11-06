@@ -11,6 +11,7 @@ namespace JARVIS.Core
         public int SocketPort = 8081;
         public string Host = "localhost";
         public string SocketEncryptionKey = "max";
+        public bool SocketEncryption = true;
         public int DatabaseVersion = 1;
 
 
@@ -80,9 +81,11 @@ namespace JARVIS.Core
             if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionKeyID))
             {
                 SocketEncryptionKey = RawSettings[Database.Tables.Settings.ServerSocketEncryptionKeyID];
-
-                // Set encryption key
-                Shared.Services.Socket.Protocol.EncryptionKey = SocketEncryptionKey;
+            }
+            // Socket Encryption
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionID))
+            {
+                bool.TryParse(RawSettings[Database.Tables.Settings.ServerSocketEncryptionID], out SocketEncryption);
             }
         }
     }

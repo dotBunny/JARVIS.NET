@@ -8,10 +8,24 @@ namespace JARVIS.Core.Services.Socket
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
         SocketServer Server;
+        Protocol Parser;
 
-        public SocketService(string Host = "127.0.0.1", int SocketPort = 1331)
+        public SocketService(string Host, int SocketPort, bool socketEncryption, string socketKey)
         {
             Server = new SocketServer();
+
+            // Setup Parser
+            Parser = new Protocol(socketEncryption, socketKey);
+
+            if (socketEncryption)
+            {
+                Shared.Log.Message("socket", "Encryption Enabled");
+            }
+            else
+            {
+                Shared.Log.Message("socket", "Encryption DISABLED");
+            }
+
 
             // Setup handlers
             Server.OnConnected += Server_OnConnected;
@@ -77,17 +91,17 @@ namespace JARVIS.Core.Services.Socket
             }
         }
 
-        public static void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type)
+        public void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type)
         {
             SendToSession(session, type, new Dictionary<string, string> { });
         }
 
-        public static void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
+        public void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
 
             // Create package
-            byte[] data = Protocol.GetBytes(type, arguments);
+            byte[] data = Parser.GetBytes(type, arguments);
 
             // TODO: Check for fail?
             session.Send(data);

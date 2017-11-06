@@ -61,7 +61,7 @@ namespace JARVIS.Core
             Web.Start();
             ActiveServices.Add(Web);
 
-            Socket = new Services.Socket.SocketService(Config.Host, Config.SocketPort);
+            Socket = new Services.Socket.SocketService(Config.Host, Config.SocketPort, Config.SocketEncryption, Config.SocketEncryptionKey);
             Socket.Start();
             ActiveServices.Add(Socket);
 

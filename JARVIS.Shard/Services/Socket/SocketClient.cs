@@ -9,6 +9,7 @@ namespace JARVIS.Shard.Services.Socket
         public string Host = "127.0.0.1";
         public int Port = 8081;
         public string EncryptionKey = "max";
+        public bool Encryption = false;
         public Protocol Parser;
 
         public bool IsConnected {
@@ -19,9 +20,6 @@ namespace JARVIS.Shard.Services.Socket
 
         public SocketClient()
         {
-            // Initialize Protocol
-            Parser = new Protocol(EncryptionKey);
-
             Host = Shared.Net.GetIPAddress(Host);
 
             // Create Client
@@ -45,6 +43,7 @@ namespace JARVIS.Shard.Services.Socket
         void Connection_OnException(Sender session, Exception e)
         {
             Shared.Log.Error("socket", "An error occured. " + e.Message);
+            Shared.Log.Error("socket", e.StackTrace);
         }
 
         void Connection_OnData(Sender session, byte[] data)
@@ -65,6 +64,18 @@ namespace JARVIS.Shard.Services.Socket
 
         public void Start()
         {
+            // Initialize Protocol
+            Parser = new Protocol(Encryption, EncryptionKey);
+            if (Encryption)
+            {
+                Shared.Log.Message("socket", "Encryption Enabled");
+            }
+            else
+            {
+                Shared.Log.Message("socket", "Encryption DISABLED");
+            }
+
+
             Host = Shared.Net.GetIPAddress(Host);
             Connection.Connect(Host, Port);
             Connection.Start();
@@ -79,7 +90,7 @@ namespace JARVIS.Shard.Services.Socket
         public void Send(Shared.Services.Socket.Commands.Types type, Dictionary<string, string> parameters)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + Host + ":" + Port.ToString());
-            Connection.Sender.Send(Protocol.GetBytes(type, parameters));
+            Connection.Sender.Send(Parser.GetBytes(type, parameters));
         }
 
     }

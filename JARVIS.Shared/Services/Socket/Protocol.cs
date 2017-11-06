@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,25 +15,34 @@ namespace JARVIS.Shared.Services.Socket
         {
             public Commands.Types Command;
             public Dictionary<string, string> Parameters = new Dictionary<string, string>();
-
         }
 
+        public bool UseEncryption = true;
+
         // Byte Codes
-        public static byte[] Terminator = { 0x04 };
-        public static byte EndOfCommand = 0x01;
-        public static byte EndOfName = 0x02;
-        public static byte EndOfValue = 0x03;
+        public byte[] Terminator = { 0x04 };
+        public byte EndOfCommand = 0x01;
+        public byte EndOfName = 0x02;
+        public byte EndOfValue = 0x03;
 
-        public static string EncryptionKey = "max";
 
-        public Protocol(string key = "max")
+
+        public string EncryptionKey = "max";
+
+        public Protocol(bool encrypt = true, string key = "max")
         {
+            UseEncryption = encrypt;
             EncryptionKey = key;
         }
 
         public Packet GetPacket(byte[] packet)
         {
             Packet returnPacket = new Packet();
+
+            // Drop terminator byte
+            if ( packet[packet.Length - 1] == 0x04 ) {
+                Array.Resize(ref packet, packet.Length - 1);
+            }
             packet = Decrypt(packet);
 
             // Create usable working list
@@ -71,7 +81,7 @@ namespace JARVIS.Shared.Services.Socket
             return returnPacket;
         }
        
-        public static Dictionary<string, string> GetStringDictionary(string[] parameters)
+        public Dictionary<string, string> GetStringDictionary(string[] parameters)
         {
             // Split out parameters
             // i should split them every other here?
@@ -89,7 +99,7 @@ namespace JARVIS.Shared.Services.Socket
         }
 
         // TODO Add encryption to ascii
-        public static byte[] GetParameterBytes(Dictionary<string, string> parameters)
+        public byte[] GetParameterBytes(Dictionary<string, string> parameters)
         {
             List<byte> byteBuilder = new List<byte>();
             foreach (string s in parameters.Keys)
@@ -104,7 +114,7 @@ namespace JARVIS.Shared.Services.Socket
         }
 
         // TODO: Add encryption on the string before getting the bytes
-        public static byte[] GetBytes(Commands.Types type, Dictionary<string, string> parameters)
+        public byte[] GetBytes(Commands.Types type, Dictionary<string, string> parameters)
         {
             List<byte> byteBuilder = new List<byte>();
 
@@ -130,50 +140,64 @@ namespace JARVIS.Shared.Services.Socket
 
 
 
-
-        private static SymmetricAlgorithm GetAlgorithm()
+ 
+        public byte[] Encrypt(byte[] data)
         {
-            var algorithm = Rijndael.Create();
-            var rdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x53,0x6f,0x62,0x69,0x75,0x6d,0x20,0x43,0x68,0x6c,0x6f,0x71,0x69,0x64,0x65 });
-            algorithm.Padding = PaddingMode.ISO10126;
-            algorithm.Key = rdb.GetBytes(32);
-            algorithm.IV = rdb.GetBytes(16);
-            return algorithm;
-        }
+            if (!UseEncryption) return data;
+            byte[] encryptedBytes = null;
 
+            // create a key from the password and salt, use 32K iterations – see note
+            var key = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x53, 0x6f, 0x62, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x68, 0x6c, 0x6f, 0x71, 0x69, 0x64, 0x65 });
 
-        private static byte[] Encrypt(byte[] data)
-        {
-            return data;
-
-            var algorithm = GetAlgorithm();
-            var encryptor = algorithm.CreateEncryptor();
-            using (var ms = new MemoryStream())
-            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+            // create an AES object
+            using (Aes aes = new AesManaged())
             {
-                cs.Write(data, 0, data.Length);
-                cs.Close();
-                return ms.ToArray();
-            }
-        }
-
-        private static byte[] Decrypt(byte[] data)
-        {
-            return data;
-
-            var algorithm = GetAlgorithm();
-            var decryptor = algorithm.CreateDecryptor();
-
-            using (var ms = new MemoryStream())
-            {
-                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
+                // set the key size to 256
+                aes.KeySize = 256;
+                aes.Key = key.GetBytes(aes.KeySize / 8);
+                aes.IV = key.GetBytes(aes.BlockSize / 8);
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    cs.Write(data, 0, data.Length);
-                    cs.Close();
-                    return ms.ToArray();
-
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(data, 0, data.Length);
+                        cs.Close();
+                    }
+                    encryptedBytes = ms.ToArray();
                 }
             }
+            return encryptedBytes;
         }
+
+        private byte[] Decrypt(byte[] cryptBytes)
+        {
+            if (!UseEncryption) return cryptBytes;
+            byte[] clearBytes = null;
+
+            // create a key from the password and salt, use 32K iterations
+            var key = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x53, 0x6f, 0x62, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x68, 0x6c, 0x6f, 0x71, 0x69, 0x64, 0x65 });
+
+            using (Aes aes = new AesManaged())
+            {
+                // set the key size to 256
+                aes.KeySize = 256;
+                aes.Key = key.GetBytes(aes.KeySize / 8);
+                aes.IV = key.GetBytes(aes.BlockSize / 8);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cryptBytes, 0, cryptBytes.Length);
+                        cs.Close();
+                    }
+                    clearBytes = ms.ToArray();
+                }
+            }
+            return clearBytes;
+        }
+
+
+
     }
 }

@@ -11,6 +11,7 @@ namespace JARVIS.Core.Database.Tables
         public const string ServerWebPortID = "Server.WebPort";
         public const string ServerSocketPortID = "Server.SocketPort";
         public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
+        public const string ServerSocketEncryptionID = "Server.SocketEncryption";
 
         public string Name { get; private set; }
         public string Value { get; private set; }

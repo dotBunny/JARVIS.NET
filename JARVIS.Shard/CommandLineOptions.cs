@@ -72,6 +72,20 @@ namespace JARVIS.Shard
                 showHelp = value;
             }
         }
+
+        bool serverSocketEncryption = false;
+        public bool ServerSocketEncryption
+        {
+            get
+            {
+                return serverSocketEncryption;
+            }
+            set
+            {
+                serverSocketEncryption = value;
+            }
+        }
+
         string serverSocketEncryptionKey = "max";
         public string ServerSocketEncryptionKey
         {
@@ -188,6 +202,7 @@ namespace JARVIS.Shard
             CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
             CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
             CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
+            CommandOption useEncryption = commandLine.Option("--encrypt", "Use encryption", CommandOptionType.NoValue);
             CommandOption useEncryptionKey = commandLine.Option("--key <ENCRYPTION_KEY>", "Encryption Key", CommandOptionType.SingleValue);
             // Define help option
             commandLine.HelpOption("--help");
@@ -220,7 +235,11 @@ namespace JARVIS.Shard
                 if (useOutput.HasValue())
                 {
                     OutputPath = useOutput.Value();
+                }
 
+                if ( useEncryption.HasValue())
+                {
+                    ServerSocketEncryption = true;
                 }
 
                 // Handle Counters

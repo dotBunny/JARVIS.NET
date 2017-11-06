@@ -7,7 +7,7 @@ namespace JARVIS.Core.Services.Socket.Commands
     {
         public void ExecuteCommand(Sender session, Protocol.Packet packet)
         {
-            SocketService.SendToSession(session, 
+            Server.Socket.SendToSession(session, 
                                         Shared.Services.Socket.Commands.Types.PONG, 
                                         new Dictionary<string, string>() { { "message", "Hi!" } });
         }
