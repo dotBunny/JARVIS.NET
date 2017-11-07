@@ -99,12 +99,7 @@ namespace JARVIS.Core.Services.Socket
         public void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
-
-            // Create package
-            byte[] data = Parser.GetBytes(type, arguments);
-
-            // TODO: Check for fail?
-            session.Send(data);
+            session.Send(Parser.GetBytes(type, arguments));
         }
 
     }

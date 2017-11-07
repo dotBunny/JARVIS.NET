@@ -13,7 +13,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
             string parsedArguments = "";
             foreach(string s in parameters.Keys)
             {
-                parsedArguments += parameters[s] + " ";
+                parsedArguments +=  "\"" + parameters[s] + "\" ";
             }
             parsedArguments.Trim();
 

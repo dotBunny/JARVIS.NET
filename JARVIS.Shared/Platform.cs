@@ -10,6 +10,10 @@ namespace JARVIS.Shared
 			System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = path;
             proc.StartInfo.Arguments = arguments;
+            proc.StartInfo.UseShellExecute = true;
+
+            // Log infromation about executing command (a must!)
+            Log.Message("OS", "Running " + path + " " + arguments);
 
             // No need to show it
             if (hide)

@@ -15,10 +15,11 @@ else
 
     # Remove PID file
     rm -rf $PIDFile
-
-    # Kill active process (launchd wont restart)
-    kill -9 $CurrentPID 
 fi
+
+# Sleep for 1 minute for port clarity
+echo Sleeping for 60 seconds to clear process 
+sleep 60
 
 # Detect db? - use database version file
 ProductionDBVersionFile="/Users/reapazor/JARVIS/production/JARVIS/JARVIS.db.version"

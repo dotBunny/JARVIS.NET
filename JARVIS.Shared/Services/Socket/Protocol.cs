@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -20,11 +21,15 @@ namespace JARVIS.Shared.Services.Socket
         public bool UseEncryption = true;
 
         // Byte Codes
-        public byte[] Terminator = { 0x04 };
+        public byte Terminator = 0x04;
         public byte EndOfCommand = 0x01;
         public byte EndOfName = 0x02;
         public byte EndOfValue = 0x03;
+        public byte EncryptedFalse = 0x0e;
+        public byte EncryptedTrue = 0x0f;
 
+        public int Version { get { return ProtocolVersion;  } }
+        int ProtocolVersion = 4;
 
 
         public string EncryptionKey = "max";
@@ -33,17 +38,47 @@ namespace JARVIS.Shared.Services.Socket
         {
             UseEncryption = encrypt;
             EncryptionKey = key;
+            Log.Message("Socket", "Using Protocol Version " + Version.ToString());
         }
 
         public Packet GetPacket(byte[] packet)
         {
             Packet returnPacket = new Packet();
 
-            // Drop terminator byte
-            if ( packet[packet.Length - 1] == 0x04 ) {
-                Array.Resize(ref packet, packet.Length - 1);
+            // Handle Decryption
+            // We forcibly check for the encryption flag, not relying on settings
+            if (packet[0] == EncryptedTrue)
+            {
+                // Remove flag
+                packet = packet.Skip(1).ToArray();
+
+                // create a key from the password and salt, use 32K iterations
+                var key = new Rfc2898DeriveBytes(EncryptionKey,
+                                                 Encoding.ASCII.GetBytes("dotBunny"));
+
+                using (Aes aes = new AesManaged())
+                {
+                    // set the key size to 256
+                    aes.KeySize = 256;
+                    aes.Key = key.GetBytes(aes.KeySize / 8);
+                    aes.IV = key.GetBytes(aes.BlockSize / 8);
+                    aes.Padding = PaddingMode.ISO10126;
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                        {
+                            cs.Write(packet, 0, packet.Length);
+                            cs.Close();
+                        }
+                        packet = ms.ToArray();
+                    }
+                }
             }
-            packet = Decrypt(packet);
+            else if (packet[0] == EncryptedFalse)
+            {
+                packet = packet.Skip(1).ToArray();
+            }
 
             // Create usable working list
             List<byte> workingPacket = new List<byte>();
@@ -127,27 +162,22 @@ namespace JARVIS.Shared.Services.Socket
             // Add parameters
             byteBuilder.AddRange(GetParameterBytes(parameters));
 
-            byte[] encrypted = Encrypt(byteBuilder.ToArray());
-            byteBuilder.Clear();
-            byteBuilder.AddRange(encrypted);
-
             // Add end of transmission
-            byteBuilder.AddRange(Terminator);
+            byteBuilder.Add(Terminator);
 
-            return byteBuilder.ToArray();
-        }
+            // Not encrypting, send it backs
+            if (!UseEncryption ) {
+                byteBuilder.Insert(0, EncryptedFalse);
+                return byteBuilder.ToArray();
+            }
 
 
-
-
- 
-        public byte[] Encrypt(byte[] data)
-        {
-            if (!UseEncryption) return data;
-            byte[] encryptedBytes = null;
+            // Looks like we are encrypting so lets do this!
+            List<byte> encryptedBytes = new List<byte>();
 
             // create a key from the password and salt, use 32K iterations – see note
-            var key = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x53, 0x6f, 0x62, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x68, 0x6c, 0x6f, 0x71, 0x69, 0x64, 0x65 });
+            var key = new Rfc2898DeriveBytes(EncryptionKey,
+                                             Encoding.ASCII.GetBytes("dotBunny"));
 
             // create an AES object
             using (Aes aes = new AesManaged())
@@ -156,26 +186,53 @@ namespace JARVIS.Shared.Services.Socket
                 aes.KeySize = 256;
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
+                aes.Padding = PaddingMode.ISO10126;
+
                 using (MemoryStream ms = new MemoryStream())
                 {
                     using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
                     {
-                        cs.Write(data, 0, data.Length);
+                        cs.Write(byteBuilder.ToArray(), 0, byteBuilder.Count);
                         cs.Close();
                     }
-                    encryptedBytes = ms.ToArray();
+                    encryptedBytes.AddRange(ms.ToArray());
                 }
             }
-            return encryptedBytes;
+
+            // Add flag that it is encrypted data
+            encryptedBytes.Insert(0, EncryptedTrue);
+
+            return encryptedBytes.ToArray();
         }
+
+
+
+
+
 
         private byte[] Decrypt(byte[] cryptBytes)
         {
-            if (!UseEncryption) return cryptBytes;
+            // We forcibly check for the encryption flag, not relying on settings
+            if (cryptBytes[0] == EncryptedTrue)
+            {
+                cryptBytes = cryptBytes.Skip(1).ToArray();
+            }
+            else if (cryptBytes[0] == EncryptedFalse)
+            {
+                cryptBytes = cryptBytes.Skip(1).ToArray();
+                return cryptBytes;
+            }
+            else
+            {
+                // No flag present, dont do anything
+                return cryptBytes;
+            }
+
             byte[] clearBytes = null;
 
             // create a key from the password and salt, use 32K iterations
-            var key = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x53, 0x6f, 0x62, 0x69, 0x75, 0x6d, 0x20, 0x43, 0x68, 0x6c, 0x6f, 0x71, 0x69, 0x64, 0x65 });
+            var key = new Rfc2898DeriveBytes(EncryptionKey,
+                                             Encoding.ASCII.GetBytes("dotBunny"));
 
             using (Aes aes = new AesManaged())
             {
@@ -183,6 +240,7 @@ namespace JARVIS.Shared.Services.Socket
                 aes.KeySize = 256;
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
+                aes.Padding = PaddingMode.ISO10126;
 
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -196,7 +254,6 @@ namespace JARVIS.Shared.Services.Socket
             }
             return clearBytes;
         }
-
 
 
     }
