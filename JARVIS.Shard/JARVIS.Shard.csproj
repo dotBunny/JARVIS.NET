@@ -17,7 +17,7 @@
     <StartAction>Project</StartAction>
     <StartArguments>--wirecast --counters --host 192.168.1.114 --encrypt</StartArguments>
     <ExternalConsole>false</ExternalConsole>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>true</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Services\" />

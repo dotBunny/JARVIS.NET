@@ -29,7 +29,8 @@ namespace JARVIS.Shared.Services.Socket
         public byte EncryptedTrue = 0x0f;
 
         public int Version { get { return ProtocolVersion;  } }
-        int ProtocolVersion = 4;
+        int ProtocolVersion = 5;
+        Encoding ProtocolEncoding = Encoding.UTF8;
 
 
         public string EncryptionKey = "max";
@@ -54,7 +55,7 @@ namespace JARVIS.Shared.Services.Socket
 
                 // create a key from the password and salt, use 32K iterations
                 var key = new Rfc2898DeriveBytes(EncryptionKey,
-                                                 Encoding.ASCII.GetBytes("dotBunny"));
+                                                 ProtocolEncoding.GetBytes("dotBunny"));
 
                 using (Aes aes = new AesManaged())
                 {
@@ -86,7 +87,7 @@ namespace JARVIS.Shared.Services.Socket
 
             // Identify command
             int commandEndIndex = workingPacket.IndexOf(EndOfCommand);
-            returnPacket.Command = Commands.GetType(Encoding.ASCII.GetString(workingPacket.GetRange(0, commandEndIndex).ToArray()));
+            returnPacket.Command = Commands.GetType(ProtocolEncoding.GetString(workingPacket.GetRange(0, commandEndIndex).ToArray()));
             workingPacket.RemoveRange(0, commandEndIndex + 1);
 
             // Breakdown remaining parts of the packet
@@ -107,8 +108,8 @@ namespace JARVIS.Shared.Services.Socket
                 int endOfName = chunk.IndexOf(EndOfName);
 
                 returnPacket.Parameters.Add(
-                    Encoding.ASCII.GetString(chunk.GetRange(0, endOfName).ToArray()), 
-                    Encoding.ASCII.GetString(chunk.GetRange(endOfName, chunk.Count - endOfName).ToArray()));
+                    ProtocolEncoding.GetString(chunk.GetRange(0, endOfName).ToArray()).Trim(),
+                    ProtocolEncoding.GetString(chunk.GetRange(endOfName+1, chunk.Count - (endOfName+1)).ToArray()).Trim());
 
                 workingPacket.RemoveRange(0, findNextChunkEnd + 1);
             }
@@ -124,10 +125,9 @@ namespace JARVIS.Shared.Services.Socket
 
             for (int i = 0; i < parameters.Length; i+=2)
             {
-                
                 if (i+1 < parameters.Length)
                 {
-                    returnParams.Add(parameters[i].Trim(), parameters[i + 1].Trim());
+                    returnParams.Add(parameters[i], parameters[i + 1]);
                 }
             }
             return returnParams;
@@ -140,21 +140,21 @@ namespace JARVIS.Shared.Services.Socket
             foreach (string s in parameters.Keys)
             {
                 // Add name
-                byteBuilder.AddRange(Encoding.ASCII.GetBytes(s.Trim()));
+                byteBuilder.AddRange(ProtocolEncoding.GetBytes(s.Trim()));
                 byteBuilder.Add(EndOfName);
-                byteBuilder.AddRange(Encoding.ASCII.GetBytes(parameters[s].Trim()));
+                byteBuilder.AddRange(ProtocolEncoding.GetBytes(parameters[s].Trim()));
                 byteBuilder.Add(EndOfValue);
             }
             return byteBuilder.ToArray();
         }
 
-        // TODO: Add encryption on the string before getting the bytes
+
         public byte[] GetBytes(Commands.Types type, Dictionary<string, string> parameters)
         {
             List<byte> byteBuilder = new List<byte>();
 
             // Add command to bytes
-            byteBuilder.AddRange(Encoding.ASCII.GetBytes(type.ToString()));
+            byteBuilder.AddRange(ProtocolEncoding.GetBytes(type.ToString()));
 
             // Add end of command mark
             byteBuilder.Add(EndOfCommand);
@@ -171,13 +171,12 @@ namespace JARVIS.Shared.Services.Socket
                 return byteBuilder.ToArray();
             }
 
-
             // Looks like we are encrypting so lets do this!
             List<byte> encryptedBytes = new List<byte>();
 
             // create a key from the password and salt, use 32K iterations – see note
             var key = new Rfc2898DeriveBytes(EncryptionKey,
-                                             Encoding.ASCII.GetBytes("dotBunny"));
+                                             ProtocolEncoding.GetBytes("dotBunny"));
 
             // create an AES object
             using (Aes aes = new AesManaged())
@@ -204,57 +203,6 @@ namespace JARVIS.Shared.Services.Socket
 
             return encryptedBytes.ToArray();
         }
-
-
-
-
-
-
-        private byte[] Decrypt(byte[] cryptBytes)
-        {
-            // We forcibly check for the encryption flag, not relying on settings
-            if (cryptBytes[0] == EncryptedTrue)
-            {
-                cryptBytes = cryptBytes.Skip(1).ToArray();
-            }
-            else if (cryptBytes[0] == EncryptedFalse)
-            {
-                cryptBytes = cryptBytes.Skip(1).ToArray();
-                return cryptBytes;
-            }
-            else
-            {
-                // No flag present, dont do anything
-                return cryptBytes;
-            }
-
-            byte[] clearBytes = null;
-
-            // create a key from the password and salt, use 32K iterations
-            var key = new Rfc2898DeriveBytes(EncryptionKey,
-                                             Encoding.ASCII.GetBytes("dotBunny"));
-
-            using (Aes aes = new AesManaged())
-            {
-                // set the key size to 256
-                aes.KeySize = 256;
-                aes.Key = key.GetBytes(aes.KeySize / 8);
-                aes.IV = key.GetBytes(aes.BlockSize / 8);
-                aes.Padding = PaddingMode.ISO10126;
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
-                    {
-                        cs.Write(cryptBytes, 0, cryptBytes.Length);
-                        cs.Close();
-                    }
-                    clearBytes = ms.ToArray();
-                }
-            }
-            return clearBytes;
-        }
-
 
     }
 }

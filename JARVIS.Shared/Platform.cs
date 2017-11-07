@@ -12,6 +12,8 @@ namespace JARVIS.Shared
             proc.StartInfo.Arguments = arguments;
             proc.StartInfo.UseShellExecute = true;
 
+            //proc.StartInfo.RedirectStandardOutput = false;
+
             // Log infromation about executing command (a must!)
             Log.Message("OS", "Running " + path + " " + arguments);
 
