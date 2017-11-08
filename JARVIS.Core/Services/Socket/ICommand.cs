@@ -3,6 +3,6 @@ namespace JARVIS.Core.Services.Socket
 {
     public interface ICommand
     {
-        void ExecuteCommand(Sender session, Protocol.Packet packet);
+        void ExecuteCommand(Sender session, Shared.Protocol.Instruction instruction);
     }
 }

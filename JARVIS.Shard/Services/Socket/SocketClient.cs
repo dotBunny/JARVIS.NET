@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JARVIS.Shared.Protocol;
 using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Shard.Services.Socket
@@ -10,7 +11,7 @@ namespace JARVIS.Shard.Services.Socket
         public int Port = 8081;
         public string EncryptionKey = "max";
         public bool Encryption = false;
-        public Protocol Parser;
+        public JCP Protocol;
 
         public bool IsConnected {
             get { return Connection.Connected;  }
@@ -46,26 +47,43 @@ namespace JARVIS.Shard.Services.Socket
             Shared.Log.Error("socket", e.StackTrace);
         }
 
+        List<byte> Buffer = new List<byte>();
         void Connection_OnData(Sender session, byte[] data)
         {
+            // Adding data to our internal buffer
+            Buffer.AddRange(data);
 
-            Protocol.Packet packet = Parser.GetPacket(data);
-            Shared.Log.Message("socket", "Package Received -> " + packet.Command.ToString());
-
-            // Factory Pattern
-            ISocketCommand receivedCommand = CommandFactory.CreateCommand(packet.Command);
-
-            // Move forward?
-            if (receivedCommand.CanExecute())
+            int terminator = Buffer.IndexOf(JCP.TransmissionTerminator);
+            if (terminator != -1 )
             {
-                receivedCommand.Execute(packet.Parameters);
+                Packet[] packets = Protocol.GetPackets(Buffer.GetRange(0, terminator).ToArray());
+                foreach(Packet p in packets)
+                {
+                    foreach(Instruction i in p.GetInstructions())
+                    {
+                        Shared.Log.Message("socket", "Instruction Received -> " + i.Operation.ToString());
+
+                        // Factory Pattern
+                        ISocketCommand receivedCommand = CommandFactory.CreateCommand(i.Operation);
+
+                        // Move forward?
+                        if (receivedCommand.CanExecute())
+                        {
+                            receivedCommand.Execute(i.Parameters);
+                        }
+                    }
+                }
+
+                Buffer.RemoveRange(0, terminator);
             }
+
         }
+
 
         public void Start()
         {
             // Initialize Protocol
-            Parser = new Protocol(Encryption, EncryptionKey);
+            Protocol = new JCP(Encryption, EncryptionKey);
             if (Encryption)
             {
                 Shared.Log.Message("socket", "Encryption Enabled");
@@ -87,10 +105,24 @@ namespace JARVIS.Shard.Services.Socket
             Connection.Stop();
         }
 
-        public void Send(Shared.Services.Socket.Commands.Types type, Dictionary<string, string> parameters)
+
+        public void Send(Instruction.OpCode type, Dictionary<string, string> parameters)
         {
-            Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + Host + ":" + Port.ToString());
-            Connection.Sender.Send(Parser.GetBytes(type, parameters));
+            Packet p = new Packet(type, parameters);
+            Shared.Log.Message("socket", "Sending " + p.GetOpCodes() + " to " + Host + ":" + Port.ToString());
+            Connection.Sender.Send(Protocol.GetBytes(p));
+        }
+        public void Send(Packet packet)
+        {
+            Shared.Log.Message("socket", "Sending " + packet.GetOpCodes() + " to " + Host + ":" + Port.ToString());
+            Connection.Sender.Send(Protocol.GetBytes(packet));
+        }
+        public void Send(Packet[] packets)
+        {
+            foreach(Packet p in packets){
+                Shared.Log.Message("socket", "Sending " + p.GetOpCodes() + " to " + Host + ":" + Port.ToString());
+            }
+            Connection.Sender.Send(Protocol.GetBytes(packets));
         }
 
     }

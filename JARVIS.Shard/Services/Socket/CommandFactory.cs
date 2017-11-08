@@ -2,19 +2,19 @@
 {
     public static class CommandFactory
     {
-        public static ISocketCommand CreateCommand(Shared.Services.Socket.Commands.Types commandType)
+        public static ISocketCommand CreateCommand(Shared.Protocol.Instruction.OpCode commandType)
         {
             switch(commandType)
             {
-                case Shared.Services.Socket.Commands.Types.AUTH:
+                case Shared.Protocol.Instruction.OpCode.AUTH:
                     return new Commands.Auth();
-                case Shared.Services.Socket.Commands.Types.PONG:
+                case Shared.Protocol.Instruction.OpCode.PONG:
                     return new Commands.Pong();
-                case Shared.Services.Socket.Commands.Types.COUNTER_SET:
+                case Shared.Protocol.Instruction.OpCode.COUNTER_SET:
                     return new Commands.Counter();
-                case Shared.Services.Socket.Commands.Types.INFO:
+                case Shared.Protocol.Instruction.OpCode.INFO:
                     return new Commands.Info();
-                case Shared.Services.Socket.Commands.Types.WIRECAST_LAYERS:
+                case Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS:
                     return new Commands.Wirecast();
             }
             return new Commands.Default();

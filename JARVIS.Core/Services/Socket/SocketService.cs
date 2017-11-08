@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JARVIS.Shared.Services.Socket;
+using JARVIS.Shared.Protocol;
 
 namespace JARVIS.Core.Services.Socket
 {
@@ -8,14 +9,14 @@ namespace JARVIS.Core.Services.Socket
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
         SocketServer Server;
-        Protocol Parser;
+        JCP Protocol;
 
         public SocketService(string Host, int SocketPort, bool socketEncryption, string socketKey)
         {
             Server = new SocketServer();
 
             // Setup Parser
-            Parser = new Protocol(socketEncryption, socketKey);
+            Protocol = new JCP(socketEncryption, socketKey);
 
             if (socketEncryption)
             {
@@ -51,8 +52,10 @@ namespace JARVIS.Core.Services.Socket
         void Server_OnConnected(Sender session)
         {
             Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
-            SendToSession(session, Shared.Services.Socket.Commands.Types.INFO, new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
-            SendToSession(session, Shared.Services.Socket.Commands.Types.AUTH);
+
+
+            SendToSession(session, Instruction.OpCode.INFO, new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
+            SendToSession(session, Instruction.OpCode.AUTH);
         }
 
         void Server_OnException(Sender session, System.Exception e)
@@ -82,7 +85,12 @@ namespace JARVIS.Core.Services.Socket
             Server.Stop();
         }
 
-        public void SendToAllSessions(Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
+
+      
+
+
+
+        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments)
         {
             // Send to sessions
             foreach(Sender session in Server.Clients)
@@ -91,16 +99,17 @@ namespace JARVIS.Core.Services.Socket
             }
         }
 
-        public void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type)
+
+
+        public void SendToSession(Sender session, Instruction.OpCode type)
         {
             SendToSession(session, type, new Dictionary<string, string> { });
         }
 
-        public void SendToSession(Sender session, Shared.Services.Socket.Commands.Types type, Dictionary<string, string> arguments)
+        public void SendToSession(Sender session, Instruction.OpCode type, Dictionary<string, string> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
-            session.Send(Parser.GetBytes(type, arguments));
+            session.Send(Protocol.GetBytes(new Packet(type, arguments)));
         }
-
     }
 }
