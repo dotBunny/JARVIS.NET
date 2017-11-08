@@ -50,7 +50,11 @@ namespace JARVIS.Shard
                     // Couldn't make the directory
                     if (!d.Exists)
                     {
-                   //     throw new InvalidOptionValueException("The provided directory path did not exist, and failed to be made.", false);
+                        //     throw new InvalidOptionValueException("The provided directory path did not exist, and failed to be made.", false);
+                    }
+                    else
+                    {
+                        outputPath = value;
                     }
                 }
                 else
@@ -235,6 +239,12 @@ namespace JARVIS.Shard
                 if (useOutput.HasValue())
                 {
                     OutputPath = useOutput.Value();
+                }
+                else
+                {
+                    if (OutputPath == "./" ) {
+                        OutputPath = System.IO.Path.Combine(Shared.Platform.GetBaseDirectory(), "Output");
+                    }
                 }
 
                 if ( useEncryption.HasValue())

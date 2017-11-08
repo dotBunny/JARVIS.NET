@@ -59,6 +59,9 @@ namespace JARVIS.Shared.Protocol
                 int length = BitConverter.ToInt32(lengthData, 0);
                 byte[] packetData = workingData.GetRange(findNextEndOfLength + 1, length).ToArray();
 
+                // TODO: I've seen this exceeed length ^ ^
+                // I think this has to do with actually pausing execution during the reading of packets.
+
                 // Create a new packet with the data provided
                 returnPackets.Add(new Packet(packetData, EncryptionKey));
 

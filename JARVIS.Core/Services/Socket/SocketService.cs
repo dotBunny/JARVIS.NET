@@ -65,6 +65,7 @@ namespace JARVIS.Core.Services.Socket
 
         void Server_OnData(Sender session, byte[] data)
         {
+            // TODO: Implement buffer like client
             Shared.Log.Message("request", "from " + session.RemoteEndPoint);
         }
 

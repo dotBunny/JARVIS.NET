@@ -11,6 +11,8 @@
                 case Shared.Protocol.Instruction.OpCode.PONG:
                     return new Commands.Pong();
                 case Shared.Protocol.Instruction.OpCode.COUNTER_SET:
+                case Shared.Protocol.Instruction.OpCode.COUNTER_PLUS:
+                case Shared.Protocol.Instruction.OpCode.COUNTER_MINUS:    
                     return new Commands.Counter();
                 case Shared.Protocol.Instruction.OpCode.INFO:
                     return new Commands.Info();

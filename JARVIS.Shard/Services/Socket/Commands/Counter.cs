@@ -15,8 +15,8 @@ namespace JARVIS.Shard.Services.Socket.Commands
 
             if ( parameters.ContainsKey("name") && parameters.ContainsKey("UPDATED_VALUE"))
             {
-                Shared.Log.Message("counter", "Setting " + parameters["name"] + " => " + parameters["UPDATED_VALUE"]);
-                Shared.IO.WriteContents(System.IO.Path.Combine(Program.OutputPath, parameters["name"] + ".txt"), parameters["UPDATED_VALUE"]);      
+                Shared.Log.Message("counter", "Setting " + parameters["name"].Trim() + " => " + parameters["UPDATED_VALUE"].Trim());
+                Shared.IO.WriteContents(System.IO.Path.Combine(Program.OutputPath, parameters["name"].Trim() + ".txt"), parameters["UPDATED_VALUE"].Trim());      
             }
         }
     }
