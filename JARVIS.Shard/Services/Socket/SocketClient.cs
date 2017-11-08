@@ -54,8 +54,9 @@ namespace JARVIS.Shard.Services.Socket
             Buffer.AddRange(data);
 
             int terminator = Buffer.IndexOf(JCP.TransmissionTerminator);
-            if (terminator != -1 )
+            while(terminator != -1 )
             {
+                
                 Packet[] packets = Protocol.GetPackets(Buffer.GetRange(0, terminator).ToArray());
                 foreach(Packet p in packets)
                 {
@@ -74,7 +75,10 @@ namespace JARVIS.Shard.Services.Socket
                     }
                 }
 
-                Buffer.RemoveRange(0, terminator);
+                Buffer.RemoveRange(0, terminator + 1);
+
+                // Look again
+                terminator = Buffer.IndexOf(JCP.TransmissionTerminator); 
             }
 
         }

@@ -19,7 +19,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             Dictionary<string, string> parameters = Shared.Web.GetStringDictionary(context.Request.QueryString);
 
             // Special sequence of events firing
-            // ?0=counter.plus||name||saves&1=wait||seconds||1||&2=wirecast.layer||0||clear||1||main
+            // ?0=counter.plus||name||saves&1=wait||seconds||1&2=wirecast.layer||0||clear||1||main
             // ?0=info||message||Sending%201%20Message&1=wait||seconds||5&2=info||message||Sending%201%20Message
 
             // Fire and forget sequence
