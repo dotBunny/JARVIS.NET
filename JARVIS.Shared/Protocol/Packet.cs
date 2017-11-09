@@ -5,39 +5,49 @@ using System.Text;
 
 namespace JARVIS.Shared.Protocol
 {
+    /// <summary>
+    /// A JCP Packet (collection of <see cref="T:JARVIS.Shared.Protocol.Instruction"/>)
+    /// </summary>
     public class Packet
     {
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:JARVIS.Shared.Protocol.Packet"/> was encryped.
+        /// </summary>
+        /// <value><c>true</c> if was encryped; otherwise, <c>false</c>.</value>
+        public bool WasEncryped { get; private set; }
+
+        /// <summary>
+        /// The text encoding used.
+        /// </summary>
         public readonly Encoding TextEncoding = Encoding.UTF8;
 
-        public bool WasEncryped = false;
-
+        /// <summary>
+        /// A list of instructions in the packet.
+        /// </summary>
         List<Instruction> Instructions = new List<Instruction>();
-        public List<Instruction> GetInstructions()
-        {
-            return Instructions;
-        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Packet"/> class.
+        /// </summary>
         public Packet()
         {
-            
-            
         }
 
-        public string GetOpCodes()
-        {
-            string operations = string.Empty;
-            foreach(Instruction i in Instructions)
-            {
-                operations += i.Operation.ToString() + ",";
-            }
-            operations = operations.TrimEnd(',');
-            return operations;
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Packet"/> class.
+        /// </summary>
+        /// <param name="operation">An Instruction's Operation.</param>
+        /// <param name="parameters">An Instruction's Parameters.</param>
         public Packet(Instruction.OpCode operation, Dictionary<string, string> parameters)
         {
             AddInstruction(operation, parameters);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Packet"/> class.
+        /// </summary>
+        /// <param name="data">The serialized data of the packet.</param>
+        /// <param name="decryptionKey">The decryption key.</param>
         public Packet(byte[] data, string decryptionKey = "max")
         {
             // Determine if we need to decrypt the packet contents
@@ -92,13 +102,46 @@ namespace JARVIS.Shared.Protocol
             }
         }
 
-
+        /// <summary>
+        /// Adds an <see cref="T:JARVIS.Shared.Protocol.Instruction"/> to the packet.
+        /// </summary>
+        /// <param name="type">The Instruction's operation code.</param>
+        /// <param name="parameters">The Instruction's parameters.</param>
         public void AddInstruction(Instruction.OpCode type, Dictionary<string, string> parameters)
         {
             Instructions.Add(new Instruction(type, parameters));
         }
 
+        /// <summary>
+        /// A list of <see cref="T:JARVIS.Shared.Protocol.Instruction"/>.
+        /// </summary>
+        /// <returns>The Instructions</returns>
+        public List<Instruction> GetInstructions()
+        {
+            return Instructions;
+        }
 
+        /// <summary>
+        /// Get a comma delimited list of Operation Codes
+        /// </summary>
+        /// <returns>The op codes.</returns>
+        public string GetOpCodes()
+        {
+            string operations = string.Empty;
+            foreach (Instruction i in Instructions)
+            {
+                operations += i.Operation.ToString() + ",";
+            }
+            operations = operations.TrimEnd(',');
+            return operations;
+        }
+
+        /// <summary>
+        /// Get the bytes of the packet.
+        /// </summary>
+        /// <returns>The bytes.</returns>
+        /// <param name="shouldEncrypt">If set to <c>true</c> the bytes will be encrypted.</param>
+        /// <param name="encryptionKey">The encryption key.</param>
         public byte[] ToBytes(bool shouldEncrypt = false, string encryptionKey = "max")
         {
             List<byte> workingBytes = new List<byte>();

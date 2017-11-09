@@ -4,8 +4,14 @@ using System.Text;
 
 namespace JARVIS.Shared.Protocol
 {
+    /// <summary>
+    /// JCP Instruction
+    /// </summary>
     public class Instruction
     {
+        /// <summary>
+        /// Protocol Operation Codes
+        /// </summary>
         public enum OpCode
         {
             DEFAULT,
@@ -20,14 +26,39 @@ namespace JARVIS.Shared.Protocol
             WIRECAST_LAYERS
         }
 
+        /// <summary>
+        /// Instruction Operation Code
+        /// </summary>
         public OpCode Operation = OpCode.DEFAULT;
+
+        /// <summary>
+        /// Instruction Parameters
+        /// </summary>
         public Dictionary<string, string> Parameters = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Instruction"/> class.
+        /// </summary>
         public Instruction()
         {
             
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Instruction"/> class.
+        /// </summary>
+        /// <param name="operation">The Instruction's Operation.</param>
+        /// <param name="parameters">The Instruction's Parameters.</param>
+        public Instruction(OpCode operation, Dictionary<string, string> parameters)
+        {
+            Operation = operation;
+            Parameters = parameters;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Instruction"/> class with the provided data.
+        /// </summary>
+        /// <param name="data">Byte data array used to represent class in a serialized form.</param>
         public Instruction(byte[] data)
         {
             // Create usable working list
@@ -64,11 +95,11 @@ namespace JARVIS.Shared.Protocol
             }
         }
 
-        public Instruction(OpCode operation, Dictionary<string, string> parameters) {
-            Operation = operation;
-            Parameters = parameters;
-        }
-
+        /// <summary>
+        /// Gets the enumerated operations code from the provided string.
+        /// </summary>
+        /// <returns>The OpCode.</returns>
+        /// <param name="type">A string value representing the operations code.</param>
         public static OpCode GetOpCode(string type)
         {
             // Sanitize Type
@@ -82,7 +113,10 @@ namespace JARVIS.Shared.Protocol
             return OpCode.DEFAULT;
         }
 
-       
+        /// <summary>
+        /// Converts the instruction to a byte array.
+        /// </summary>
+        /// <returns>The serialzied bytes.</returns>
         public byte[] ToBytes()
         {
             List<byte> byteBuilder = new List<byte>();

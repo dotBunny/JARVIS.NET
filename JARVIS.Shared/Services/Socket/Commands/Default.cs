@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using JARVIS.Shared.Services.Socket;
 
-namespace JARVIS.Shard.Services.Socket.Commands
+namespace JARVIS.Shared.Services.Socket.Commands
 {
     public class Default : ISocketCommand
     {
@@ -8,7 +9,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
         {
             return true;
         }
-        public void Execute(Dictionary<string, string> parameters)
+        public void Execute(Sender session, Dictionary<string, string> parameters)
         {
         }
     }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JARVIS.Shard.Services.Socket
+namespace JARVIS.Shared.Services.Socket
 {
     public interface ISocketCommand
     {
         bool CanExecute();
-        void Execute(Dictionary<string, string> parameters);
+        void Execute(Sender session, Dictionary<string, string> parameters);
     }
 }

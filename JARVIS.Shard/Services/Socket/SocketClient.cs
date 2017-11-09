@@ -47,6 +47,7 @@ namespace JARVIS.Shard.Services.Socket
             Shared.Log.Error("socket", e.StackTrace);
         }
 
+        // We do not need to handle sessions on the client because we know the session that is sending it, it must be the server.
         List<byte> Buffer = new List<byte>();
         void Connection_OnData(Sender session, byte[] data)
         {
@@ -70,7 +71,7 @@ namespace JARVIS.Shard.Services.Socket
                         // Move forward?
                         if (receivedCommand.CanExecute())
                         {
-                            receivedCommand.Execute(i.Parameters);
+                            receivedCommand.Execute(session, i.Parameters);
                         }
                     }
                 }

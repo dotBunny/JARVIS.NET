@@ -24,6 +24,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
     <Folder Include="Protocol\" />
+    <Folder Include="Services\Socket\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\Icons\jarvis.icns" />

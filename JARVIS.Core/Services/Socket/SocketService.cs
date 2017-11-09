@@ -6,6 +6,7 @@ namespace JARVIS.Core.Services.Socket
 {
     public class SocketService : IService
     {
+        Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
         SocketServer Server;
@@ -47,12 +48,15 @@ namespace JARVIS.Core.Services.Socket
         void Server_OnClosed(Sender session)
         {
             Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint);
+
+
+            Buffers.Remove(session);
         }
 
         void Server_OnConnected(Sender session)
         {
             Shared.Log.Message("socket", "New connection from " + session.RemoteEndPoint);
-
+            Buffers.Add(session, new List<byte>());
 
             SendToSession(session, Instruction.OpCode.INFO, new Dictionary<string, string> { { "message", "Welcome to JARVIS." } });
             SendToSession(session, Instruction.OpCode.AUTH);
@@ -63,10 +67,39 @@ namespace JARVIS.Core.Services.Socket
             Shared.Log.Message("socket", "Exception from " + session.RemoteEndPoint + " of " + e.Message);
         }
 
+
         void Server_OnData(Sender session, byte[] data)
         {
-            // TODO: Implement buffer like client
-            Shared.Log.Message("request", "from " + session.RemoteEndPoint);
+            // We have to assume the buffer exists for the session
+            Buffers[session].AddRange(data);
+
+            int terminator = Buffers[session].IndexOf(JCP.TransmissionTerminator);
+            while (terminator != -1)
+            {
+
+                Packet[] packets = Protocol.GetPackets(Buffers[session].GetRange(0, terminator).ToArray());
+                foreach (Packet p in packets)
+                {
+                    foreach (Instruction i in p.GetInstructions())
+                    {
+                        Shared.Log.Message("socket", "Instruction Received -> " + i.Operation.ToString() + " from " + session.RemoteEndPoint.GetHost());
+
+                        // Factory Pattern
+                        ISocketCommand receivedCommand = CommandFactory.CreateCommand(i.Operation);
+
+                        // Move forward?
+                        if (receivedCommand.CanExecute())
+                        {
+                            receivedCommand.Execute(session, i.Parameters);
+                        }
+                    }
+                }
+
+                Buffers[session].RemoveRange(0, terminator + 1);
+
+                // Look again
+                terminator = Buffers[session].IndexOf(JCP.TransmissionTerminator);
+            }
         }
 
         public string GetName() 

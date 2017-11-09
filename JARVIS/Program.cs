@@ -10,11 +10,13 @@ namespace JARVIS
     class Program
     {
         public static int ProcessID = 0;
+
         public static string ProcessIDFilePath = "JARVIS.pid";
+
         /// <summary>
         /// The quit event listener
         /// </summary>
-        private static ManualResetEvent quitEvent = new ManualResetEvent(false);
+        static ManualResetEvent quitEvent = new ManualResetEvent(false);
 
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
