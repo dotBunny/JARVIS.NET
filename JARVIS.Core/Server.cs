@@ -34,6 +34,11 @@ namespace JARVIS.Core
         /// </summary>
         public static Services.Web.WebService Web;
 
+        /// <summary>
+        /// Discord Service Reference
+        /// </summary>
+        public static Services.Discord.DiscordService Discord;
+
         public static void Initialize()
         {
             Config = new Settings();
@@ -64,6 +69,8 @@ namespace JARVIS.Core
             Socket = new Services.Socket.SocketService(Config.Host, Config.SocketPort, Config.SocketEncryption, Config.SocketEncryptionKey);
             Socket.Start();
             ActiveServices.Add(Socket);
+
+
 
             Shared.Log.Message("System", "Startup Complete");
         }

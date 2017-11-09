@@ -15,7 +15,7 @@ namespace JARVIS.Core
         public int DatabaseVersion = 1;
 
 
-        public Dictionary<string, string> RawSettings = new Dictionary<string, string>();
+        Dictionary<string, string> RawSettings = new Dictionary<string, string>();
 
         //public void SetHost(string host)
         //{
@@ -30,7 +30,15 @@ namespace JARVIS.Core
             
         //}
 
-
+        public string Get(string settingName)
+        {
+            if ( RawSettings.ContainsKey(settingName) ) {
+                return RawSettings[settingName];
+            } else {
+                Shared.Log.Error("Settings", "Unable to find setting with key: " + settingName);
+                return string.Empty;
+            }
+        }
 
         public void Save() {
             

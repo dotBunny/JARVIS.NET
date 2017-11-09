@@ -9,7 +9,7 @@ cp ./resources/JARVIS/macOS/install.sh /Users/reapazor/Repositories/dotBunny/JAR
 cp ./resources/JARVIS/macOS/launchd.plist /Users/reapazor/Repositories/dotBunny/JARVIS.NET/deploy/com.dotBunny.JARVIS.plist
 
 # Start JARVIS quickly to make version files
-dotnet /Users/reapazor/Repositories/dotBunny/JARVIS.NET/deploy/JARVIS/JARVIS.dll --quit
+dotnet /Users/reapazor/Repositories/dotBunny/JARVIS.NET/deploy/JARVIS/JARVIS.dll --settings "/Users/reapazor/Dropbox/dotBunny - Projects/JARVIS/Build/jarvis-settings.json" --quit
 
 # Remove PID file (just incase) and any logs
 rm -rf /Users/reapazor/Repositories/dotBunny/JARVIS.NET/deploy/JARVIS/JARVIS.log*

@@ -6,6 +6,12 @@ namespace JARVIS.Core.Database.Tables
     public class Settings : ITable
     {
 
+        public class SettingsObject
+        {
+            public string Key;
+            public string Value;
+        }
+
         public const string DatabaseVersionID = "Database.Version";
         public const string ServerHostID = "Server.Host";
         public const string ServerWebPortID = "Server.WebPort";

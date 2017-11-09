@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace JARVIS
 {
@@ -26,8 +28,7 @@ namespace JARVIS
 #endif
             // Capture Log
             Shared.Log.Capture(true);
-
-
+             
             // Indicate that we're starting the party
             Shared.Log.Message("system", "Starting up ... ");
 
@@ -42,6 +43,17 @@ namespace JARVIS
 
             // Initialize Server
             Core.Server.Initialize();
+
+            // Handle JSON
+            if ( options.HasSettingsPath )
+            {
+                string jsonData = File.ReadAllText(options.SettingsPath);
+                Dictionary<string, string> overrideSettings = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonData);
+                foreach (KeyValuePair<string,string> item in overrideSettings)
+                {
+                    Core.Database.Tables.Settings.Set(item.Key, item.Value);
+                }
+            }
 
             // Handle special setting options from command line
             if (options.SetServerHost)

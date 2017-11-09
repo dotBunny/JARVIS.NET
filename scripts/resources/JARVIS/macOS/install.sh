@@ -18,13 +18,13 @@ else
 fi
 
 # Sleep for 1 minute for port clarity
-echo Sleeping for 60 seconds to clear process 
-sleep 60
+echo Sleeping for 30 seconds to clear process 
+sleep 30
 
 # Detect db? - use database version file
 ProductionDBVersionFile="/Users/reapazor/JARVIS/production/JARVIS/JARVIS.db.version"
 if [ ! -f $ProductionDBVersionFile ]; then
-    echo "No existing database version file found, just replacing."
+    echo "No existing database version file found, just copying into place."
 else
     ProductionDBVersion=`cat $ProductionDBVersionFile`
     StagingDBVersionFile="/Users/reapazor/JARVIS/staging/JARVIS/JARVIS.db.version"
