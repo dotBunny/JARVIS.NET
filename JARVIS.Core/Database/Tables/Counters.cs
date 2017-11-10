@@ -1,26 +1,30 @@
 ﻿namespace JARVIS.Core.Database.Tables
 {
-    public class Counters : ITable
+    public static class Counters
     {
-        public string Name { get; private set; }
-        public int Value { get; private set;  }
-
-        public Counters(string name, int newValue)
+        public static string CreateSQL()
         {
-            Name = name;
-            Value = newValue;
+            return "CREATE TABLE IF NOT EXISTS \"Counters\" (" +
+                "\"Name\" varchar(128) PRIMARY KEY NOT NULL, " +
+                "\"Value\" integer(128) NOT NULL DEFAULT(0));";
         }
 
-        public static string GetTableName()
+        public static int Get(string name)
         {
-            return "Counters";
-        }
+            // Max length
+            name = Shared.Strings.Truncate(name, 128);
 
-        public static string GetCreation()
-        {
-            return "CREATE TABLE \"" + GetTableName() + "\" (\"Name\" varchar(128) NOT NULL, \"Value\" int PRIMARY KEY (\"Name\"))";
-        }
+            int returnValue = 0;
+            Provider.ProviderResult result = Server.Database.ExecuteQuery("SELECT \"Value\" FROM \"Counters\" WHERE \"Name\" = \"" + name + "\" LIMIT 1");
 
+            if ( result.Data != null && result.Data.HasRows ) 
+            {
+                result.Data.Read();
+                int.TryParse(result.Data.GetString(0), out returnValue);
+            }
+
+            return returnValue;
+        }
 
         public static void Set(string name, int newValue)
         {
@@ -29,27 +33,8 @@
             Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
 
             Server.Database.ExecuteNonQuery(
-                "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue +")"
+                "REPLACE INTO \"Counters\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue + ")"
             );
-
-        }
-
-        public static int Get(string name)
-        {
-            // Max length
-            name = Shared.Strings.Truncate(name, 128);
-
-            Provider.ProviderResult result = Server.Database.ExecuteQuery("SELECT * FROM \"" + GetTableName() + "\" WHERE \"Name\" = \"" + name + "\" LIMIT 1");
-            if ( result.Data != null && result.Data.HasRows ) 
-            {
-                Counters row = result.Data.Single(
-                    r => new Counters(
-                        (string)r["Name"], 
-                        int.Parse(r["Value"].ToString())));
-
-                return row.Value;
-            }
-            return 0;
         }
     }
 }

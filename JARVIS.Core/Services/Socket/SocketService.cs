@@ -7,6 +7,8 @@ namespace JARVIS.Core.Services.Socket
     public class SocketService : IService
     {
         Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
+        List<Sender> AuthenticatedSessions = new List<Sender>();
+
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
         SocketServer Server;
@@ -49,8 +51,14 @@ namespace JARVIS.Core.Services.Socket
         {
             Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint);
 
-
+            // Remove buffer for session
             Buffers.Remove(session);
+
+            // Remove if authenticated from the authenticated list
+            if ( AuthenticatedSessions.Contains(session) )
+            {
+                AuthenticatedSessions.Remove(session);
+            }
         }
 
         void Server_OnConnected(Sender session)

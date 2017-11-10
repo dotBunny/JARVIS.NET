@@ -11,9 +11,14 @@ namespace JARVIS.Core.Services.Socket.Commands
 
         public void Execute(Sender session, Dictionary<string,string> parameters)
         {
-            
-            Shared.Log.Message("Login", "new login from ");
-            //ession.Send("PONG" + Shared.Net.SocketTerminator);
+
+            if ( parameters.ContainsKey("username") && parameters.ContainsKey("password") ) {
+
+
+                Shared.Log.Message("Login", "new login from ");
+            } else {
+                Shared.Log.Error("Login", "Invalid Login Attempt from " + session.RemoteEndPoint.GetHost());
+            }
         }
     }
 }

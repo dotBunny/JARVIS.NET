@@ -3,60 +3,26 @@ using System.Collections.Generic;
 
 namespace JARVIS.Core.Database.Tables
 {
-    public class Settings : ITable
+    public static class Settings
     {
-
-        public class SettingsObject
-        {
-            public string Key;
-            public string Value;
-        }
-
         public const string DatabaseVersionID = "Database.Version";
         public const string ServerHostID = "Server.Host";
-        public const string ServerWebPortID = "Server.WebPort";
-        public const string ServerSocketPortID = "Server.SocketPort";
-        public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
         public const string ServerSocketEncryptionID = "Server.SocketEncryption";
+        public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
+        public const string ServerSocketPortID = "Server.SocketPort";
+        public const string ServerWebPortID = "Server.WebPort";
 
-        public string Name { get; private set; }
-        public string Value { get; private set; }
-
-
-        public Settings(string name, string newValue)
+        public static string CreateSQL()
         {
-            Name = name;
-            Value = newValue;
-        }
-
-        public static string GetTableName()
-        {
-            return "Settings";
-        }
-
-        public static string GetCreation()
-        {
-            return "CREATE TABLE \"" + GetTableName() + "\" (\"Name\" varchar(128) NOT NULL, \"Value\" varchar(128) PRIMARY KEY (\"Name\"))";
-        }
-
-       
-        public static void Set(string key, string newValue)
-        {
-   
-            key = Shared.Strings.Truncate(key, 128);
-            newValue = Shared.Strings.Truncate(newValue, 128);
-
-            Shared.Log.Message("DB", "Set " + key + " to " + newValue);
-
-            Server.Database.ExecuteNonQuery(
-                "REPLACE INTO \"" + GetTableName() + "\" (\"Name\", \"Value\") VALUES (\"" + key + "\", \"" + newValue +"\")"
-            );
+            return "CREATE TABLE IF NOT EXISTS \"Settings\" (" +
+                "\"Name\" varchar(128) PRIMARY KEY NOT NULL, " +
+                "\"Value\" varchar(128));";
         }
 
         public static string Get(string key)
         {
             Provider.ProviderResult result = Server.Database.ExecuteSingleQuery(
-                "SELECT Value FROM " + GetTableName() + " WHERE Name = \"" + key + "\" LIMIT 1");
+                "SELECT \"Value\" FROM \"Settings\" WHERE Name = \"" + key + "\" LIMIT 1");
 
             if (result.Data != null && result.Data.HasRows)
             {
@@ -71,17 +37,12 @@ namespace JARVIS.Core.Database.Tables
         {
             Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
 
-
-
-
-
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT Name, Value FROM " + GetTableName()
+                "SELECT \"Name\",\"Value\" FROM \"Settings\""
             );
 
             if (result.Data != null && result.Data.HasRows)
             {
-                //result.Data.
                 while (result.Data.Read())
                 {
                     returnDictionary.Add(
@@ -94,5 +55,17 @@ namespace JARVIS.Core.Database.Tables
             return returnDictionary;
         }
 
+        public static void Set(string key, string newValue)
+        {
+
+            key = Shared.Strings.Truncate(key, 128);
+            newValue = Shared.Strings.Truncate(newValue, 128);
+
+            Shared.Log.Message("DB", "Set " + key + " to " + newValue);
+
+            Server.Database.ExecuteNonQuery(
+                "REPLACE INTO \"Settings\" (\"Name\", \"Value\") VALUES (\"" + key + "\", \"" + newValue + "\")"
+            );
+        }
     }
 }
