@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using Newtonsoft.Json;
 
 namespace JARVIS
 {
@@ -46,15 +44,11 @@ namespace JARVIS
             // Initialize Server
             Core.Server.Initialize();
 
-            // Handle JSON
-            if ( options.HasSettingsPath )
+            // Handle Custom SQL
+            if ( options.HasSQLPath )
             {
-                string jsonData = File.ReadAllText(options.SettingsPath);
-                Dictionary<string, string> overrideSettings = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonData);
-                foreach (KeyValuePair<string,string> item in overrideSettings)
-                {
-                    Core.Database.Tables.Settings.Set(item.Key, item.Value);
-                }
+                string sqlData = File.ReadAllText(options.SQLPath);
+                Core.Server.Database.ExecuteNonQuery(sqlData);
             }
 
             // Handle special setting options from command line

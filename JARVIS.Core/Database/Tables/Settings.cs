@@ -5,6 +5,12 @@ namespace JARVIS.Core.Database.Tables
 {
     public static class Settings
     {
+        public class SettingsObject
+        {
+            public string Name;
+            public string Value;
+        }
+
         public const string DatabaseVersionID = "Database.Version";
         public const string ServerHostID = "Server.Host";
         public const string ServerSocketEncryptionID = "Server.SocketEncryption";
@@ -57,7 +63,6 @@ namespace JARVIS.Core.Database.Tables
 
         public static void Set(string key, string newValue)
         {
-
             key = Shared.Strings.Truncate(key, 128);
             newValue = Shared.Strings.Truncate(newValue, 128);
 

@@ -5,21 +5,21 @@ namespace JARVIS
 {
     class CommandLineOptions
     {
-        string settingsPath = "";
-        public string SettingsPath
+        string sqlPath = "";
+        public string SQLPath
         {
-            get { return settingsPath; }
+            get { return sqlPath; }
             set 
             {
                 if (System.IO.File.Exists(value))
                 {
-                    settingsPath = value;
-                    HasSettingsPath = true;
+                    sqlPath = value;
+                    HasSQLPath = true;
                 }
 
             }
         }
-        public bool HasSettingsPath { get; private set; }
+        public bool HasSQLPath { get; private set; }
 
         string serverHost = "localhost";
         public string ServerHost
@@ -118,7 +118,7 @@ namespace JARVIS
             // Create parser and don't barf if we get an unrecognized argument
             CommandLineApplication commandLine = new CommandLineApplication(false);
 
-            CommandOption useSettings = commandLine.Option("--settings <PATH>", "Update JARVIS' settings in the database with the provided JSON", CommandOptionType.SingleValue);
+            CommandOption useSQL = commandLine.Option("--sql <PATH>", "Update JARVIS' settings in the database with the provided SQL", CommandOptionType.SingleValue);
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption useSocketPort = commandLine.Option("--socket-port <PORT>", "Sets the socket port of the JARVIS Server", CommandOptionType.SingleValue);
             CommandOption useWebPort = commandLine.Option("--web-port <PORT>", "Sets the web port of the JARVIS Server", CommandOptionType.SingleValue);
@@ -129,9 +129,9 @@ namespace JARVIS
 
             commandLine.OnExecute(() =>
             {
-                if (useSettings.HasValue())
+                if (useSQL.HasValue())
                 {
-                    SettingsPath = useSettings.Value();
+                    SQLPath = useSQL.Value();
                 }
 
                 // If we have a host value

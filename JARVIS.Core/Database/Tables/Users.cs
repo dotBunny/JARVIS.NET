@@ -1,13 +1,20 @@
-﻿namespace JARVIS.Core.Database.Tables
+﻿using System;
+
+namespace JARVIS.Core.Database.Tables
 {
     public static class Users
     {
         public class UsersObject
         {
-            public int ID;
-            public string Username;
-            public bool CanShard;
-            public string LastLogin;
+            public int ID = -1;
+            public string Username = "Undefined";
+            public bool CanShard = false;
+            public DateTime LastLogin;
+
+            public bool IsValid()
+            {
+                return (ID != -1);
+            }
         }
 
         public static string CreateSQL()
@@ -30,30 +37,27 @@
             return new UsersObject();
         }
 
-        public static bool IsValidLogin(string username, string password)
+        public static UsersObject Login(string username, string password)
         {
-            return false;
+
+
+
+           // DateTime.Now.tostring
+            return new UsersObject();
+
+
+
         }
 
-        public static void Set(string name, int newValue)
-        {
-            name = Shared.Strings.Truncate(name, 128);
+        //public static void Set(string name, int newValue)
+        //{
+        //    name = Shared.Strings.Truncate(name, 128);
 
-            Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
+        //    Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
 
-            Server.Database.ExecuteNonQuery(
-                "REPLACE INTO \"Counters\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue + ")"
-            );
-        }
-
-        public static void UpdateLastLoginDate(int id)
-        {
-            
-        }
-
-        public static void UpdateLastLoginDate(string username)
-        {
-            
-        }
+        //    Server.Database.ExecuteNonQuery(
+        //        "REPLACE INTO \"Counters\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue + ")"
+        //    );
+        //}
     }
 }
