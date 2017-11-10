@@ -59,12 +59,16 @@ namespace JARVIS.Shard
             // Sit and wait till we get the CTRL-C
             QuitEvent.WaitOne();
 
+            Quit(0);
+        }
+
+        public static void Quit(int code = 0){
             // Disconnect from the server
             Client.Stop();
 
             // Cleanly exit the program
             Shared.Log.Message("system", "Shutdown");
-            Environment.Exit(0);
+            Environment.Exit(code);
         }
     }
 

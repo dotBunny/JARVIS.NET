@@ -19,6 +19,7 @@ namespace JARVIS.Shared.Protocol
             PONG,
             AUTH,
             LOGIN,
+            FAIL,
             INFO,
             COUNTER_SET,
             COUNTER_PLUS,

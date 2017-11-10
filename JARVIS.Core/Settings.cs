@@ -56,7 +56,12 @@ namespace JARVIS.Core
 
 
             // Convert into dictionary
-            RawSettings = Database.Tables.Settings.GetAll();
+            List<Database.Rows.SettingsRow> rows = Database.Tables.Settings.GetAll();
+            RawSettings.Clear();
+            foreach (Database.Rows.SettingsRow r in rows)
+            {
+                RawSettings.Add(r.Name, r.Value);
+            }
 
             // Server Host Address
             if ( RawSettings.ContainsKey(Database.Tables.Settings.ServerHostID) )

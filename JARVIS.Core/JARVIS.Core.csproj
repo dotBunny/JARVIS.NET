@@ -15,6 +15,7 @@
     <Folder Include="Database\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Discord\" />
+    <Folder Include="Database\Rows\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />

@@ -1,66 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using JARVIS.Core.Database.Rows;
 
 namespace JARVIS.Core.Database.Tables
 {
+    /// <summary>
+    /// JARVIS Settings Table
+    /// </summary>
     public static class Settings
     {
-        public class SettingsObject
-        {
-            public string Name;
-            public string Value;
-        }
+       
 
+        /// <summary>
+        /// The settings key of the database version.
+        /// </summary>
         public const string DatabaseVersionID = "Database.Version";
+
+        /// <summary>
+        /// The settings key of the server host.
+        /// </summary>
         public const string ServerHostID = "Server.Host";
+
+        /// <summary>
+        /// The settings key of the socket encryption setting.
+        /// </summary>
         public const string ServerSocketEncryptionID = "Server.SocketEncryption";
+
+        /// <summary>
+        /// The settings key of the socket encryption key.
+        /// </summary>
         public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
+
+        /// <summary>
+        /// The settings key for the socket listen port.
+        /// </summary>
         public const string ServerSocketPortID = "Server.SocketPort";
+
+        /// <summary>
+        /// The settings key of the web server listen port.
+        /// </summary>
         public const string ServerWebPortID = "Server.WebPort";
 
-        public static string CreateSQL()
+        /// <summary>
+        /// Get the specified row from the Settings table.
+        /// </summary>
+        /// <returns>The specified row.</returns>
+        /// <param name="key">The settings key.</param>
+        public static SettingsRow Get(string key)
         {
-            return "CREATE TABLE IF NOT EXISTS \"Settings\" (" +
-                "\"Name\" varchar(128) PRIMARY KEY NOT NULL, " +
-                "\"Value\" varchar(128));";
-        }
+            key = Shared.Strings.Truncate(key, 128);
 
-        public static string Get(string key)
-        {
-            Provider.ProviderResult result = Server.Database.ExecuteSingleQuery(
-                "SELECT \"Value\" FROM \"Settings\" WHERE Name = \"" + key + "\" LIMIT 1");
+            Provider.ProviderResult result = Server.Database.ExecuteQuery(
+                "SELECT Value FROM Settings WHERE Name = @Name LIMIT 1",
+                new Dictionary<string, object>() {
+                    {"@Name",key}
+            }, System.Data.CommandBehavior.SingleResult);
 
             if (result.Data != null && result.Data.HasRows)
             {
                 result.Data.Read();
-                return result.Data.GetString(0);
+                return new SettingsRow(key, result.Data.GetString(0));
             }
 
-            return string.Empty;
+            return new SettingsRow();
         }
 
-        public static Dictionary<string, string> GetAll()
+        /// <summary>
+        /// Get all of the rows from the Settingx table.
+        /// </summary>
+        /// <returns>All rows from the table.</returns>
+        public static List<SettingsRow> GetAll()
         {
-            Dictionary<string, string> returnDictionary = new Dictionary<string, string>();
+            List<SettingsRow> Rows = new List<SettingsRow>();
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT \"Name\",\"Value\" FROM \"Settings\""
+                "SELECT Name, Value FROM Settings",
+                new Dictionary<string, object>()
             );
 
             if (result.Data != null && result.Data.HasRows)
             {
                 while (result.Data.Read())
                 {
-                    returnDictionary.Add(
-                        result.Data.GetString(0), 
-                        result.Data.GetString(1));
+                    // Handle NULL Value
+                    if (result.Data.IsDBNull(1))
+                    {
+                        Rows.Add(new SettingsRow(result.Data.GetString(0), string.Empty));
+                    } else {
+                        Rows.Add(new SettingsRow(result.Data.GetString(0), result.Data.GetString(1)));    
+                    }
+
                     result.Data.NextResult();
                 }
             }
 
-            return returnDictionary;
+            return Rows;
         }
 
+        /// <summary>
+        /// Set the specified key of the settings.
+        /// </summary>
+        /// <param name="key">Setting Key</param>
+        /// <param name="newValue">Setting Value</param>
         public static void Set(string key, string newValue)
         {
             key = Shared.Strings.Truncate(key, 128);
@@ -69,7 +109,11 @@ namespace JARVIS.Core.Database.Tables
             Shared.Log.Message("DB", "Set " + key + " to " + newValue);
 
             Server.Database.ExecuteNonQuery(
-                "REPLACE INTO \"Settings\" (\"Name\", \"Value\") VALUES (\"" + key + "\", \"" + newValue + "\")"
+                "REPLACE INTO Settings (Name, Value) VALUES (@Name, @Value)",
+                new Dictionary<string, object>() {
+                    {"@Name",key},
+                    {"@Value",newValue},
+                }
             );
         }
     }

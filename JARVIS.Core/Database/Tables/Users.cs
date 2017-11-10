@@ -1,52 +1,45 @@
 ﻿using System;
+using JARVIS.Core.Database.Rows;
+
 
 namespace JARVIS.Core.Database.Tables
 {
     public static class Users
     {
-        public class UsersObject
-        {
-            public int ID = -1;
-            public string Username = "Undefined";
-            public bool CanShard = false;
-            public DateTime LastLogin;
 
-            public bool IsValid()
-            {
-                return (ID != -1);
-            }
+
+
+        public static UsersRow GetUserObject(int id)
+        {
+            return new UsersRow();
         }
 
-        public static string CreateSQL()
+        public static UsersRow GetUserObject(string username)
         {
-            return "CREATE TABLE IF NOT EXISTS \"Users\" (" +
-                "\"ID\" integer PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                "\"Username\" varchar(128) NOT NULL, " +
-                "\"Password\" varchar(128), " +
-                "\"CanShard\" integer(1) NOT NULL DEFAULT(0), " +
-                "\"LastLogin\" varchar(128));";
+            return new UsersRow();
         }
 
-        public static UsersObject GetUserObject(int id)
-        {
-            return new UsersObject();
-        }
-
-        public static UsersObject GetUserObject(string username)
-        {
-            return new UsersObject();
-        }
-
-        public static UsersObject Login(string username, string password)
+        public static UsersRow Login(string username, string password)
         {
 
 
+           // Provider.ProviderResult result = Server.Database.ExecuteSingleQuery(
+           //    "SELECT \"ID\",\"Username\",\"CanShard\",\"LastLogin\" " +
+           //     "FROM \"Users\" " +
+           //     "WHERE Username = \"" + username + "\" AND Password = \"" + password + "\" " +
+           //     "LIMIT 1");
 
-           // DateTime.Now.tostring
-            return new UsersObject();
+           // if (result.Data != null && result.Data.HasRows)
+           // {
+           //     result.Data.Read();
+           //     return result.Data.GetString(0);
+           // }
+
+           //// DateTime.Now.tostring
 
 
 
+            return new UsersRow();
         }
 
         //public static void Set(string name, int newValue)

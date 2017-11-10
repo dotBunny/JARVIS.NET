@@ -10,6 +10,8 @@
                     return new Commands.Auth();
                 case Shared.Protocol.Instruction.OpCode.PONG:
                     return new Commands.Pong();
+                case Shared.Protocol.Instruction.OpCode.FAIL:
+                    return new Commands.Fail();
                 case Shared.Protocol.Instruction.OpCode.COUNTER_SET:
                 case Shared.Protocol.Instruction.OpCode.COUNTER_PLUS:
                 case Shared.Protocol.Instruction.OpCode.COUNTER_MINUS:    

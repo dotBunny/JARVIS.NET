@@ -48,7 +48,7 @@ namespace JARVIS
             if ( options.HasSQLPath )
             {
                 string sqlData = File.ReadAllText(options.SQLPath);
-                Core.Server.Database.ExecuteNonQuery(sqlData);
+                Core.Server.Database.ExecuteNonQuery(sqlData, new System.Collections.Generic.Dictionary<string, object>());
             }
 
             // Handle special setting options from command line

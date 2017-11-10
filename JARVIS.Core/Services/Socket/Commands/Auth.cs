@@ -18,6 +18,7 @@ namespace JARVIS.Core.Services.Socket.Commands
                 Shared.Log.Message("Login", "new login from ");
             } else {
                 Shared.Log.Error("Login", "Invalid Login Attempt from " + session.RemoteEndPoint.GetHost());
+                Server.Socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.FAIL);
             }
         }
     }

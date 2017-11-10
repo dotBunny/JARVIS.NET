@@ -29,7 +29,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             {
 
                 // Get previous value
-                previousValue = Database.Tables.Counters.Get(parameters["name"]);
+                previousValue = Database.Tables.Counters.Get(parameters["name"]).Value;
 
                 if (parameters.ContainsKey("value"))
                 {
@@ -77,7 +77,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             {
 
                 // Get previous value
-                previousValue = Database.Tables.Counters.Get(parameters["name"]);
+                previousValue = Database.Tables.Counters.Get(parameters["name"]).Value;
 
                 // Decrease Value
                 if (parameters.ContainsKey("value"))
