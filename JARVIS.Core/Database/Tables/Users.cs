@@ -1,56 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using JARVIS.Core.Database.Rows;
+using JARVIS.Shared;
 
 
 namespace JARVIS.Core.Database.Tables
 {
     public static class Users
     {
-
-
-
-        public static UsersRow GetUserObject(int id)
-        {
-            return new UsersRow();
-        }
-
-        public static UsersRow GetUserObject(string username)
-        {
-            return new UsersRow();
-        }
-
         public static UsersRow Login(string username, string password)
         {
+            UsersRow returnUser = new UsersRow();
 
+            // Hash Password
+            password = password.SHA256();
 
-           // Provider.ProviderResult result = Server.Database.ExecuteSingleQuery(
-           //    "SELECT \"ID\",\"Username\",\"CanShard\",\"LastLogin\" " +
-           //     "FROM \"Users\" " +
-           //     "WHERE Username = \"" + username + "\" AND Password = \"" + password + "\" " +
-           //     "LIMIT 1");
+            Provider.ProviderResult result = Server.Database.ExecuteQuery(
+                "SELECT ID, Username, CanShard, LastLogin FROM USERS WHERE Username = @Username AND Password = @Password LIMIT 1",
+                new Dictionary<string, object>() {
+                    {"@Username",username},
+                    {"@Password",password}
+            }, System.Data.CommandBehavior.SingleResult);
 
-           // if (result.Data != null && result.Data.HasRows)
-           // {
-           //     result.Data.Read();
-           //     return result.Data.GetString(0);
-           // }
+            if (result.Data != null && result.Data.HasRows)
+            {
+                result.Data.Read();
 
-           //// DateTime.Now.tostring
+                // Apply Data
+                returnUser.ID = result.Data.GetInt32(0);
+                returnUser.Username = result.Data.GetString(1);
+                returnUser.CanShard = result.Data.GetBoolean(2);
 
+                // Create if the last login is null
+                if (!result.Data.IsDBNull(result.Data.GetOrdinal("LastLogin")))
+                {
+                    returnUser.LastLogin = DateTime.Parse(result.Data.GetString(3));
+                }
 
+                // Update last login time
+                Server.Database.ExecuteNonQuery(
+                  "UPDATE Users SET LastLogin = @LastLogin WHERE Username = @Username",
+                  new Dictionary<string, object>() {
+                    {"@LastLogin",DateTime.Now.ToLongDateString()},
+                    {"@Username",username},
+                  }
+                );
+            }
 
-            return new UsersRow();
+            return returnUser;
         }
-
-        //public static void Set(string name, int newValue)
-        //{
-        //    name = Shared.Strings.Truncate(name, 128);
-
-        //    Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
-
-        //    Server.Database.ExecuteNonQuery(
-        //        "REPLACE INTO \"Counters\" (\"Name\", \"Value\") VALUES (\"" + name + "\", " + newValue + ")"
-        //    );
-        //}
     }
 }

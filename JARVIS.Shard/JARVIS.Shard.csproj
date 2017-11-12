@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
-    <StartArguments>--wirecast --counters --host 192.168.1.114 --encrypt --output /Users/reapazor/Documents/StreamingData</StartArguments>
+    <StartArguments>--wirecast --counters --host localhost --encrypt --output /Users/reapazor/Documents/StreamingData</StartArguments>
     <ExternalConsole>true</ExternalConsole>
     <ConsolePause>true</ConsolePause>
   </PropertyGroup>

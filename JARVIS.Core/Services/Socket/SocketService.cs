@@ -6,8 +6,9 @@ namespace JARVIS.Core.Services.Socket
 {
     public class SocketService : IService
     {
+        public Dictionary<Sender, SocketUser> AuthenticatedUsers = new Dictionary<Sender, SocketUser>();
         Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
-        List<Sender> AuthenticatedSessions = new List<Sender>();
+
 
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
@@ -55,9 +56,9 @@ namespace JARVIS.Core.Services.Socket
             Buffers.Remove(session);
 
             // Remove if authenticated from the authenticated list
-            if ( AuthenticatedSessions.Contains(session) )
+            if ( AuthenticatedUsers.ContainsKey(session) )
             {
-                AuthenticatedSessions.Remove(session);
+                AuthenticatedUsers.Remove(session);
             }
         }
 
@@ -95,8 +96,14 @@ namespace JARVIS.Core.Services.Socket
                         // Factory Pattern
                         ISocketCommand receivedCommand = CommandFactory.CreateCommand(i.Operation);
 
+                        bool authAllowed = false;
+                        if ( AuthenticatedUsers.ContainsKey(session)) {
+                            authAllowed = true;
+                        }
+                        else authAllowed |= (i.Operation == Instruction.OpCode.AUTH || i.Operation == Instruction.OpCode.PING);
+
                         // Move forward?
-                        if (receivedCommand.CanExecute())
+                        if (authAllowed && receivedCommand.CanExecute())
                         {
                             receivedCommand.Execute(session, i.Parameters);
                         }
@@ -128,16 +135,20 @@ namespace JARVIS.Core.Services.Socket
         }
 
 
-      
 
 
 
-        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments)
+
+        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments, bool authRequired = true)
         {
             // Send to sessions
             foreach(Sender session in Server.Clients)
             {
-                SendToSession(session, type, arguments);
+                if ( authRequired && AuthenticatedUsers.ContainsKey(session)) {
+                    SendToSession(session, type, arguments);
+                } else {
+                    SendToSession(session, type, arguments);                    
+                }
             }
         }
 
