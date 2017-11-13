@@ -50,43 +50,44 @@ on Setup()
 	end if
 end Setup
 
-# Simplified Change Function
-on ChangeLayer(LayerName, ShotName)
+# Change Shot On Layer
+on ChangeShot(LayerName, ShotName)
 	tell application "Wirecast"
 		set active shot of the layer named LayerName of Stream to the shot named ShotName of Stream
 	end tell
-end ChangeLayer
+end ChangeShot
 
+# Handle Switching
 on CommandSwitch()
 	tell application "Wirecast"
-		set my Stream's auto live to true
-		
+     
 		# Change Layer 1
 		if my Shot1Arg is not "" then
-			my ChangeLayer("Master Layer 1", Shot1Arg)
+			my ChangeShot("Master Layer 1", Shot1Arg)
 		end if
 		
 		# Change Layer 2
 		if my Shot2Arg is not "" then
-			my ChangeLayer("Master Layer 2", Shot2Arg)
+			my ChangeShot("Master Layer 2", Shot2Arg)
 		end if
 		
 		# Change Layer 3
 		if my Shot3Arg is not "" then
-			my ChangeLayer("Master Layer 3", Shot3Arg)
+			my ChangeShot("Master Layer 3", Shot3Arg)
 		end if
 		
 		# Change Layer 4
 		if my Shot4Arg is not "" then
-			my ChangeLayer("Master Layer 4", Shot4Arg)
+			my ChangeShot("Master Layer 4", Shot4Arg)
 		end if
 		
 		# Change Layer 5
 		if my Shot5Arg is not "" then
-			my ChangeLayer("Master Layer 5", Shot5Arg)
+			my ChangeShot("Master Layer 5", Shot5Arg)
 		end if
-		
-		set my Stream's auto live to false
+
+        # Make it so!
+        go Stream
 	end tell
 end CommandSwitch
 
