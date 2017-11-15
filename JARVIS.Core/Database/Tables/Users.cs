@@ -16,7 +16,7 @@ namespace JARVIS.Core.Database.Tables
             password = password.SHA256();
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT ID, Username, CanShard, LastLogin FROM USERS WHERE Username = @Username AND Password = @Password LIMIT 1",
+                "SELECT ID, Username, CanShard, LastLogin FROM Users WHERE Username = @Username AND Password = @Password LIMIT 1",
                 new Dictionary<string, object>() {
                     {"@Username",username},
                     {"@Password",password}

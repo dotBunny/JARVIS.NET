@@ -19,7 +19,7 @@ namespace JARVIS.Core.Database.Tables
             name = Shared.Strings.Truncate(name, 128);
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT Value FROM Setting WHERE Name = @Name LIMIT 1",
+                "SELECT Value FROM Counters WHERE Name = @Name LIMIT 1",
                 new Dictionary<string, object>() {
                     {"@Name",name}
             }, System.Data.CommandBehavior.SingleResult);
