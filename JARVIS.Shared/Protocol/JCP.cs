@@ -165,6 +165,14 @@ namespace JARVIS.Shared.Protocol
                 byte[] lengthData = workingData.GetRange(0, findNextEndOfLength).ToArray();
 
                 int length = BitConverter.ToInt32(lengthData, 0);
+
+                // This is a weird check for a case im not sure how it happens, possibly there is garbage?
+                if (((findNextEndOfLength + 1) > length) || ((findNextEndOfLength + 1) > workingData.Count))
+                {
+                    parsing = false;
+                    continue;
+                }
+
                 byte[] packetData = workingData.GetRange(findNextEndOfLength + 1, length).ToArray();
 
                 // TODO: I've seen this exceeed length ^ ^
