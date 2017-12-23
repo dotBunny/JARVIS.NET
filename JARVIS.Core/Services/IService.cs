@@ -6,5 +6,7 @@ namespace JARVIS.Core.Services
         string GetName();
         void Start();
         void Stop();
+
+        void Tick();
     }
 }

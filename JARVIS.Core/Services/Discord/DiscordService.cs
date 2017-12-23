@@ -43,6 +43,11 @@ namespace JARVIS.Core.Services.Discord
         {
             throw new NotImplementedException();
         }
+
+        public void Tick()
+        {
+
+        }
     }
 
 }

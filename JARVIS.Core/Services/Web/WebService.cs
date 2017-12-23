@@ -42,5 +42,10 @@ namespace JARVIS.Core.Services.Web
             Server.Stop();   
 
         }
+
+        public void Tick()
+        {
+
+        }
     }
 }

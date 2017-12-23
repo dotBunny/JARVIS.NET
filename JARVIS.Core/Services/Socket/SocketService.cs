@@ -48,6 +48,11 @@ namespace JARVIS.Core.Services.Socket
             Server = null;
         }
 
+        public void Tick()
+        {
+            
+        }
+
         void Server_OnClosed(Sender session)
         {
             Shared.Log.Message("socket", "Closing connection from " + session.RemoteEndPoint);

@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace JARVIS.Core
 {
@@ -12,7 +14,7 @@ namespace JARVIS.Core
         /// <summary>
         /// List Of Active Services
         /// </summary>
-        public static List<Services.IService> ActiveServices = new List<Services.IService>();
+        public static ConcurrentBag<Services.IService> ActiveServices = new ConcurrentBag<Services.IService>();
 
         /// <summary>
         /// Settings Reference
@@ -39,6 +41,15 @@ namespace JARVIS.Core
         /// </summary>
         public static Services.Discord.DiscordService Discord;
 
+
+        static volatile bool ShouldTickFlag = false;
+
+        private static Thread PollingThread;
+       
+
+        public static int PollingDelayMS = 2000;
+
+
         public static void Initialize()
         {
             Config = new Settings();
@@ -47,7 +58,6 @@ namespace JARVIS.Core
             Shared.Log.Message("DB", "Opening database at " + Config.DatabaseFilePath);
             Database = new Database.Provider();
             Database.Open(Config.DatabaseFilePath);
-
 
             Shared.Log.Message("DB", "Opened version " + Database.Version);
             Shared.IO.WriteContents(Path.Combine(Shared.Platform.GetBaseDirectory(), "JARVIS.db.version"), Database.Version); 
@@ -70,9 +80,16 @@ namespace JARVIS.Core
             Socket.Start();
             ActiveServices.Add(Socket);
 
-
-
             Shared.Log.Message("System", "Startup Complete");
+
+
+            // Start Tick Thread
+            ShouldTickFlag = true;
+            PollingThread = new Thread(new ThreadStart(Tick));
+            PollingThread.Name = "JARVIS-Polling";
+            PollingThread.Start();
+
+
         }
 
         public static void Stop()
@@ -82,6 +99,22 @@ namespace JARVIS.Core
             Socket.Stop();
             Web.Stop();
         }
+
+        static void Tick()
+        {
+            // This is the only one that actually evaluates it
+            while (ShouldTickFlag)
+            {
+                Thread.Sleep(PollingDelayMS);
+
+                // Threaded tick
+                Parallel.ForEach(ActiveServices, s =>
+                {
+                    s.Tick();
+                });
+            }
+        }
+
 
 
     }

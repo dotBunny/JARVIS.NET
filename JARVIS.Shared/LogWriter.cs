@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -11,7 +12,7 @@ namespace JARVIS.Shared
         public bool UseCache;
 
 
-        List<string> CachedLines = new List<string>();
+        ConcurrentQueue<string> CachedLines = new ConcurrentQueue<string>();
         Encoding CurrentEncoding = Encoding.UTF8;
         readonly TextWriter ConsoleOutput;
         readonly StreamWriter Writer;
@@ -42,12 +43,12 @@ namespace JARVIS.Shared
 
             if (UseCache)
             {
-                CachedLines.Add(value);
+                CachedLines.Enqueue(value);
             }
             else
             {
 
-                Writer.WriteLine(value);
+                Writer.WriteLine(value.Replace("\n\r", "\n"));
                 Writer.Flush();
             }
         }
@@ -59,18 +60,20 @@ namespace JARVIS.Shared
 #if DEBUG
             ConsoleOutput.WriteLine("[CACHE] Writing " + CachedLines.Count + " lines to LOG file.");
 #endif
-                         
+
             // Loop over cached items and send them to the stream to be written
-            foreach(string s in CachedLines)
+            string output = string.Empty;
+            while (CachedLines.Count > 0)
             {
-                Writer.WriteLine(s);
+                if (CachedLines.TryDequeue(out output))
+                {
+                    Writer.WriteLine(output.Replace("\n\r", "\n"));
+                }
             }
+
 
             // Flush the writer to make sure they actually were outputted
             Writer.Flush();
-
-            // Clear our cached lines
-            CachedLines.Clear();
         }
     }
 }
