@@ -24,15 +24,15 @@
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />
-    <ProjectReference Include="..\JARVIS.Core\JARVIS.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="JARVIS.db" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="JARVIS.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />
+    <ProjectReference Include="..\JARVIS.Core\JARVIS.Core.csproj" />
   </ItemGroup>
 </Project>

@@ -1,33 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ReleaseVersion>2.0</ReleaseVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>JARVIS Shared Components</Description>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
-    <StartAction>Project</StartAction>
-    <ExternalConsole>false</ExternalConsole>
-  </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Icons\jarvis.icns" />
-    <EmbeddedResource Include="Resources\Icons\jarvis.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <Folder Include="Protocol\" />
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
-    <Folder Include="Protocol\" />
-    <Folder Include="Services\Socket\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\Icons\jarvis.icns" />
     <None Remove="Resources\Icons\jarvis.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Icons\jarvis.icns" />
+    <EmbeddedResource Include="Resources\Icons\jarvis.ico" />
   </ItemGroup>
 </Project>

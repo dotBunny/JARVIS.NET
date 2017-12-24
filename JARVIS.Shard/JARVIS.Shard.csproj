@@ -5,9 +5,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <ReleaseVersion>2.0</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <Description>Console based client (shard) for minimal footprint applications.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -15,13 +17,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
-    <StartArguments>--wirecast --counters --host 192.168.1.114 --encrypt --output /Users/reapazor/Documents/StreamingData</StartArguments>
+    <StartArguments>--wirecast --counters --host 192.168.1.114 --encrypt --gui --output /Users/reapazor/Documents/StreamingData</StartArguments>
     <ExternalConsole>true</ExternalConsole>
     <ConsolePause>true</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Resources\" />
+    <Folder Include="Services\Notifications\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\macOS\Wirecast.appleScript">
@@ -32,9 +35,9 @@
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />
+    <None Remove="Resources\macOS\Wirecast.appleScript" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resources\macOS\Wirecast.appleScript" />
+    <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />
   </ItemGroup>
 </Project>

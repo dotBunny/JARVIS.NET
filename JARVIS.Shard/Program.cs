@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace JARVIS.Shard
@@ -40,29 +41,37 @@ namespace JARVIS.Shard
             HasCounterSupport = options.EnableCounters;
             HasWirecastSupport = options.EnableWirecast;
 
+            // TODO: Load Settings File
+
             // Display help/errors
             if (options.ShowHelp)
             {
                 Environment.Exit(0);
             }
 
-            // Get this party started!
-            Console.CancelKeyPress += (sender, eArgs) =>
-            {
-                QuitEvent.Set();
-                eArgs.Cancel = true;
-            };
 
             // Start the connection to the server
             Client.Start();
 
-            // Sit and wait till we get the CTRL-C
-            QuitEvent.WaitOne();
+
+                // Get this party started!
+                Console.CancelKeyPress += (sender, eArgs) =>
+                {
+                    QuitEvent.Set();
+                    eArgs.Cancel = true;
+                };
+
+                // Sit and wait till we get the CTRL-C
+                QuitEvent.WaitOne();
+
 
             Quit(0);
         }
 
         public static void Quit(int code = 0){
+
+ 
+
             // Disconnect from the server
             Client.Stop();
 

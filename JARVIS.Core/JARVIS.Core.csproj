@@ -1,22 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ReleaseVersion>2.0</ReleaseVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>JARVIS Core Logic (Server)</Description>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <AssemblyName>JARVIS.Core</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grapevine" Version="4.1.1" />
-    <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
-    <PackageReference Include="Discord.Net" Version="1.0.2" />
-    <PackageReference Include="SpotifyAPI-NET" Version="2.17.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Services\" />
-    <Folder Include="Services\Discord\" />
-    <Folder Include="Database\Rows\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Grapevine" Version="4.1.1" />
+    <PackageReference Include="SpotifyAPI-NET" Version="2.17.0" />
+    <PackageReference Include="Discord.Net" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Data.SQLite" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />

@@ -65,7 +65,7 @@ namespace JARVIS.Core.Database.Tables
         }
 
         /// <summary>
-        /// Get all of the rows from the Settingx table.
+        /// Get all of the rows from the Settings table.
         /// </summary>
         /// <returns>All rows from the table.</returns>
         public static List<SettingsRow> GetAll()

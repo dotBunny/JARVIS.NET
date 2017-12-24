@@ -17,7 +17,7 @@ namespace JARVIS.Core.Database.Rows
         public int Value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Tables.Counters.CountersRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.CountersRow"/> class.
         /// </summary>
         public CountersRow()
         {
@@ -25,7 +25,7 @@ namespace JARVIS.Core.Database.Rows
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Tables.Counters.CountersRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.CountersRow"/> class.
         /// </summary>
         /// <param name="name">Name</param>
         /// <param name="newValue">Value</param>

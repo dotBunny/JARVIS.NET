@@ -4,7 +4,7 @@ namespace JARVIS.Core.Database.Rows
     /// <summary>
     /// A settings row
     /// </summary>
-    public class SettingsRow
+    public class ObjectsRow
     {
         /// <summary>
         /// The name field.
@@ -17,19 +17,19 @@ namespace JARVIS.Core.Database.Rows
         public string Value = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.SettingsRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.ObjectsRow"/> class.
         /// </summary>
-        public SettingsRow()
+        public ObjectsRow()
         {
 
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.SettingsRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.ObjectsRow"/> class.
         /// </summary>
         /// <param name="name">Name</param>
         /// <param name="newValue">Value</param>
-        public SettingsRow(string name, string newValue)
+        public ObjectsRow(string name, string newValue)
         {
             Name = name;
             Value = newValue;
