@@ -109,11 +109,11 @@
     </Compile>
     <Compile Include="Services\Socket\SocketClient.cs" />
     <Compile Include="Services\Socket\CommandFactory.cs" />
-    <Compile Include="Services\Socket\Commands\Auth.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Services\Socket\Commands\Counter.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Services\Socket\Commands\Fail.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Services\Socket\Commands\Pong.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Services\Socket\Commands\Wirecast.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Services\Socket\Commands\Auth.cs" />
+    <Compile Include="Services\Socket\Commands\Counter.cs" />
+    <Compile Include="Services\Socket\Commands\Fail.cs" />
+    <Compile Include="Services\Socket\Commands\Pong.cs" />
+    <Compile Include="Services\Socket\Commands\Wirecast.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">

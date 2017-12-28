@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using JARVIS.Client.Mac;
+using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
-    public class Pong : JARVIS.Shared.Services.Socket.ISocketCommand
+    public class Pong : ISocketCommand
     {
         public bool CanExecute()
         {

@@ -17,15 +17,6 @@ namespace JARVIS.Client.Mac
         [Outlet]
         AppKit.NSMenuItem ServerDisconnect { get; set; }
 
-        [Action ("MenuItemJARVISPreferences:")]
-        partial void MenuItemJARVISPreferences (AppKit.NSMenuItem sender);
-
-        [Action ("MenuItemWindowShow:")]
-        partial void MenuItemWindowShow (AppKit.NSMenuItem sender);
-
-        [Action ("MenuItemWindowTestLogic:")]
-        partial void MenuItemWindowTestLogic (AppKit.NSMenuItem sender);
-
         [Action ("OnJARVISPreferences:")]
         partial void OnJARVISPreferences (AppKit.NSMenuItem sender);
 

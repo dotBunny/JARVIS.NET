@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using JARVIS.Client.Mac;
-            
+using JARVIS.Shared.Services.Socket;
+
 namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
-    public class Fail : JARVIS.Shared.Services.Socket.ISocketCommand
+    public class Fail : ISocketCommand
     {
         public bool CanExecute()
         {
@@ -11,7 +11,7 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
         }
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
-            Shared.Log.Message("AUTH","Failed");
+            Shared.Log.Message("AUTH", "Failed");
         }
     }
 }

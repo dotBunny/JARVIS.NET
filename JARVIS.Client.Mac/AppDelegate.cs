@@ -22,12 +22,7 @@ namespace JARVIS.Client.Mac
             NotificationsHandler = new Notifications();
 
             // Try To Connect
-
-
-
-
-            // Insert code here to initialize your application
-            //ShowMainWindow();
+            OnServerConnect(null);
         }
 
         public override void WillTerminate(NSNotification notification)
@@ -66,6 +61,23 @@ namespace JARVIS.Client.Mac
                 new NSString("OP"));
 
             NotificationsHandler.Notify(notification);
+        }
+
+        partial void OnServerConnect(AppKit.NSMenuItem sender) {
+
+
+
+            MainClass.Client.Start();
+
+            ServerConnect.Enabled = false;
+            ServerDisconnect.Enabled = true;
+        }
+
+        partial void OnServerDisconnect(AppKit.NSMenuItem sender) {
+            MainClass.Client.Stop();
+
+            ServerConnect.Enabled = true;
+            ServerDisconnect.Enabled = false;
         }
 
 

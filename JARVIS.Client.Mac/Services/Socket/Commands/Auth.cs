@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using JARVIS.Client.Mac;
-                
+using JARVIS.Shared.Services.Socket;
+
 namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
-    public class Auth : JARVIS.Shared.Services.Socket.ISocketCommand
+    public class Auth : ISocketCommand
     {
         public bool CanExecute()
         {
@@ -13,13 +13,13 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
         {
             // Send Auth
             MainClass.Client.Send(
-                Shared.Protocol.Instruction.OpCode.AUTH, 
+                Shared.Protocol.Instruction.OpCode.AUTH,
                 new Dictionary<string, string>() {
-                    {"username",Program.Username},
-                    {"password",Program.Password},
+                {"username",Settings.SessionUsername},
+                {"password",Settings.SessionPassword}
             });
 
-            Shared.Log.Message("AUTH","Login Sent");
+            Shared.Log.Message("AUTH", "Login Sent");
         }
     }
 }
