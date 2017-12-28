@@ -12,5 +12,5 @@ JARVIS.Core/bin
 JARVIS.Core/obj
 JARVIS/bin
 JARVIS/obj
-JARVIS.Client/bin
-JARVIS.Client/obj
+JARVIS.Client.Mac/bin
+JARVIS.Client.Mac/obj
