@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController">
+            <connections>
+                <outlet property="window" destination="2" id="6"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="JARVIS Prefrences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="2" customClass="PreferencesWindow">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <rect key="contentRect" x="131" y="74" width="500" height="238"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
+            <view key="contentView" wantsLayer="YES" misplaced="YES" id="3">
+                <rect key="frame" x="0.0" y="0.0" width="500" height="238"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <tabView misplaced="YES" drawsBackground="NO" initialItem="JuC-lC-eGu" id="Dnn-hD-kvi">
+                        <rect key="frame" x="-7" y="-10" width="514" height="254"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <font key="font" metaFont="system"/>
+                        <tabViewItems>
+                            <tabViewItem label="Server" identifier="" image="NSApplicationIcon" id="JuC-lC-eGu">
+                                <view key="view" id="SID-je-ys6">
+                                    <rect key="frame" x="10" y="33" width="494" height="208"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <box misplaced="YES" title="Address" id="ndK-Mq-PXA">
+                                            <rect key="frame" x="63" y="136" width="368" height="56"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="9na-Al-9dU">
+                                                <rect key="frame" x="2" y="2" width="364" height="39"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="VzB-ct-um7">
+                                                        <rect key="frame" x="7" y="10" width="238" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="192.168.1.117" drawsBackground="YES" id="Bqh-q9-2UA">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="OnServerAddress:" target="-2" id="Kvq-ab-mZk"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" textCompletion="NO" id="dRh-7E-JrR">
+                                                        <rect key="frame" x="239" y="12" width="27" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title=":" id="2pA-Lx-Gcl">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="VjL-E8-JHm">
+                                                        <rect key="frame" x="260" y="10" width="96" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="1311" drawsBackground="YES" id="c3G-YC-Phc">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="OnServerPort:" target="-2" id="H5c-tr-dXR"/>
+                                                        </connections>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                        <box misplaced="YES" title="Credentials" id="c7c-RK-AVv">
+                                            <rect key="frame" x="63" y="33" width="368" height="99"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="9bk-Xn-Qgz">
+                                                <rect key="frame" x="2" y="2" width="364" height="82"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" textCompletion="NO" id="t6y-ME-yr1">
+                                                        <rect key="frame" x="7" y="48" width="350" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Session Username" drawsBackground="YES" id="izp-Fj-swz">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="OnServerUsername:" target="-2" id="RCv-pD-si1"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <secureTextField verticalHuggingPriority="750" misplaced="YES" id="54f-wH-VBs">
+                                                        <rect key="frame" x="7" y="16" width="350" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Session Password" drawsBackground="YES" usesSingleLineMode="YES" id="ia9-CS-HRp">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <allowedInputSourceLocales>
+                                                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                                            </allowedInputSourceLocales>
+                                                        </secureTextFieldCell>
+                                                        <connections>
+                                                            <action selector="OnServerPassword:" target="-2" id="LKG-5i-6xM"/>
+                                                        </connections>
+                                                    </secureTextField>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Features" identifier="" image="NSApplicationIcon" id="2tX-Kf-hB7">
+                                <view key="view" id="F8L-Cn-8t7">
+                                    <rect key="frame" x="10" y="33" width="494" height="208"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" textCompletion="NO" id="NN8-31-tQ7">
+                                            <rect key="frame" x="15" y="182" width="464" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" title="You can control which features of the client (session) are used below:" id="PUy-6z-il5">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="h7T-gg-grL">
+                                            <rect key="frame" x="40" y="147" width="168" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Notifications" bezelStyle="regularSquare" imagePosition="left" inset="2" id="bxP-hF-Tvl">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="OnFeaturesNotifications:" target="-2" id="fyk-XP-ess"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="57X-Rw-BfN">
+                                            <rect key="frame" x="40" y="118" width="168" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Counter Outputs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qWb-PO-deg">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="OnFeaturesCounterOutputs:" target="-2" id="bQA-zn-ZXZ"/>
+                                            </connections>
+                                        </button>
+                                        <pathControl verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" id="DUZ-X2-u8p">
+                                            <rect key="frame" x="55" y="90" width="422" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <pathCell key="cell" selectable="YES" editable="YES" alignment="left" id="5mo-6W-wjr">
+                                                <font key="font" metaFont="system"/>
+                                                <url key="url" string="file://localhost/Applications/"/>
+                                            </pathCell>
+                                            <connections>
+                                                <action selector="OnFeaturesCounterOutputsPath:" target="-2" id="IdR-CC-MRB"/>
+                                            </connections>
+                                        </pathControl>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="o4T-9G-7yy">
+                                            <rect key="frame" x="40" y="66" width="168" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Wirecast Manipulation" bezelStyle="regularSquare" imagePosition="left" inset="2" id="LH1-xU-FpW">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="OnFeaturesWirecastManipulation:" target="-2" id="Pb3-dB-VUb"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Encryption" identifier="" image="NSApplicationIcon" id="hPx-YJ-1fO">
+                                <view key="view" id="BLv-mk-R88">
+                                    <rect key="frame" x="10" y="33" width="494" height="208"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="lbW-t5-DZC">
+                                            <rect key="frame" x="15" y="146" width="464" height="51"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" id="4CD-kw-ST9">
+                                                <font key="font" metaFont="system"/>
+                                                <string key="title">The JARVIS server is able to transmit packets securely with its own encryption system built into the protocol. You can turn it on or off below, as well as provide a custom encryption key to use.</string>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" misplaced="YES" id="RdW-AD-Gar">
+                                            <rect key="frame" x="42" y="110" width="168" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Use Encrypted Protocol" bezelStyle="regularSquare" imagePosition="left" inset="2" id="F1Z-WU-YfK">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="OnEncryptionUseEncryptedProtocol:" target="-2" id="Bf9-aW-40Y"/>
+                                            </connections>
+                                        </button>
+                                        <box misplaced="YES" title="Server Encryption Key" id="lcA-tD-Emm">
+                                            <rect key="frame" x="14" y="31" width="466" height="61"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="jXc-IR-pPj">
+                                                <rect key="frame" x="2" y="2" width="462" height="44"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <secureTextField verticalHuggingPriority="750" misplaced="YES" id="6mW-gh-O3z">
+                                                        <rect key="frame" x="11" y="13" width="441" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="max" drawsBackground="YES" usesSingleLineMode="YES" id="jDl-Js-lou">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <allowedInputSourceLocales>
+                                                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                                            </allowedInputSourceLocales>
+                                                        </secureTextFieldCell>
+                                                        <connections>
+                                                            <action selector="OnEncryptionServerEncryptionKey:" target="-2" id="CBz-0W-PYq"/>
+                                                        </connections>
+                                                    </secureTextField>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                        </tabViewItems>
+                    </tabView>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="EncryptionServerEncryptionKey" destination="6mW-gh-O3z" id="rZf-Qx-0IW"/>
+                <outlet property="EncryptionUseEncryptedProtocol" destination="RdW-AD-Gar" id="KA6-Co-08H"/>
+                <outlet property="FeaturesCounterOutputs" destination="57X-Rw-BfN" id="vti-qv-kuL"/>
+                <outlet property="FeaturesCounterOutputsPath" destination="DUZ-X2-u8p" id="NHX-dR-Xtz"/>
+                <outlet property="FeaturesNotifications" destination="h7T-gg-grL" id="esJ-6w-oAp"/>
+                <outlet property="FeaturesWirecastManipulation" destination="o4T-9G-7yy" id="loc-qh-kZQ"/>
+                <outlet property="ServerAddress" destination="VzB-ct-um7" id="dWa-wu-V2e"/>
+                <outlet property="ServerPassword" destination="54f-wH-VBs" id="cKl-RW-8e1"/>
+                <outlet property="ServerPort" destination="VjL-E8-JHm" id="S44-RD-2WR"/>
+                <outlet property="ServerUsername" destination="t6y-ME-yr1" id="ngO-uc-PI1"/>
+            </connections>
+            <point key="canvasLocation" x="127" y="96"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSApplicationIcon" width="128" height="128"/>
+    </resources>
+</document>

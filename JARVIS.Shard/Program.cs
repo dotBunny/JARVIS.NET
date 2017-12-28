@@ -39,7 +39,6 @@ namespace JARVIS.Shard
             Password = options.SessionPassword;
             OutputPath = options.OutputPath;
             HasCounterSupport = options.EnableCounters;
-            HasWirecastSupport = options.EnableWirecast;
 
             // TODO: Load Settings File
 

@@ -17,19 +17,6 @@ namespace JARVIS.Shard
             }
         }
 
-        bool enableWirecastSupport = false;
-        public bool EnableWirecast
-        {
-            get
-            {
-                return enableWirecastSupport;
-            }
-            set
-            {
-                enableWirecastSupport = value;
-            }
-        }
-
         string outputPath = "./";
         public string OutputPath
         {
@@ -203,7 +190,6 @@ namespace JARVIS.Shard
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption useCounters = commandLine.Option("--counters", "Enable Counter Support", CommandOptionType.NoValue);
-            CommandOption useWirecast = commandLine.Option("--wirecast", "Enable Wirecast Support", CommandOptionType.NoValue);
             CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
             CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
             CommandOption useEncryption = commandLine.Option("--encrypt", "Use encryption", CommandOptionType.NoValue);
@@ -256,12 +242,6 @@ namespace JARVIS.Shard
                 if (useCounters.HasValue())
                 {
                     EnableCounters = true;
-                }
-
-                // Update Wirecast
-                if (useWirecast.HasValue())
-                {
-                    EnableWirecast = true;
                 }
 
                 // Handle Encryption Key

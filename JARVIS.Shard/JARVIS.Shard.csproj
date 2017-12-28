@@ -23,19 +23,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Resources\" />
-    <Folder Include="Services\Notifications\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\macOS\Wirecast.appleScript">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Resources\macOS\Wirecast.appleScript" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj" />

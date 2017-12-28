@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using JARVIS.Shared.Services.Socket;
+using JARVIS.Client;
 
-namespace JARVIS.Shard.Services.Socket.Commands
+namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
-    public class Wirecast : ISocketCommand
+    public class Wirecast : JARVIS.Shared.Services.Socket.ISocketCommand
     {
         public bool CanExecute()
         {
-            return Program.HasWirecastSupport;
+            return Settings.FeatureWirecastManipulation;
         }
         public void Execute(Sender session, Dictionary<string, string> parameters) 
         {
@@ -20,7 +20,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
 
             // TODO: Handle other platforms, but for now, just macOS
             Shared.Log.Message("Wire", "Changing to " + parsedArguments);
-            Shared.Platform.Run(System.IO.Path.Combine(Shared.Platform.GetBaseDirectory(), "Resources", "macOS", "Wirecast.appleScript"), parsedArguments, true);
+            Shared.Platform.Run(System.IO.Path.Combine(Shared.Platform.GetBaseDirectory(), "Resources", "Wirecast.appleScript"), parsedArguments, true);
         }
     }
 }
