@@ -6,7 +6,7 @@ using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Client.Mac.Services.Socket
 {
-    public class SocketClient
+    public class SocketClient : ISocketClient
     {
         public JCP Protocol;
 
@@ -62,37 +62,7 @@ namespace JARVIS.Client.Mac.Services.Socket
         List<byte> Buffer = new List<byte>();
         void Connection_OnData(Sender session, byte[] data)
         {
-            // Adding data to our internal buffer
-            Buffer.AddRange(data);
-
-            int terminator = Buffer.IndexOf(JCP.TransmissionTerminator);
-            while (terminator != -1)
-            {
-
-                Packet[] packets = Protocol.GetPackets(Buffer.GetRange(0, terminator).ToArray());
-                foreach (Packet p in packets)
-                {
-                    foreach (Instruction i in p.GetInstructions())
-                    {
-                        Shared.Log.Message("socket", "Instruction Received -> " + i.Operation.ToString());
-
-                        // Factory Pattern
-                        ISocketCommand receivedCommand = CommandFactory.CreateCommand(i.Operation, this);
-
-                        // Move forward?
-                        if (receivedCommand.CanExecute())
-                        {
-                            receivedCommand.Execute(session, i.Parameters);
-                        }
-                    }
-                }
-
-                Buffer.RemoveRange(0, terminator + 1);
-
-                // Look again
-                terminator = Buffer.IndexOf(JCP.TransmissionTerminator);
-            }
-
+            DataHandler.ProcessData(session, Buffer, data, Protocol, new CommandFactory(this));
         }
 
 

@@ -24,7 +24,10 @@ namespace JARVIS.Shared.Protocol
             COUNTER_SET,
             COUNTER_PLUS,
             COUNTER_MINUS,
-            WIRECAST_LAYERS
+            WIRECAST_LAYERS,
+            OAUTH_REQUEST,
+
+            SPOTIFY_REAUTH,
         }
 
         /// <summary>

@@ -54,28 +54,33 @@ namespace JARVIS.Client.Mac
            ShowMainWindow();
         }
 
-        partial void OnWindowTestLogic(AppKit.NSMenuItem sender)
+        partial void OnServicesSpotifyForceAuthentication(AppKit.NSMenuItem sender)
         {
+            Client.Send(Shared.Protocol.Instruction.OpCode.SPOTIFY_REAUTH, new System.Collections.Generic.Dictionary<string, string>());
+        }
+
+        //partial void OnWindowTestLogic(AppKit.NSMenuItem sender)
+        //{
             
 
-            // Trigger a local notification after the time has elapsed
-            var notification = new NSUserNotification();
+        //    // Trigger a local notification after the time has elapsed
+        //    var notification = new NSUserNotification();
 
-            // Add text and sound to the notification
-            notification.Title = "Authentication Required";
-            notification.InformativeText = "The server needs you to approve its access to Spotify";
-            notification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
-            notification.HasActionButton = true;
-            notification.HasReplyButton = false;
-            notification.ActionButtonTitle = "Resolve";
+        //    // Add text and sound to the notification
+        //    notification.Title = "Authentication Required";
+        //    notification.InformativeText = "The server needs you to approve its access to Spotify";
+        //    notification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
+        //    notification.HasActionButton = true;
+        //    notification.HasReplyButton = false;
+        //    notification.ActionButtonTitle = "Resolve";
 
-            // Add data keys
-            notification.UserInfo = NSDictionary.FromObjectAndKey(
-                new NSString("Oauth CODE?"),
-                new NSString("OP"));
+        //    // Add data keys
+        //    notification.UserInfo = NSDictionary.FromObjectAndKey(
+        //        new NSString("Oauth CODE?"),
+        //        new NSString("OP"));
 
-            NotificationsHandler.Notify(notification);
-        }
+        //    NotificationsHandler.Notify(notification);
+        //}
 
         partial void OnServerConnect(AppKit.NSMenuItem sender)
         {

@@ -46,7 +46,7 @@ namespace JARVIS.Shared.Protocol
         /// <summary>
         /// Protocol Version
         /// </summary>
-        public const int Version = 10;
+        public const int Version = 12;
 
         /// <summary>
         /// The Encryption Key
@@ -120,72 +120,24 @@ namespace JARVIS.Shared.Protocol
             {
                 byte[] data = p.ToBytes(UseEncryption, EncryptionKey);
 
-                // Add length
-                byte[] lengthData = BitConverter.GetBytes(data.Length);
-                returnBytes.AddRange(lengthData);
+                if (data.Length > 0)
+                {
+                    // Add length
+                    byte[] lengthData = BitConverter.GetBytes(data.Length);
+                    returnBytes.AddRange(lengthData);
 
-                // Add end of length
-                returnBytes.Add(LengthTerminator);
+                    // Add end of length
+//                    returnBytes.Add(LengthTerminator);
 
-                // Add data
-                returnBytes.AddRange(data);
+                    // Add data
+                    returnBytes.AddRange(data);
+                }
             }
 
             // Add termination that we can externally check to know when to process
-            returnBytes.Add(TransmissionTerminator);
+         //   returnBytes.Add(TransmissionTerminator);
 
             return returnBytes.ToArray();
-        }
-
-        /// <summary>
-        /// Get packets from data buffer provided. 
-        /// This seems like a double up, but what it does is actually protect against buffer joins when reading from the socket.
-        /// </summary>
-        /// <returns>The packets from data.</returns>
-        /// <param name="data">A byte[] array of data to parse.</param>
-        public Packet[] GetPackets(byte[] data)
-        {
-            List<Packet> returnPackets = new List<Packet>();
-
-            // Create usable working list
-            List<byte> workingData = new List<byte>();
-            workingData.AddRange(data);
-
-            bool parsing = true;
-            while (parsing)
-            {
-                int findNextEndOfLength = workingData.IndexOf(LengthTerminator, 0);
-                if (findNextEndOfLength < 0)
-                {
-                    parsing = false;
-                    continue;
-                }
-
-                // Get the length data that we will need to read
-                byte[] lengthData = workingData.GetRange(0, findNextEndOfLength).ToArray();
-
-                int length = BitConverter.ToInt32(lengthData, 0);
-
-                // This is a weird check for a case im not sure how it happens, possibly there is garbage?
-                if (((findNextEndOfLength + 1) > length) || ((findNextEndOfLength + 1) > workingData.Count))
-                {
-                    parsing = false;
-                    continue;
-                }
-
-                byte[] packetData = workingData.GetRange(findNextEndOfLength + 1, length).ToArray();
-
-                // TODO: I've seen this exceeed length ^ ^
-                // I think this has to do with actually pausing execution during the reading of packets.
-
-                // Create a new packet with the data provided
-                returnPackets.Add(new Packet(packetData, EncryptionKey));
-
-                // Remove the data we just used
-                workingData.RemoveRange(0, findNextEndOfLength + 1 + length);
-            }
-
-            return returnPackets.ToArray();
         }
     }
 

@@ -8,7 +8,9 @@ namespace JARVIS.Core.Services.Socket
     {
         public Dictionary<Sender, SocketUser> AuthenticatedUsers = new Dictionary<Sender, SocketUser>();
         Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
+        public Dictionary<string, IService> OAuthListeners = new Dictionary<string, IService>();
 
+        public void SetValue(string key, string data) {}
 
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
@@ -84,42 +86,8 @@ namespace JARVIS.Core.Services.Socket
 
         void Server_OnData(Sender session, byte[] data)
         {
-            // We have to assume the buffer exists for the session
-            Buffers[session].AddRange(data);
-
-            int terminator = Buffers[session].IndexOf(JCP.TransmissionTerminator);
-            while (terminator != -1)
-            {
-
-                Packet[] packets = Protocol.GetPackets(Buffers[session].GetRange(0, terminator).ToArray());
-                foreach (Packet p in packets)
-                {
-                    foreach (Instruction i in p.GetInstructions())
-                    {
-                        Shared.Log.Message("socket", "Instruction Received -> " + i.Operation.ToString() + " from " + session.RemoteEndPoint.GetHost());
-
-                        // Factory Pattern
-                        ISocketCommand receivedCommand = CommandFactory.CreateCommand(i.Operation);
-
-                        bool authAllowed = false;
-                        if ( AuthenticatedUsers.ContainsKey(session)) {
-                            authAllowed = true;
-                        }
-                        else authAllowed |= (i.Operation == Instruction.OpCode.AUTH || i.Operation == Instruction.OpCode.PING);
-
-                        // Move forward?
-                        if (authAllowed && receivedCommand.CanExecute())
-                        {
-                            receivedCommand.Execute(session, i.Parameters);
-                        }
-                    }
-                }
-
-                Buffers[session].RemoveRange(0, terminator + 1);
-
-                // Look again
-                terminator = Buffers[session].IndexOf(JCP.TransmissionTerminator);
-            }
+            // Standardized data processor
+            DataHandler.ProcessData(session, Buffers[session], data, Protocol, new CommandFactory());
         }
 
         public string GetName() 
@@ -157,8 +125,6 @@ namespace JARVIS.Core.Services.Socket
             }
         }
 
-
-
         public void SendToSession(Sender session, Instruction.OpCode type)
         {
             SendToSession(session, type, new Dictionary<string, string> { });
@@ -169,5 +135,7 @@ namespace JARVIS.Core.Services.Socket
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
             session.Send(Protocol.GetBytes(new Packet(type, arguments)));
         }
+
+
     }
 }

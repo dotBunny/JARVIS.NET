@@ -17,6 +17,9 @@ namespace JARVIS.Client.Mac
         [Outlet]
         AppKit.NSMenuItem ServerDisconnect { get; set; }
 
+        [Outlet]
+        AppKit.NSMenuItem ServicesSpotifyForceAuthentication { get; set; }
+
         [Action ("OnJARVISPreferences:")]
         partial void OnJARVISPreferences (AppKit.NSMenuItem sender);
 
@@ -26,11 +29,11 @@ namespace JARVIS.Client.Mac
         [Action ("OnServerDisconnect:")]
         partial void OnServerDisconnect (AppKit.NSMenuItem sender);
 
+        [Action ("OnServicesSpotifyForceAuthentication:")]
+        partial void OnServicesSpotifyForceAuthentication (AppKit.NSMenuItem sender);
+
         [Action ("OnWindowShow:")]
         partial void OnWindowShow (AppKit.NSMenuItem sender);
-
-        [Action ("OnWindowTestLogic:")]
-        partial void OnWindowTestLogic (AppKit.NSMenuItem sender);
         
         void ReleaseDesignerOutlets ()
         {
@@ -42,6 +45,11 @@ namespace JARVIS.Client.Mac
             if (ServerDisconnect != null) {
                 ServerDisconnect.Dispose ();
                 ServerDisconnect = null;
+            }
+
+            if (ServicesSpotifyForceAuthentication != null) {
+                ServicesSpotifyForceAuthentication.Dispose ();
+                ServicesSpotifyForceAuthentication = null;
             }
         }
     }

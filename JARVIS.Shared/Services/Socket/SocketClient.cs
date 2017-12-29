@@ -67,7 +67,7 @@ namespace JARVIS.Shared.Services.Socket
             }
             catch (Exception ex)
             {
-                throw ex;
+                Log.Error("Socket", ex.Message);
             }
         }
 
@@ -95,10 +95,7 @@ namespace JARVIS.Shared.Services.Socket
             }
             catch (Exception ex)
             {
-#if DEBUG
-                Console.WriteLine(ex.Message);
-#endif
-                throw new Exception(ex.Message, ex);
+                Log.Error("Socket", ex.Message);
             }
         }
 

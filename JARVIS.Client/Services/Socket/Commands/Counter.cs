@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using JARVIS.Shared.Services.Socket;
 
-namespace JARVIS.Client.Mac.Services.Socket.Commands
+namespace JARVIS.Client.Services.Socket.Commands
 {
     public class Counter : JARVIS.Shared.Services.Socket.ISocketCommand
     {

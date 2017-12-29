@@ -176,6 +176,7 @@ namespace JARVIS.Shared.Protocol
                 workingBytes.Insert(0, JCP.DecryptedMarker);
 
             }
+
             return workingBytes.ToArray();
         }
     }

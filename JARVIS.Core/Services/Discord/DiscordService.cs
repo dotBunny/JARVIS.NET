@@ -14,6 +14,8 @@ namespace JARVIS.Core.Services.Discord
             return "Discord";
         }
 
+        public void SetValue(string key, string data) {}
+
         public void Start()
         {
             //DiscordClient c = new DiscordClient();

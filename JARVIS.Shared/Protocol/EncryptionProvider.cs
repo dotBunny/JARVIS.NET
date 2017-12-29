@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace JARVIS.Shared.Protocol
 {
@@ -75,6 +76,7 @@ namespace JARVIS.Shared.Protocol
                     }
                 }
             }
+
             return returnData;
         }
     }

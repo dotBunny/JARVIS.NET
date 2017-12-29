@@ -41,6 +41,8 @@ namespace JARVIS.Core
         /// </summary>
         public static Services.Discord.DiscordService Discord;
 
+        public static Services.Spotify.SpotifyService Spotify;
+
 
         static volatile bool ShouldTickFlag = false;
 
@@ -81,6 +83,10 @@ namespace JARVIS.Core
             ActiveServices.Add(Socket);
 
             Shared.Log.Message("System", "Startup Complete");
+
+
+            // Start Secondary Services
+            Spotify = new Services.Spotify.SpotifyService();
 
 
             // Start Tick Thread

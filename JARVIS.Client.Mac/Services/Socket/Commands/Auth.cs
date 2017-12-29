@@ -5,9 +5,9 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
     public class Auth : ISocketCommand
     {
-        SocketClient Client;
+        ISocketClient Client;
 
-        public Auth(SocketClient client)
+        public Auth(ISocketClient client)
         {
             Client = client;
         }

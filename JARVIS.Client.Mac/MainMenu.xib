@@ -84,6 +84,26 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Services" id="UlW-El-57W">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Services" systemMenu="window" id="gJe-No-J8t">
+                        <items>
+                            <menuItem title="Spotify" id="TiN-xE-Ya9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Spotify" systemMenu="window" id="Jdl-tF-y9C">
+                                    <items>
+                                        <menuItem title="Force Authentication" id="MYa-PL-d5i">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="OnServicesSpotifyForceAuthentication:" target="OxR-Zu-dBZ" id="uUi-WT-XVK"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="19">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
@@ -92,12 +112,6 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="OnWindowShow:" target="OxR-Zu-dBZ" id="wVE-14-mpB"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Test Logic" id="SJg-3O-ndi">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="OnWindowTestLogic:" target="OxR-Zu-dBZ" id="tyy-QD-0ax"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="5Xc-ct-FbO"/>
@@ -140,6 +154,7 @@
             <connections>
                 <outlet property="ServerConnect" destination="297" id="lBh-gY-lQs"/>
                 <outlet property="ServerDisconnect" destination="298" id="0hj-Ez-FKG"/>
+                <outlet property="ServicesSpotifyForceAuthentication" destination="MYa-PL-d5i" id="KjX-Iw-91g"/>
             </connections>
         </customObject>
     </objects>

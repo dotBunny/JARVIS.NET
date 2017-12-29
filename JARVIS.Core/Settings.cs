@@ -14,6 +14,10 @@ namespace JARVIS.Core
         public bool SocketEncryption = true;
         public int DatabaseVersion = 1;
 
+        public bool SpotifyEnabled = false;
+        public string SpotifyClientID = "";
+        public string SpotifyClientSecret = "";
+
 
         Dictionary<string, string> RawSettings = new Dictionary<string, string>();
 
@@ -29,7 +33,6 @@ namespace JARVIS.Core
         //{
             
         //}
-
         public string Get(string settingName)
         {
             if ( RawSettings.ContainsKey(settingName) ) {
@@ -38,6 +41,22 @@ namespace JARVIS.Core
                 Shared.Log.Error("Settings", "Unable to find setting with key: " + settingName);
                 return string.Empty;
             }
+        }
+
+        public bool GetBool(string settingName)
+        {
+            bool test = false;
+
+            if (RawSettings.ContainsKey(settingName))
+            {
+                bool.TryParse(RawSettings[settingName], out test);
+
+            }
+            else
+            {
+                Shared.Log.Error("Settings", "Unable to find setting with key: " + settingName);
+            }
+            return test;
         }
 
         public void Save() {
@@ -100,6 +119,16 @@ namespace JARVIS.Core
             {
                 bool.TryParse(RawSettings[Database.Tables.Settings.ServerSocketEncryptionID], out SocketEncryption);
             }
+
+
+
+
+            // List Current Settings
+            foreach (KeyValuePair<string, string> setting in RawSettings)
+            {
+                Shared.Log.Message("Setting", setting.Key + ":" + setting.Value);
+            }
+
         }
     }
 }

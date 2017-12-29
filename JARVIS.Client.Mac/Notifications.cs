@@ -9,6 +9,10 @@ namespace JARVIS.Client.Mac
     {
         NSUserNotificationCenter NotificationCenter { get; set; }
 
+        NSString runPathKey = new NSString("Shared.Platform.Run.Path");
+        NSString runArguementsKey = new NSString("Shared.Platform.Run.Arguements");
+        NSString runHideKey = new NSString("Shared.Platform.Run.Hide");
+
         //List<NSUserNotification> ActiveNotifications = new List<NSUserNotification>();
         //int CachedNotificationCount;
 
@@ -21,6 +25,7 @@ namespace JARVIS.Client.Mac
             // Handler
             NotificationCenter.DidActivateNotification += (s, e) =>
             {
+                
                 switch (e.Notification.ActivationType)
                 {
                     case NSUserNotificationActivationType.ContentsClicked:
@@ -29,8 +34,10 @@ namespace JARVIS.Client.Mac
                        
                         break;
                     case NSUserNotificationActivationType.ActionButtonClicked:
-                        
-                        Console.WriteLine(e.Notification.UserInfo.ValueForKey(new NSString("OP")));
+
+                        if ( e.Notification.UserInfo.ContainsKey(runPathKey) ){
+                            Shared.Platform.Run(e.Notification.UserInfo.ValueForKey(runPathKey).ToString(), string.Empty, false);
+                        }
 
                         break;
                     default:
@@ -67,6 +74,27 @@ namespace JARVIS.Client.Mac
             notification.HasReplyButton = false;
 
             Notify(notification);
+        }
+
+        public void Notify(Shared.INotification notification)
+        {
+            // Trigger a local notification after the time has elapsed
+            var sysNotification = new NSUserNotification();
+
+            // Add text and sound to the notification
+            sysNotification.Title = notification.GetTitle();
+            sysNotification.InformativeText = notification.GetMessage();
+            sysNotification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
+            sysNotification.HasActionButton = true;
+            sysNotification.HasReplyButton = false;
+
+            // Create Key Data (how we pass things around unfortunately)
+            foreach(KeyValuePair<string,string> item in notification.GetDictionary())
+            {
+                sysNotification.SetValueForKey(new NSString(item.Key), new NSString(item.Value));
+            }
+
+            Notify(sysNotification);
         }
 
         public void Notify(NSUserNotification notification)

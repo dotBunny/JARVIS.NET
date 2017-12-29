@@ -1,8 +1,15 @@
-﻿namespace JARVIS.Shard.Services.Socket
+﻿using JARVIS.Shared.Services.Socket;
+
+namespace JARVIS.Shard.Services.Socket
 {
-    public static class CommandFactory
+    public class CommandFactory : ICommandFactory
     {
-        public static Shared.Services.Socket.ISocketCommand CreateCommand(Shared.Protocol.Instruction.OpCode commandType)
+        public CommandFactory()
+        {
+            
+        }
+
+        public ISocketCommand CreateCommand(Shared.Protocol.Instruction.OpCode commandType)
         {
             switch(commandType)
             {

@@ -55,6 +55,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Flurl">
+      <HintPath>..\packages\Flurl.2.6.0\lib\netstandard1.3\Flurl.dll</HintPath>
+    </Reference>
     <Reference Include="Plugin.Settings.Abstractions">
       <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\Xamarin.Mac20\Plugin.Settings.Abstractions.dll</HintPath>
     </Reference>
@@ -120,7 +125,6 @@
     <Compile Include="Services\Socket\SocketClient.cs" />
     <Compile Include="Services\Socket\CommandFactory.cs" />
     <Compile Include="Services\Socket\Commands\Auth.cs" />
-    <Compile Include="Services\Socket\Commands\Counter.cs" />
     <Compile Include="Services\Socket\Commands\Fail.cs" />
     <Compile Include="Services\Socket\Commands\Pong.cs" />
     <Compile Include="Services\Socket\Commands\Wirecast.cs" />
