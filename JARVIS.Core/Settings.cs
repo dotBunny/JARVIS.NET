@@ -50,7 +50,6 @@ namespace JARVIS.Core
             if (RawSettings.ContainsKey(settingName))
             {
                 bool.TryParse(RawSettings[settingName], out test);
-
             }
             else
             {
@@ -126,7 +125,7 @@ namespace JARVIS.Core
             // List Current Settings
             foreach (KeyValuePair<string, string> setting in RawSettings)
             {
-                Shared.Log.Message("Setting", setting.Key + ":" + setting.Value);
+                Shared.Log.Message("Setting", setting.Key + ": " + setting.Value);
             }
 
         }

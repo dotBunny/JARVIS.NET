@@ -8,6 +8,8 @@ namespace JARVIS.Shared.Protocol
     /// </summary>
     public class JCP
     {
+        public const int SizeOfLength = sizeof(int);
+
         /// <summary>
         /// An indicator byte that data is not encrypted.
         /// </summary>
@@ -19,34 +21,24 @@ namespace JARVIS.Shared.Protocol
         public const byte EncryptedMarker = 0x0f;
 
         /// <summary>
-        /// The indicator byte of the data length definition.
-        /// </summary>
-        public const byte LengthTerminator = 0x01;
-
-        /// <summary>
         /// The indicator byte of the operation code.
         /// </summary>
-        public const byte OpCodeTerminator = 0x02;
+        public const byte OpCodeTerminator = 0x01;
 
         /// <summary>
         /// The indicator byte of a parameter name.
         /// </summary>
-        public const byte ParameterNameTerminator = 0x03;
+        public const byte ParameterNameTerminator = 0x02;
 
         /// <summary>
         /// The indicator byte of a parameter value.
         /// </summary>
-        public const byte ParameterValueTerminator = 0x04;
-
-        /// <summary>
-        /// The indicator byte of the end of the transmission.
-        /// </summary>
-        public const byte TransmissionTerminator = 0x7f;
+        public const byte ParameterValueTerminator = 0x03;
 
         /// <summary>
         /// Protocol Version
         /// </summary>
-        public const int Version = 12;
+        public const int Version = 13;
 
         /// <summary>
         /// The Encryption Key
@@ -122,20 +114,13 @@ namespace JARVIS.Shared.Protocol
 
                 if (data.Length > 0)
                 {
-                    // Add length
-                    byte[] lengthData = BitConverter.GetBytes(data.Length);
-                    returnBytes.AddRange(lengthData);
-
-                    // Add end of length
-//                    returnBytes.Add(LengthTerminator);
+                    // Add length (as bytes)
+                    returnBytes.AddRange(BitConverter.GetBytes(data.Length));
 
                     // Add data
                     returnBytes.AddRange(data);
                 }
             }
-
-            // Add termination that we can externally check to know when to process
-         //   returnBytes.Add(TransmissionTerminator);
 
             return returnBytes.ToArray();
         }

@@ -81,24 +81,29 @@ namespace JARVIS.Shared.Protocol
             bool parsing = true;
             while (parsing)
             {
-                int findNextEndOfLength = workingData.IndexOf(JCP.LengthTerminator, 0);
-                if (findNextEndOfLength < 0)
+
+                if (workingData.Count >= JCP.SizeOfLength)
+                {
+                    byte[] lengthBytes = workingData.GetRange(0, JCP.SizeOfLength).ToArray();
+                    int instructionLength = BitConverter.ToInt32(lengthBytes, 0);
+
+                    // We've got a complete packet at this point
+                    if (workingData.Count >= (instructionLength + JCP.SizeOfLength))
+                    {
+                        Instructions.Add(new Instruction(workingData.GetRange(JCP.SizeOfLength, instructionLength).ToArray()));
+
+                        // Remove processed data
+                        workingData.RemoveRange(0, JCP.SizeOfLength + instructionLength);
+                    }
+                    else
+                    {
+                        parsing = false;
+                    }
+                }
+                else
                 {
                     parsing = false;
-                    continue;
                 }
-
-                // Get the length data that we will need to read
-                byte[] lengthData = workingData.GetRange(0, findNextEndOfLength).ToArray();
-
-                int length = BitConverter.ToInt32(lengthData, 0);
-                byte[] packetData = workingData.GetRange(findNextEndOfLength + 1, length).ToArray();
-
-                // Create a new instruction with the data provided
-                Instructions.Add(new Instruction(packetData));
-
-                // Remove the data we just used
-                workingData.RemoveRange(0, findNextEndOfLength + 1 + length);
             }
         }
 
@@ -150,12 +155,9 @@ namespace JARVIS.Shared.Protocol
             {
                 byte[] data = i.ToBytes();
 
-                // Add length
+                // Add length (4 bytes)
                 byte[] lengthData = BitConverter.GetBytes(data.Length);
                 workingBytes.AddRange(lengthData);
-
-                // Add end of length
-                workingBytes.Add(JCP.LengthTerminator);
 
                 // Add data
                 workingBytes.AddRange(data);

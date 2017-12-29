@@ -6,8 +6,6 @@ namespace JARVIS.Shared.Services.Socket
 {
     public static class DataHandler
     {
-        public static int SizeOfLength = sizeof(int);
-
         public static void ProcessData(Sender session, List<byte> buffer, byte[] data, JCP protocol, ICommandFactory factory)
         {
             Log.Message("JCP", "Received " + data.Length + " bytes.");
@@ -18,18 +16,18 @@ namespace JARVIS.Shared.Services.Socket
             bool parsing = true;
             while (parsing)
             {
-                if (buffer.Count >= SizeOfLength)
+                if (buffer.Count >= JCP.SizeOfLength)
                 {
-                    byte[] lengthBytes = buffer.GetRange(0, SizeOfLength).ToArray();
+                    byte[] lengthBytes = buffer.GetRange(0, JCP.SizeOfLength).ToArray();
                     int packetLength = BitConverter.ToInt32(lengthBytes, 0);
 
                     // We've got a complete packet at this point
-                    if (buffer.Count >= (packetLength + SizeOfLength))
+                    if (buffer.Count >= (packetLength + JCP.SizeOfLength))
                     {
-                        Packet packet = new Packet(buffer.GetRange(SizeOfLength, packetLength).ToArray(), protocol.EncryptionKey);
+                        Packet packet = new Packet(buffer.GetRange(JCP.SizeOfLength, packetLength).ToArray(), protocol.EncryptionKey);
 
                         // Remove processed data
-                        buffer.RemoveRange(0, SizeOfLength + packetLength);
+                        buffer.RemoveRange(0, JCP.SizeOfLength + packetLength);
 
                         // Execute packet instructions
                         foreach (Instruction i in packet.GetInstructions())
