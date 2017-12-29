@@ -54,7 +54,7 @@ namespace JARVIS.Client.Mac
 
         partial void OnWindowTestLogic(AppKit.NSMenuItem sender)
         {
-
+            
 
             // Trigger a local notification after the time has elapsed
             var notification = new NSUserNotification();
