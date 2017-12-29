@@ -34,6 +34,11 @@ namespace JARVIS.Client.Mac
         public override void WillTerminate(NSNotification notification)
         {
             // Insert code here to tear down your application
+
+            // Make sure that the Client is disconnected
+            if ( Client != null && Client.IsConnected ) {
+                Client.Stop();
+            }
         }
 
 
@@ -70,19 +75,15 @@ namespace JARVIS.Client.Mac
             NotificationsHandler.Notify(notification);
         }
 
-        partial void OnServerConnect(AppKit.NSMenuItem sender) {
-
+        partial void OnServerConnect(AppKit.NSMenuItem sender)
+        {
             Client.Start();
-
-       
         }
 
-        partial void OnServerDisconnect(AppKit.NSMenuItem sender) {
+        partial void OnServerDisconnect(AppKit.NSMenuItem sender) 
+        {
             
             Client.Stop();
-
-            ServerConnect.Enabled = true;
-            ServerDisconnect.Enabled = false;
         }
 
 

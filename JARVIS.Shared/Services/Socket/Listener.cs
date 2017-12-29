@@ -27,7 +27,8 @@ namespace JARVIS.Shared.Services.Socket
         /// <value>
         ///   <c>true</c> if running; otherwise, <c>false</c>.
         /// </value>
-        public bool Running { get; private set; }
+        public volatile bool Running;
+
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Listener"/> is connected.
@@ -135,31 +136,18 @@ namespace JARVIS.Shared.Services.Socket
         /// </summary>
         public void Stop()
         {
+            // We dont have a thread, so lets leave that alone
             if (threadHandle == null)
             {
                 return;
             }
 
+
+
             Running = false;
+            //threadHandle.Abort();
 
-            if (Connected)
-            {
-                Socket.Shutdown(SocketShutdown.Both);
-                Socket.Disconnect(false);
-                Socket.Close();
-            }
-
-            if (threadHandle.IsAlive)
-            {
-                try
-                {
-                    threadHandle.Abort();
-                }
-                catch (Exception)
-                {
-                }
-                threadHandle = null;
-            }
+          //  threadHandle = null;
         }
 
         /// <summary>
@@ -175,7 +163,9 @@ namespace JARVIS.Shared.Services.Socket
                 int length;
                 while (Running && Connected)
                 {
-                    if (Socket.Poll(-1, SelectMode.SelectRead))
+
+                    // Poll for 1 millisecond (1000 microseconds)
+                    if (Socket.Poll(1000, SelectMode.SelectRead))
                     {
                         try
                         {
@@ -217,10 +207,12 @@ namespace JARVIS.Shared.Services.Socket
                             continue;
                         }
 
-                        Thread.Sleep(10);
+                        // Sleep by 1 millisecond
+                        Thread.Sleep(1);
                     }
                 }
 
+                // Set if we for some reason have been kicked out (!Connected)
                 Running = false;
 
                 if (Socket?.Connected==true)
@@ -228,6 +220,10 @@ namespace JARVIS.Shared.Services.Socket
                     Socket.Shutdown(SocketShutdown.Both);
                     Socket.Disconnect(true);
                     Socket.Close(); 
+
+                    // Clean this shit up
+                    Socket.Dispose();
+                    Socket = null;
                 }
 
 #if DEBUG
@@ -240,6 +236,9 @@ namespace JARVIS.Shared.Services.Socket
             {
                 Console.WriteLine(e);
             }
+
+            // Release thread
+            threadHandle = null;
         }
     }
 }

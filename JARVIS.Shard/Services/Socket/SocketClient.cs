@@ -24,7 +24,7 @@ namespace JARVIS.Shard.Services.Socket
             Host = Shared.Net.GetIPAddress(Host);
 
             // Create Client
-            Connection = new Shared.Services.Socket.SocketClient(Host, Port);
+            Connection = new Shared.Services.Socket.SocketClient();
 
             // Setup event handlers
             Connection.OnClosed += Connection_OnClosed;

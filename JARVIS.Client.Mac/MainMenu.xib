@@ -67,7 +67,7 @@
                 </menuItem>
                 <menuItem title="Server" id="295">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Server" id="296">
+                    <menu key="submenu" title="Server" autoenablesItems="NO" id="296">
                         <items>
                             <menuItem title="Connect" enabled="NO" id="297">
                                 <modifierMask key="keyEquivalentModifierMask"/>

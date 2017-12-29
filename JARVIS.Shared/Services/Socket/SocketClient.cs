@@ -33,84 +33,7 @@ namespace JARVIS.Shared.Services.Socket
         public SocketClient()
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SocketClient"/> class.
-        /// </summary>
-        /// <param name="host">The host.</param>
-        /// <param name="port">The port.</param>
-        public SocketClient(string host,int port)
-        {
-            SetHost(host);
-
-            SetPort(port);
-
-            socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        }
-
-        /// <summary>
-        /// Connects this instance.
-        /// </summary>
-        public void Connect()
-        {
-            try
-            {
-                if (Connected)
-                {
-                    return;
-                }
-
-                CheckHostAndPort();
-
-                socket.Connect(Host, Port);
-
-                listener?.Stop();
-
-                listener = new JARVIS.Shared.Services.Socket.Listener(this, socket, Listener.ListenerType.Client);
-
-                SetOnConnectedFun();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// Connects the specified end point.
-        /// </summary>
-        /// <param name="endPoint">The end point.</param>
-        /// <exception cref="ArgumentNullException">endPoint</exception>
-        public void Connect(EndPoint endPoint)
-        {
-            try
-            {
-                if (Connected)
-                {
-                    return;
-                }
-
-                if (endPoint == null)
-                {
-                    throw new ArgumentNullException(nameof(endPoint));
-                }
-
-                this.Host = endPoint.GetHost();
-                this.Port = endPoint.GetPort();
-
-                socket.Connect(endPoint);
-
-                listener?.Stop();
-
-                listener = new Listener(this, socket, Listener.ListenerType.Client);
-
-                SetOnConnectedFun();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+    
 
         /// <summary>
         /// Connects the specified host.
@@ -130,6 +53,10 @@ namespace JARVIS.Shared.Services.Socket
 
                 SetPort(port);
 
+                // Make our socket
+                socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                // Connect that shit up
                 socket.Connect(Host, Port);
 
                 listener?.Stop();
@@ -144,43 +71,6 @@ namespace JARVIS.Shared.Services.Socket
             }
         }
 
-        /// <summary>
-        /// Connects the specified address.
-        /// </summary>
-        /// <param name="address">The address.</param>
-        /// <param name="port">The port.</param>
-        /// <exception cref="ArgumentNullException">address</exception>
-        public void Connect(IPAddress address, int port)
-        {
-            try
-            {
-                if (Connected)
-                {
-                    return;
-                }
-
-                if (address == null)
-                {
-                    throw new ArgumentNullException(nameof(address));
-                }
-
-                Host = address.ToString();
-
-                SetPort(port);
-
-                socket.Connect(address, Port);
-
-                listener?.Stop();
-
-                listener = new Listener(this, socket, Listener.ListenerType.Client);
-
-                SetOnConnectedFun();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
         
         /// <summary>
         /// Start Socket client.
@@ -217,7 +107,7 @@ namespace JARVIS.Shared.Services.Socket
         /// </summary>
         public override void Stop()
         {
-            if (listener?.Running == true)
+            if (listener.Running)
             {
                 listener.Stop();
             }

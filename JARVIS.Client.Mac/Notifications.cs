@@ -56,7 +56,9 @@ namespace JARVIS.Client.Mac
 
         public void Notify(NSUserNotification notification)
         {
+            
             NotificationCenter.DeliverNotification(notification);
+
             //ActiveNotifications.Add(notification);
             //UpdateBadge();
         }

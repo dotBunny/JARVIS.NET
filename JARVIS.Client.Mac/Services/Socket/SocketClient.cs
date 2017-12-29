@@ -27,7 +27,7 @@ namespace JARVIS.Client.Mac.Services.Socket
             MenuDisconnect = disconnect;
 
             // Create Client
-            Connection = new Shared.Services.Socket.SocketClient(Settings.ServerAddress, Settings.ServerPort);
+            Connection = new Shared.Services.Socket.SocketClient();
 
             // Setup event handlers
             Connection.OnClosed += Connection_OnClosed;
