@@ -8,10 +8,9 @@ namespace JARVIS.Client.Mac
     public class Notifications
     {
         NSUserNotificationCenter NotificationCenter { get; set; }
-        NSUserActivity ActivityBar { get; set; }
 
-        List<NSUserNotification> ActiveNotifications = new List<NSUserNotification>();
-        int CachedNotificationCount;
+        //List<NSUserNotification> ActiveNotifications = new List<NSUserNotification>();
+        //int CachedNotificationCount;
 
         public Notifications()
         {
@@ -22,16 +21,12 @@ namespace JARVIS.Client.Mac
             // Handler
             NotificationCenter.DidActivateNotification += (s, e) =>
             {
-                Console.WriteLine(e.Notification.ActivationType.ToString());
                 switch (e.Notification.ActivationType)
                 {
                     case NSUserNotificationActivationType.ContentsClicked:
                        
                         Console.WriteLine("Notification Touched");
                        
-
-
-
                         break;
                     case NSUserNotificationActivationType.ActionButtonClicked:
                         
@@ -42,42 +37,49 @@ namespace JARVIS.Client.Mac
                         break;
                 }
 
-                if (ActiveNotifications.Contains(e.Notification))
-                {
-                    ActiveNotifications.Remove(e.Notification);
-                    UpdateBadge();
-                }
+                //if (ActiveNotifications.Contains(e.Notification))
+                //{
+                //    ActiveNotifications.Remove(e.Notification);
+                //    UpdateBadge();
+                //}
 
             };
+
+            //NotificationCenter.DidDeliverNotification += (sender, e) => {
+
+            //    Console.WriteLine(e.Notification.ActivationType.ToString());
+
+            //};
+
 
         }
 
         public void Notify(NSUserNotification notification)
         {
             NotificationCenter.DeliverNotification(notification);
-            ActiveNotifications.Add(notification);
-            UpdateBadge();
+            //ActiveNotifications.Add(notification);
+            //UpdateBadge();
         }
 
-        void UpdateBadge()
-        {
-            CachedNotificationCount = ActiveNotifications.Count;
-            var dockTile = NSApplication.SharedApplication.DockTile;
+        //void UpdateBadge()
+        //{
+        //    CachedNotificationCount = ActiveNotifications.Count;
+        //    var dockTile = NSApplication.SharedApplication.DockTile;
 
-            if ( CachedNotificationCount > 0 )
-            {
-                dockTile.BadgeLabel = CachedNotificationCount.ToString();
-            }
-            else 
-            {
-                dockTile.BadgeLabel = string.Empty;
-            }
-        }
+        //    if ( CachedNotificationCount > 0 )
+        //    {
+        //        dockTile.BadgeLabel = CachedNotificationCount.ToString();
+        //    }
+        //    else 
+        //    {
+        //        dockTile.BadgeLabel = string.Empty;
+        //    }
+        //}
 
-        public int GetActiveNotificationCount()
-        {
-            return ActiveNotifications.Count;
-        }
+        //public int GetActiveNotificationCount()
+        //{
+        //    return ActiveNotifications.Count;
+        //}
 
     }
 }
