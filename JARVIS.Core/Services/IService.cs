@@ -1,10 +1,14 @@
 ﻿using System;
+using Grapevine.Interfaces.Server;
+
 namespace JARVIS.Core.Services
 {
     public interface IService
     {
         string GetName();
-        void SetValue(string key, string data);
+
+        void HandleCallback(IHttpRequest request);
+
         void Start();
         void Stop();
 

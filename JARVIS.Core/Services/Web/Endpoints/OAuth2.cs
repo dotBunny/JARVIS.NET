@@ -13,7 +13,18 @@ namespace JARVIS.Core.Services.Web.Endpoints
         public IHttpContext Response(IHttpContext context)
         {
             Shared.Log.Message("web", context.Request.QueryString.ToString());
-            context.Response.SendResponse("Yay");
+
+            string state = context.Request.QueryString.GetValue<string>("state", string.Empty);
+            if ( Server.Web.CallbackListeners.ContainsKey(state) ) {
+
+                // Handle callback
+                Server.Web.CallbackListeners[state].HandleCallback(context.Request);
+
+                // Only get one shot
+                Server.Web.CallbackListeners.Remove(state);
+            }
+
+            context.Response.SendResponse("Processed! You may close this window.");
             return context;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using JARVIS.Shared.Services.Socket;
 using JARVIS.Shared.Protocol;
+using Grapevine.Interfaces.Server;
 
 namespace JARVIS.Core.Services.Socket
 {
@@ -10,7 +11,6 @@ namespace JARVIS.Core.Services.Socket
         Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
         public Dictionary<string, IService> OAuthListeners = new Dictionary<string, IService>();
 
-        public void SetValue(string key, string data) {}
 
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
@@ -136,6 +136,9 @@ namespace JARVIS.Core.Services.Socket
             session.Send(Protocol.GetBytes(new Packet(type, arguments)));
         }
 
-
+        public void HandleCallback(IHttpRequest request)
+        {
+           
+        }
     }
 }

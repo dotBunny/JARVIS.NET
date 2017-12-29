@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grapevine.Interfaces.Server;
+using Grapevine.Shared;
 //using Discord.Rest;
 
 using SpotifyAPI;
@@ -22,7 +24,10 @@ namespace JARVIS.Core.Services.Spotify
 
 
         public bool Authenticated = false;
+
+
         string State;
+        string Code = string.Empty;
         string Token = string.Empty;
 
         //DiscordRestConfig Config;
@@ -49,27 +54,28 @@ namespace JARVIS.Core.Services.Spotify
             return "Spotify";
         }
 
-        public void SetValue(string key, string data) 
+        public void HandleCallback(IHttpRequest request)
         {
-            if ( key == "token" ){
-                SetToken(data);
+            string state = request.QueryString.GetValue<string>("state", string.Empty);
+
+            // Stage 1 
+            if ( Code == string.Empty ) {
+                Code = request.QueryString.GetValue<string>("state", string.Empty);
+
+                if ( Code != string.Empty ) 
+                {
+                    // Launch ASYNC Request?
+
+                }
             }
+           
         }
-
-        public void SetToken(string token)
-        {
-            Token = token;
-        }
-
-        public string GetState()
-        {
-            return State;
-        }
-
 
         void Authorize()
         {
             Authenticated = false;
+            Token = string.Empty;
+            Code = string.Empty;
 
             Shared.Log.Message("Spotify", "Initiating authorization process ...");
 
@@ -91,7 +97,7 @@ namespace JARVIS.Core.Services.Spotify
             parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
 
             // Add to listeners
-            Server.Socket.OAuthListeners.Add(State, this);
+            Server.Web.CallbackListeners.Add(State, this);
 
             // Only send to our client based OAUTH manager
             // TODO: Make this so it requires logged in(false->True)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grapevine.Interfaces.Server;
 using Grapevine.Server;
 
 namespace JARVIS.Core.Services.Web
@@ -9,6 +10,8 @@ namespace JARVIS.Core.Services.Web
 
         RestServer Server;
         ServerSettings Settings;
+
+        public Dictionary<string, IService> CallbackListeners = new Dictionary<string, IService>();
  
         // Pass by reference the config and hte ?
         public WebService(string host, string port)
@@ -33,7 +36,7 @@ namespace JARVIS.Core.Services.Web
             return "Web";
         }
 
-        public void SetValue(string key, string data) {}
+        public void HandleCallback(IHttpRequest request) { };
 
         public void Start()
         {
