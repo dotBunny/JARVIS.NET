@@ -25,6 +25,8 @@ namespace JARVIS.Client.Mac
             // Initialize Our Notifications
             NotificationsHandler = new Notifications();
 
+            Shared.Log.Notifier = NotificationsHandler;
+
             // Try To Connect - Pass in menu items for status updating
             Client = new Services.Socket.SocketClient(ServerConnect, ServerDisconnect);
             Client.Start();

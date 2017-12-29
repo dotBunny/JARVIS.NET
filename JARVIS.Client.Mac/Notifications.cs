@@ -5,7 +5,7 @@ using Foundation;
 
 namespace JARVIS.Client.Mac
 {
-    public class Notifications
+    public class Notifications : JARVIS.Shared.INotifier
     {
         NSUserNotificationCenter NotificationCenter { get; set; }
 
@@ -52,6 +52,21 @@ namespace JARVIS.Client.Mac
             //};
 
 
+        }
+
+        public void Notify(string title, string description)
+        {
+            // Trigger a local notification after the time has elapsed
+            var notification = new NSUserNotification();
+
+            // Add text and sound to the notification
+            notification.Title = title;
+            notification.InformativeText = description;
+            notification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
+            notification.HasActionButton = false;
+            notification.HasReplyButton = false;
+
+            Notify(notification);
         }
 
         public void Notify(NSUserNotification notification)

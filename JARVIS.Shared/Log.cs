@@ -11,6 +11,7 @@ namespace JARVIS.Shared
         static string OutputFileNameBase = "JARVIS.log";
         static LogWriter Output;
         static Timer PeriodicWriter;
+        public static INotifier Notifier;
 
         public static void WriteCache()
         {
@@ -46,18 +47,32 @@ namespace JARVIS.Shared
                 TimeSpan.FromMinutes(1));
         }
 
-        public static void Message(string section, string content)
+        public static void Message(string section, string content, bool notify = false)
         {
             Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+
+            if ( notify && Notifier != null) {
+                Notifier.Notify(section.ToUpper(), content);
+            }
         }
 
-        public static void Error(string section, string content)
+        public static void Error(string section, string content, bool notify = false)
         {
             Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+           
+            if (notify && Notifier != null)
+            {
+                Notifier.Notify(section.ToUpper() + " (ERROR)", content);
+            }
         }
-        public static void Fatal(string section, string content)
+        public static void Fatal(string section, string content, bool notify = false)
         {
             Console.WriteLine(GetCurrentTimeStamp() + "\t" + section.ToUpper() + "\t" + content);
+
+            if (notify && Notifier != null)
+            {
+                Notifier.Notify(section.ToUpper() + " (FATAL)", content);
+            }
             Environment.Exit(1);
         }
 

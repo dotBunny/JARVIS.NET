@@ -75,14 +75,10 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
                 Shared.Log.Message("Wire", "Changing to " + parsedArguments.Trim());
 
                 NSDictionary executeResponse = new NSDictionary();
-
-                NSString errorKey = new NSString("errorMessage");
                 scriptObject.ExecuteAndReturnError(out executeResponse);
-
-                if ( executeResponse.ContainsKey(errorKey) )
+                if ( executeResponse != null && executeResponse.Keys != null && executeResponse.Keys.Length > 0 )
                 {
-                    Shared.Log.Error("Wire", executeResponse.ValueForKey(errorKey).ToString());
-
+                    Shared.Log.Error("Wire", "An error occured. " + executeResponse.Values[0].ToString());
                 }
 
             }
