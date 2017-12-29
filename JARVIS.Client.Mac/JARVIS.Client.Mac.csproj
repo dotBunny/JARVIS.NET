@@ -55,17 +55,23 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="Plugin.Settings.Abstractions">
+      <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\Xamarin.Mac20\Plugin.Settings.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.Settings">
+      <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\Xamarin.Mac20\Plugin.Settings.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_16.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_32.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_128.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_256.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_512.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_1024.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_128.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_16.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_256.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_32.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_512.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_64.png" />
   </ItemGroup>
   <ItemGroup>
@@ -75,10 +81,15 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Socket\" />
     <Folder Include="Services\Socket\Commands\" />
+    <Folder Include="Assets.xcassets\AppIcon.appiconset\" />
+    <Folder Include="Assets.xcassets\AppIconRed.appiconset\" />
+    <Folder Include="Assets.xcassets\AppIconGreen.appiconset\" />
+    <Folder Include="Assets.xcassets\AppIconYellow.appiconset\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -114,6 +125,7 @@
     <Compile Include="Services\Socket\Commands\Fail.cs" />
     <Compile Include="Services\Socket\Commands\Pong.cs" />
     <Compile Include="Services\Socket\Commands\Wirecast.cs" />
+    <Compile Include="Helpers\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">

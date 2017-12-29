@@ -7,10 +7,14 @@ namespace JARVIS.Client.Mac
     [Register("AppDelegate")]
     public partial class AppDelegate : NSApplicationDelegate
     {
+        public Services.Socket.SocketClient Client; 
+
         public MainWindowController mainWindowController { get; set; }
         PreferencesWindowController preferencesWindowController { get; set; }
 
         public Notifications NotificationsHandler { get; set; }
+
+
 
         public AppDelegate()
         {
@@ -21,8 +25,10 @@ namespace JARVIS.Client.Mac
             // Initialize Our Notifications
             NotificationsHandler = new Notifications();
 
-            // Try To Connect
-            OnServerConnect(null);
+            // Try To Connect - Pass in menu items for status updating
+            Client = new Services.Socket.SocketClient(ServerConnect, ServerDisconnect);
+            Client.Start();
+
         }
 
         public override void WillTerminate(NSNotification notification)
@@ -53,6 +59,7 @@ namespace JARVIS.Client.Mac
             notification.InformativeText = "The server needs you to approve its access to Spotify";
             notification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
             notification.HasActionButton = true;
+            notification.HasReplyButton = false;
             notification.ActionButtonTitle = "Resolve";
 
             // Add data keys
@@ -65,16 +72,14 @@ namespace JARVIS.Client.Mac
 
         partial void OnServerConnect(AppKit.NSMenuItem sender) {
 
+            Client.Start();
 
-
-            MainClass.Client.Start();
-
-            ServerConnect.Enabled = false;
-            ServerDisconnect.Enabled = true;
+       
         }
 
         partial void OnServerDisconnect(AppKit.NSMenuItem sender) {
-            MainClass.Client.Stop();
+            
+            Client.Stop();
 
             ServerConnect.Enabled = true;
             ServerDisconnect.Enabled = false;

@@ -2,12 +2,12 @@
 {
     public static class CommandFactory
     {
-        public static Shared.Services.Socket.ISocketCommand CreateCommand(Shared.Protocol.Instruction.OpCode commandType)
+        public static Shared.Services.Socket.ISocketCommand CreateCommand(Shared.Protocol.Instruction.OpCode commandType, SocketClient client)
         {
             switch (commandType)
             {
                 case Shared.Protocol.Instruction.OpCode.AUTH:
-                    return new Commands.Auth();
+                    return new Commands.Auth(client);
                 case Shared.Protocol.Instruction.OpCode.PONG:
                     return new Commands.Pong();
                 case Shared.Protocol.Instruction.OpCode.FAIL:
