@@ -34,8 +34,12 @@ namespace JARVIS.Client.Mac
                        
                         break;
                     case NSUserNotificationActivationType.ActionButtonClicked:
+                        Console.WriteLine("Action Touched");
+
 
                         if ( e.Notification.UserInfo.ContainsKey(runPathKey) ){
+
+                            Console.WriteLine("[" + e.Notification.UserInfo.ValueForKey(runPathKey).ToString() + "]");
                             Shared.Platform.Run(e.Notification.UserInfo.ValueForKey(runPathKey).ToString(), string.Empty, false);
                         }
 
@@ -88,10 +92,18 @@ namespace JARVIS.Client.Mac
             sysNotification.HasActionButton = true;
             sysNotification.HasReplyButton = false;
 
-            // Create Key Data (how we pass things around unfortunately)
-            foreach(KeyValuePair<string,string> item in notification.GetDictionary())
+
+            if (notification.GetDictionary().Count > 0)
             {
-                sysNotification.SetValueForKey(new NSString(item.Key), new NSString(item.Value));
+                List<string> keys = new List<string>();
+                List<string> values = new List<string>();
+
+                foreach (KeyValuePair<string, string> item in notification.GetDictionary())
+                {
+                    keys.Add(item.Key);
+                    values.Add(item.Value);
+                }
+                sysNotification.UserInfo = NSDictionary.FromObjectsAndKeys(values.ToArray(), keys.ToArray());
             }
 
             Notify(sysNotification);

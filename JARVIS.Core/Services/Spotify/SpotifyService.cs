@@ -84,11 +84,11 @@ namespace JARVIS.Core.Services.Spotify
             parameters.Add("message", "JARVIS needs to you to authenticate with your Spotify account for it to be able to poll data.");
 
             // Data passed to each call (with the execption of the token)
-            parameters.Add("client_id", "7b90d69131194380a3734dfb818f8cb5");
-            parameters.Add("client_secret", "");
+            parameters.Add("client_id", ClientID);
+            parameters.Add("client_secret", ClientSecret);
             parameters.Add("scopes", "user-read-recently-played");
             parameters.Add("state", State);
-            parameters.Add("redirect_uri", "https://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
+            parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
 
             // Add to listeners
             Server.Socket.OAuthListeners.Add(State, this);

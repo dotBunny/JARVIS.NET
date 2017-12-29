@@ -34,10 +34,13 @@ namespace JARVIS.Client.Services.Socket.Commands
                 parameters.Remove("message");
             }
 
+
+ 
+
             // Add left over parameters
             foreach(KeyValuePair<string,string> s in parameters)
             {
-                endpoint.AddQuery(s.Key, s.Value);
+                endpoint = endpoint.AddQuery(s.Key, s.Value);
             }
 
             OAuthNotification notification = new OAuthNotification(endpoint.ToString(), title, message);
@@ -45,7 +48,7 @@ namespace JARVIS.Client.Services.Socket.Commands
             {
                 notification.State = parameters["state"];
             }
-            Shared.Log.Notifier.Notify(notification);
+            Log.Notifier.Notify(notification);
         }
 
        

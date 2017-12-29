@@ -19,7 +19,7 @@ namespace JARVIS.Client
 
         public Dictionary<string,string> GetDictionary()
         {
-            return new Dictionary<string, string>() { { "Shared.Platform.Run.Path", "URI" } };
+            return new Dictionary<string, string>() { { "Shared.Platform.Run.Path", URI } };
         }
 
         public string GetTitle()

@@ -26,7 +26,6 @@ namespace JARVIS.Shared.Protocol
             COUNTER_MINUS,
             WIRECAST_LAYERS,
             OAUTH_REQUEST,
-
             SPOTIFY_REAUTH,
         }
 
