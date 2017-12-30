@@ -48,6 +48,26 @@ namespace JARVIS.Shared
             request.GetResponse();
         }
 
+        public static string GetResponse(Uri endpoint, System.Collections.Specialized.NameValueCollection headers = null)
+        {
+            HttpWebRequest request = WebRequest.Create(endpoint) as HttpWebRequest;
+
+            if (headers != null)
+            {
+                request.Headers.Add(headers);
+            }
+
+            var response = request.GetResponse();
+
+            string responseString = string.Empty;
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                responseString = reader.ReadToEnd();
+            }
+            return responseString;
+        }
+
 
 
 

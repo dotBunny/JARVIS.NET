@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Grapevine.Interfaces.Server;
 using Grapevine.Shared;
-using RestSharp;
+using JARVIS.Shared;
+using Newtonsoft.Json;
 
 namespace JARVIS.Core.Services.Spotify
 {
@@ -58,7 +59,7 @@ namespace JARVIS.Core.Services.Spotify
 
             // Stage 1 
             if ( Code == string.Empty ) {
-                Code = request.QueryString.GetValue<string>("state", string.Empty);
+                Code = request.QueryString.GetValue<string>("code", string.Empty);
 
                 if ( Code != string.Empty ) 
                 {
@@ -67,82 +68,119 @@ namespace JARVIS.Core.Services.Spotify
             }
         }
 
+
+
         void GetToken()
         {
+            // Create URI
+            Uri endpoint = new Uri("https://accounts.spotify.com" + JSON.TokenResponse.Endpoint);
 
-            RestClient client = new RestClient("https://accounts.spotify.com");
+            // Add Parameters
+            endpoint.AddQuery("grant_type", "authorization_code");
+            endpoint.AddQuery("code", Code);
+            endpoint.AddQuery("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
+            endpoint.AddQuery("state", State);
 
-            RestRequest request = new RestRequest(JSON.TokenResponse.Endpoint);
-            request.AddParameter("grant_type", "authorization_code");
-            request.AddParameter("code", Code);
-            request.AddParameter("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
+            // Create Headers
+            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
+            headers.Add("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
-            // Add Authorization Header
-            request.AddHeader("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            // Get Response
+            var json = Shared.Web.GetResponse(endpoint, headers);
 
-            var response = client.Execute<JSON.TokenResponse>(request);
+            // Process Response
+            JSON.TokenResponse responseObject = null;
 
-            // TODO: Fails on execution (returning error code 0 thats it);
+            if (!string.IsNullOrEmpty(json))
+            {
+                responseObject = JsonConvert.DeserializeObject<JSON.TokenResponse>(json);
 
-            if ( response.IsSuccessful ) {
-                JSON.TokenResponse responseObject = response.Data;
-
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                if (responseObject != null)
                 {
-                    Shared.Log.Error("Spotify", "(" + responseObject.ErrorCode + ") " + responseObject.ErrorDescription);
-                    Authenticated = false;
+
+                    if (responseObject.ErrorCode != string.Empty)
+                    {
+                        Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
+                        Authenticated = false;
+                    }
+                    else
+                    {
+                        Token = responseObject.AccessToken;
+                        RefreshToken = responseObject.RefreshToken;
+                        ExpiresIn = responseObject.ExpiresInSeconds;
+                        Scope = responseObject.Scope;
+                        ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+
+                        // Flag we are good!
+                        Authenticated = true;
+                    }
                 }
                 else
                 {
-                    Token = responseObject.AccessToken;
-                    RefreshToken = responseObject.RefreshToken;
-                    ExpiresIn = responseObject.ExpiresInSeconds;
-                    Scope = responseObject.Scope;
-                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
-
-                    Authenticated = true;
+                    Authenticated = false;
+                    Log.Error("Spotify", "Spotify failed to get the token. NULL Response Object.");
                 }
-            } else {
+            }
+            else 
+            {
                 Authenticated = false;
-
-                Shared.Log.Error("Spotify", "Spotify failed to get the token. (" + response.StatusCode + ") " + response.StatusDescription);
+                Log.Error("Spotify", "Spotify failed to get the token. No Response.");
             }
         }
 
         void GetRefreshToken()
         {
-            RestClient client = new RestClient("https://accounts.spotify.com");
+            // Create URI
+            Uri endpoint = new Uri("https://accounts.spotify.com" + JSON.TokenResponse.Endpoint);
 
-            RestRequest request = new RestRequest(JSON.TokenResponse.Endpoint);
-            request.AddParameter("grant_type", "refresh_token");
-            request.AddParameter("refresh_token", RefreshToken);
+            // Add Parameters
+            endpoint.AddQuery("grant_type", "refresh_token");
+            endpoint.AddQuery("refresh_token", RefreshToken);
+            endpoint.AddQuery("state", State);
 
-            // Add Authorization Header
-            request.AddHeader("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            // Create Headers
+            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
+            headers.Add("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
-            var response = client.Execute<JSON.TokenResponse>(request);
+            // Get Response
+            var json = Shared.Web.GetResponse(endpoint, headers);
 
-            if (response.IsSuccessful)
+            // Process Response
+            JSON.TokenResponse responseObject = null;
+
+            if (!string.IsNullOrEmpty(json))
             {
-                JSON.TokenResponse responseObject = response.Data;
+                responseObject = JsonConvert.DeserializeObject<JSON.TokenResponse>(json);
 
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                if (responseObject != null)
                 {
-                    Shared.Log.Error("Spotify", "("+responseObject.ErrorCode+ ") " + responseObject.ErrorDescription);
+
+                    if (responseObject.ErrorCode != string.Empty)
+                    {
+                        Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
+                        Authenticated = false;
+                    }
+                    else
+                    {
+                        Token = responseObject.AccessToken;
+                        ExpiresIn = responseObject.ExpiresInSeconds;
+                        Scope = responseObject.Scope;
+                        ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+
+                        // Flag we are good!
+                        Authenticated = true;
+                    }
                 }
                 else
                 {
-                    Token = responseObject.AccessToken;
-                    ExpiresIn = responseObject.ExpiresInSeconds;
-                    Scope = responseObject.Scope;
-                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+                    Authenticated = false;
+                    Log.Error("Spotify", "Spotify failed to refresh the token. NULL Response Object.");
                 }
-
             }
             else
             {
                 Authenticated = false;
-                Shared.Log.Error("Spotify", "Spotify failed to get the refresh token.");
+                Log.Error("Spotify", "Spotify failed to refresh the token. No Response.");
             }
         }
 
@@ -150,30 +188,43 @@ namespace JARVIS.Core.Services.Spotify
         {
             if (NextPoll < DateTime.Now) return;
 
-            RestClient client = new RestClient("https://api.spotify.com");
-            RestRequest request = new RestRequest(JSON.CurrentlyPlayingResponse.Endpoint);
-            request.AddHeader("Authorization", "Bearer: " + Token);
 
-            var response = client.Execute<JSON.CurrentlyPlayingResponse>(request);
+            // Create URI
+            Uri endpoint = new Uri("https://api.spotify.com" + JSON.CurrentlyPlayingResponse.Endpoint);
 
-            if (response.IsSuccessful)
+            // Create Headers
+            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
+            headers.Add("Authorization", "Bearer: " + Token);
+
+            // Get Response
+            var json = Shared.Web.GetResponse(endpoint, headers);
+
+            // Process Response
+            JSON.CurrentlyPlayingResponse responseObject = null;
+
+            if (!string.IsNullOrEmpty(json))
             {
-                JSON.CurrentlyPlayingResponse responseObject = response.Data;
+                responseObject = JsonConvert.DeserializeObject<JSON.CurrentlyPlayingResponse>(json);
 
+                if (responseObject != null)
+                {
+                    if (responseObject.TrackID != LastTrack.ID)
+                    {
+                        LastTrack = responseObject.GetTrack();
 
-                if ( responseObject.TrackID != LastTrack.ID ) {
-                    LastTrack = responseObject.GetTrack();
-
-                    // TODO :? Update something?
-                    Shared.Log.Message("Spotify", LastTrack.ToString());
+                        // TODO :? Update something?
+                        Log.Message("Spotify", LastTrack.ToString());
+                    }
                 }
-
+                else
+                {
+                    Log.Error("Spotify", "Spotify failed to update currently playing. NULL Response Object.");
+                }
             }
             else
             {
-                Shared.Log.Error("Spotify", "Spotify failed to update currently playing.");
+                Log.Error("Spotify", "Spotify failed to update currently playing. No Response.");
             }
-
 
             NextPoll = DateTime.Now.AddSeconds(10);
         }

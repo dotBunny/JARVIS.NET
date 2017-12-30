@@ -5,7 +5,7 @@ namespace JARVIS.Core.Services.Spotify.JSON
 {
     public class CurrentlyPlayingResponse
     {
-        public static string Endpoint = "v1/me/player/currently-playing";
+        public static string Endpoint = "/v1/me/player/currently-playing/";
 
         public Context context { get; set; }
         public long timestamp { get; set; }
