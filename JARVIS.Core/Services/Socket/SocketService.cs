@@ -136,7 +136,7 @@ namespace JARVIS.Core.Services.Socket
             session.Send(Protocol.GetBytes(new Packet(type, arguments)));
         }
 
-        public void HandleCallback(IHttpRequest request)
+        public void HandleCallbackAsync(IHttpRequest request)
         {
            
         }

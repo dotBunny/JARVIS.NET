@@ -49,6 +49,8 @@ namespace JARVIS.Shared
         }
 
 
+
+
         public static Uri AddQuery(this Uri uri, string name, string value)
         {
             var httpValueCollection = HttpUtility.ParseQueryString(uri.Query);

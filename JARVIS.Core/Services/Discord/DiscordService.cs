@@ -1,4 +1,5 @@
 ﻿using System;
+using Grapevine.Interfaces.Server;
 //using Discord.Rest;
 
 namespace JARVIS.Core.Services.Discord
@@ -14,7 +15,10 @@ namespace JARVIS.Core.Services.Discord
             return "Discord";
         }
 
-        public void SetValue(string key, string data) {}
+        public void HandleCallbackAsync(IHttpRequest request)
+        {
+
+        }
 
         public void Start()
         {

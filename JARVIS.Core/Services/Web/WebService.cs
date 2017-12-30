@@ -36,7 +36,7 @@ namespace JARVIS.Core.Services.Web
             return "Web";
         }
 
-        public void HandleCallback(IHttpRequest request) { };
+        public void HandleCallbackAsync(IHttpRequest request) { }
 
         public void Start()
         {

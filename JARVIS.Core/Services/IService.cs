@@ -7,7 +7,7 @@ namespace JARVIS.Core.Services
     {
         string GetName();
 
-        void HandleCallback(IHttpRequest request);
+        void HandleCallbackAsync(IHttpRequest request);
 
         void Start();
         void Stop();

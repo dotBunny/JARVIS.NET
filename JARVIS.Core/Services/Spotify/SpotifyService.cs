@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using Grapevine.Interfaces.Server;
 using Grapevine.Shared;
-//using Discord.Rest;
-
-using SpotifyAPI;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
+using RestSharp;
 
 namespace JARVIS.Core.Services.Spotify
 {
@@ -29,14 +25,16 @@ namespace JARVIS.Core.Services.Spotify
         string State;
         string Code = string.Empty;
         string Token = string.Empty;
+        string RefreshToken = string.Empty;
+        string Scope = string.Empty;
+        int ExpiresIn = 0;
+        DateTime ExpiresOn;
+        DateTime NextPoll;
 
-        //DiscordRestConfig Config;
-        //DiscordRestClient Client;
-        //RestGuild Guild;
+        // Track information
+        SpotifyTrack LastTrack = new SpotifyTrack();
 
 
-
-        SpotifyAPI.Web.SpotifyWebAPI API;
 
         public SpotifyService()
         {
@@ -54,7 +52,7 @@ namespace JARVIS.Core.Services.Spotify
             return "Spotify";
         }
 
-        public void HandleCallback(IHttpRequest request)
+        public void HandleCallbackAsync(IHttpRequest request)
         {
             string state = request.QueryString.GetValue<string>("state", string.Empty);
 
@@ -64,18 +62,132 @@ namespace JARVIS.Core.Services.Spotify
 
                 if ( Code != string.Empty ) 
                 {
-                    // Launch ASYNC Request?
-
+                    GetToken();
                 }
             }
-           
         }
+
+        void GetToken()
+        {
+
+            RestClient client = new RestClient("https://accounts.spotify.com");
+
+            RestRequest request = new RestRequest(JSON.TokenResponse.Endpoint);
+            request.AddParameter("grant_type", "authorization_code");
+            request.AddParameter("code", Code);
+            request.AddParameter("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
+
+            // Add Authorization Header
+            request.AddHeader("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+
+            var response = client.Execute<JSON.TokenResponse>(request);
+
+            // TODO: Fails on execution (returning error code 0 thats it);
+
+            if ( response.IsSuccessful ) {
+                JSON.TokenResponse responseObject = response.Data;
+
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                {
+                    Shared.Log.Error("Spotify", "(" + responseObject.ErrorCode + ") " + responseObject.ErrorDescription);
+                    Authenticated = false;
+                }
+                else
+                {
+                    Token = responseObject.AccessToken;
+                    RefreshToken = responseObject.RefreshToken;
+                    ExpiresIn = responseObject.ExpiresInSeconds;
+                    Scope = responseObject.Scope;
+                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+
+                    Authenticated = true;
+                }
+            } else {
+                Authenticated = false;
+
+                Shared.Log.Error("Spotify", "Spotify failed to get the token. (" + response.StatusCode + ") " + response.StatusDescription);
+            }
+        }
+
+        void GetRefreshToken()
+        {
+            RestClient client = new RestClient("https://accounts.spotify.com");
+
+            RestRequest request = new RestRequest(JSON.TokenResponse.Endpoint);
+            request.AddParameter("grant_type", "refresh_token");
+            request.AddParameter("refresh_token", RefreshToken);
+
+            // Add Authorization Header
+            request.AddHeader("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+
+            var response = client.Execute<JSON.TokenResponse>(request);
+
+            if (response.IsSuccessful)
+            {
+                JSON.TokenResponse responseObject = response.Data;
+
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                {
+                    Shared.Log.Error("Spotify", "("+responseObject.ErrorCode+ ") " + responseObject.ErrorDescription);
+                }
+                else
+                {
+                    Token = responseObject.AccessToken;
+                    ExpiresIn = responseObject.ExpiresInSeconds;
+                    Scope = responseObject.Scope;
+                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+                }
+
+            }
+            else
+            {
+                Authenticated = false;
+                Shared.Log.Error("Spotify", "Spotify failed to get the refresh token.");
+            }
+        }
+
+        void GetCurrentlyPlaying()
+        {
+            if (NextPoll < DateTime.Now) return;
+
+            RestClient client = new RestClient("https://api.spotify.com");
+            RestRequest request = new RestRequest(JSON.CurrentlyPlayingResponse.Endpoint);
+            request.AddHeader("Authorization", "Bearer: " + Token);
+
+            var response = client.Execute<JSON.CurrentlyPlayingResponse>(request);
+
+            if (response.IsSuccessful)
+            {
+                JSON.CurrentlyPlayingResponse responseObject = response.Data;
+
+
+                if ( responseObject.TrackID != LastTrack.ID ) {
+                    LastTrack = responseObject.GetTrack();
+
+                    // TODO :? Update something?
+                    Shared.Log.Message("Spotify", LastTrack.ToString());
+                }
+
+            }
+            else
+            {
+                Shared.Log.Error("Spotify", "Spotify failed to update currently playing.");
+            }
+
+
+            NextPoll = DateTime.Now.AddSeconds(10);
+        }
+
 
         void Authorize()
         {
             Authenticated = false;
+
             Token = string.Empty;
             Code = string.Empty;
+            RefreshToken = string.Empty;
+            Scope = "";
+            ExpiresIn = 0;
 
             Shared.Log.Message("Spotify", "Initiating authorization process ...");
 
@@ -103,12 +215,6 @@ namespace JARVIS.Core.Services.Spotify
             // TODO: Make this so it requires logged in(false->True)
             Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, false);
         }
-
-        void GetToken()
-        {
-         //   parameters.Add("uri_token", "https://accounts.spotify.com/api/token/?grant_type=authorization_code");
-        }
-
       
 
         public void Start()
@@ -118,8 +224,6 @@ namespace JARVIS.Core.Services.Spotify
                 Shared.Log.Message("Spotify", "Unable to start as service is disabled.");
                 return;   
             }
-                
-            API = new SpotifyAPI.Web.SpotifyWebAPI();
 
             if (!Authenticated)
             {
@@ -136,8 +240,19 @@ namespace JARVIS.Core.Services.Spotify
         {
 
             if (!Authenticated && !string.IsNullOrEmpty(Token)) return;
+
+            // Check our token
+            if ( DateTime.Now > ExpiresOn ) {
+                GetRefreshToken();
+            }
+
+            // To adjust polling speed?
+            GetCurrentlyPlaying();
+
+
             Shared.Log.Message("Spotify", "POLLING SPOTIFY");
         }
+
 
     }
 

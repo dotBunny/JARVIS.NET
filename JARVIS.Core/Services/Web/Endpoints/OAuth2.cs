@@ -12,13 +12,11 @@ namespace JARVIS.Core.Services.Web.Endpoints
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/callback/")]
         public IHttpContext Response(IHttpContext context)
         {
-            Shared.Log.Message("web", context.Request.QueryString.ToString());
-
             string state = context.Request.QueryString.GetValue<string>("state", string.Empty);
             if ( Server.Web.CallbackListeners.ContainsKey(state) ) {
 
                 // Handle callback
-                Server.Web.CallbackListeners[state].HandleCallback(context.Request);
+                Server.Web.CallbackListeners[state].HandleCallbackAsync(context.Request);
 
                 // Only get one shot
                 Server.Web.CallbackListeners.Remove(state);
