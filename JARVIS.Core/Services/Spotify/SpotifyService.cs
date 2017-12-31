@@ -71,7 +71,7 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetToken()
         {
-            WebAPI.Requests.TokenRequest tokenRequest = new WebAPI.Requests.TokenRequest(
+            var tokenRequest = new WebAPI.Requests.TokenRequest(
                 Code, 
                 "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/", 
                 State);
@@ -80,7 +80,7 @@ namespace JARVIS.Core.Services.Spotify
             tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
-            WebAPI.Responses.TokenResponse responseObject = tokenRequest.GetResponse();
+            var responseObject = tokenRequest.GetResponse();
 
             if (responseObject != null)
             {
@@ -112,15 +112,13 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetRefreshToken()
         {
-            WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest(
-                RefreshToken,
-                State);
+            var tokenRequest = new WebAPI.Requests.RefreshTokenRequest(RefreshToken, State);
 
             // Add our authorization header
             tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
-            WebAPI.Responses.TokenResponse responseObject = tokenRequest.GetResponse();
+            var responseObject = tokenRequest.GetResponse();
 
             if (responseObject != null)
             {
