@@ -25,13 +25,11 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Requests
 
         public RefreshTokenRequest()
         {
-            Headers.Add("Content-Type", "application/json");
             GrantType = "refresh_token";
         }
 
         public RefreshTokenRequest(string refreshToken, string state)
         {
-            Headers.Add("Content-Type", "application/json");
             GrantType = "refresh_token";
             RefreshToken = refreshToken;
             State = state;

@@ -69,10 +69,8 @@ namespace JARVIS.Core.Services.Spotify
         }
 
 
-
         void GetToken()
         {
-            // Request Body
             WebAPI.Requests.TokenRequest tokenRequest = new WebAPI.Requests.TokenRequest(
                 Code, 
                 "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/", 
@@ -114,7 +112,6 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetRefreshToken()
         {
-            // Request Body
             WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest(
                 RefreshToken,
                 State);

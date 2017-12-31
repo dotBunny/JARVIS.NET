@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -64,30 +65,50 @@ namespace JARVIS.Shared
         {
             string responseString = string.Empty;
 
-            // Setup web request
-            using (HttpClient client = new HttpClient())
-            {
-
-                if (headers != null)
+            //try
+            //{
+                // Setup web request
+                using (HttpClient client = new HttpClient())
                 {
-                    foreach (KeyValuePair<string, string> headerPair in headers)
+                    // Accept JSON
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    if (headers != null)
                     {
-                        client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
+                        foreach (KeyValuePair<string, string> headerPair in headers)
+                        {
+                            client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
+                        }
+                    }
+
+                    // Stub Request
+                    HttpRequestMessage message;
+
+                    if ( !string.IsNullOrEmpty(requestBody))
+                    {
+                        message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
+                        {
+                            Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
+                        };
+                    } 
+                    else 
+                    {
+                        message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint));
+                    }
+                   
+                    // Get Response
+                    using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
+                    {
+
+                        responseString = response.Content.ReadAsStringAsync().Result;
                     }
                 }
-
-                HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
-                {
-                    Content = new StringContent(requestBody, Encoding.UTF8)
-                };
-
-                using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
-                {
-                    
-                    responseString = response.Content.ReadAsStringAsync().Result;
-                }
-            }
-          
+            //}
+            //catch(Exception e)
+            //{
+            //    responseString = e.Message;
+            //}
             return responseString;   
         }
 

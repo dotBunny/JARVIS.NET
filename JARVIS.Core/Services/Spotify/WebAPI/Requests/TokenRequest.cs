@@ -29,13 +29,11 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Requests
 
         public TokenRequest()
         {
-            Headers.Add("Content-Type", "application/json");
             GrantType = "authorization_code";
         }
 
         public TokenRequest(string code, string redirectURI, string state)
         {
-            Headers.Add("Content-Type", "application/json");
             GrantType = "authorization_code";
             Code = code;
             RedirectURI = redirectURI;
