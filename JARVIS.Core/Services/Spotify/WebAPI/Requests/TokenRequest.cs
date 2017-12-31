@@ -42,13 +42,20 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Requests
 
         public TokenResponse GetResponse()
         {
-            var json = Shared.Web.PostJSON(Endpoint, ToJSON(), Headers);
+            var json = Shared.Web.PostJSON(Endpoint, ToFormData(), Headers);
             return JsonConvert.DeserializeObject<TokenResponse>(json);
         }
 
         public string ToJSON()
         {
             return JsonConvert.SerializeObject(this);
+        }
+        public string ToFormData()
+        {
+            return "grant_type=" + Uri.EscapeDataString(GrantType) + 
+                "&code=" + Uri.EscapeDataString(Code) + 
+                "&redirect_uri=" + Uri.EscapeDataString(RedirectURI) + 
+                "&state=" + Uri.EscapeDataString(State);
         }
     }
 }

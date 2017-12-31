@@ -88,7 +88,7 @@ namespace JARVIS.Core.Services.Spotify
             if (responseObject != null)
             {
 
-                if (responseObject.ErrorCode != string.Empty)
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
                 {
                     Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
                     Authenticated = false;
@@ -102,6 +102,7 @@ namespace JARVIS.Core.Services.Spotify
                     ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
 
                     // Flag we are good!
+                    Log.Message("Spotify", "Authentication Successful. (" + Token + ")");
                     Authenticated = true;
                 }
             }
@@ -115,6 +116,8 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetRefreshToken()
         {
+            Log.Message("Spotify", "Refreshing Token");
+
             var tokenRequest = new WebAPI.Requests.RefreshTokenRequest(RefreshToken, State);
 
             // Add our authorization header
@@ -126,7 +129,7 @@ namespace JARVIS.Core.Services.Spotify
             if (responseObject != null)
             {
 
-                if (responseObject.ErrorCode != string.Empty)
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
                 {
                     Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
                     Authenticated = false;
@@ -238,10 +241,10 @@ namespace JARVIS.Core.Services.Spotify
                 return;   
             }
 
-            if (!Authenticated)
-            {
-                Authorize();
-            }
+            //if (!Authenticated)
+            //{
+            //    Authorize();
+            //}
         }
 
         public void Stop()

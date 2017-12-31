@@ -87,6 +87,10 @@ namespace JARVIS.Core
 
             // Start Secondary Services
             Spotify = new Services.Spotify.SpotifyService();
+            //Spotify.Start();
+            ActiveServices.Add(Socket);
+
+
 
 
             // Start Tick Thread

@@ -64,51 +64,42 @@ namespace JARVIS.Shared
         static string GetJSONResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
         {
             string responseString = string.Empty;
+            using (HttpClient client = new HttpClient())
+            {
+                // Accept JSON
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
 
-            //try
-            //{
-                // Setup web request
-                using (HttpClient client = new HttpClient())
+                if (headers != null)
                 {
-                    // Accept JSON
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    if (headers != null)
+                    foreach (KeyValuePair<string, string> headerPair in headers)
                     {
-                        foreach (KeyValuePair<string, string> headerPair in headers)
-                        {
-                            client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
-                        }
-                    }
-
-                    // Stub Request
-                    HttpRequestMessage message;
-
-                    if ( !string.IsNullOrEmpty(requestBody))
-                    {
-                        message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
-                        {
-                            Content = new StringContent(requestBody, Encoding.UTF8, "application/json")
-                        };
-                    } 
-                    else 
-                    {
-                        message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint));
-                    }
-                   
-                    // Get Response
-                    using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
-                    {
-
-                        responseString = response.Content.ReadAsStringAsync().Result;
+                        client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
                     }
                 }
-            //}
-            //catch(Exception e)
-            //{
-            //    responseString = e.Message;
-            //}
+
+                // Stub Request
+                HttpRequestMessage message;
+
+                if ( !string.IsNullOrEmpty(requestBody))
+                {
+                    message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
+                    {
+                        Content = new StringContent(requestBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+                    };
+                } 
+                else 
+                {
+                    message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint));
+                }
+               
+                // Get Response
+                using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
+                {
+
+                    responseString = response.Content.ReadAsStringAsync().Result;
+                }
+            }
             return responseString;   
         }
 
