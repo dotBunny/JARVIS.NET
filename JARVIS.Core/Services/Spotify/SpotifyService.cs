@@ -72,137 +72,96 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetToken()
         {
-            // Create URI
-            Uri endpoint = new Uri("https://accounts.spotify.com" + WebAPI.Requests.TokenRequest.Endpoint);
-
             // Request Body
-            WebAPI.Requests.TokenRequest tokenRequest = new WebAPI.Requests.TokenRequest();
-            tokenRequest.GrantType = "authorization_code";
-            tokenRequest.Code = Code;
-            tokenRequest.RedirectURI = "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/";
-            tokenRequest.State = State;
+            WebAPI.Requests.TokenRequest tokenRequest = new WebAPI.Requests.TokenRequest(
+                Code, 
+                "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/", 
+                State);
 
-            // Create Headers
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Content-Type", "application/json");
-            headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            // Add our authorization header
+            tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
-            var json = Shared.Web.POST(endpoint, tokenRequest.ToJSON(), headers);
+            WebAPI.Responses.TokenResponse responseObject = tokenRequest.GetResponse();
 
-            // Process Response
-            WebAPI.Responses.TokenResponse responseObject = null;
-
-            if (!string.IsNullOrEmpty(json))
+            if (responseObject != null)
             {
-                responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.TokenResponse>(json);
 
-                if (responseObject != null)
+                if (responseObject.ErrorCode != string.Empty)
                 {
-
-                    if (responseObject.ErrorCode != string.Empty)
-                    {
-                        Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
-                        Authenticated = false;
-                    }
-                    else
-                    {
-                        Token = responseObject.AccessToken;
-                        RefreshToken = responseObject.RefreshToken;
-                        ExpiresIn = responseObject.ExpiresInSeconds;
-                        Scope = responseObject.Scope;
-                        ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
-
-                        // Flag we are good!
-                        Authenticated = true;
-                    }
+                    Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
+                    Authenticated = false;
                 }
                 else
                 {
-                    Authenticated = false;
-                    Log.Error("Spotify", "Spotify failed to get the token. NULL Response Object.");
-                }
-            }
-            else 
-            {
-                Authenticated = false;
-                Log.Error("Spotify", "Spotify failed to get the token. No Response.");
-            }
-        }
+                    Token = responseObject.AccessToken;
+                    RefreshToken = responseObject.RefreshToken;
+                    ExpiresIn = responseObject.ExpiresInSeconds;
+                    Scope = responseObject.Scope;
+                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
 
-        void GetRefreshToken()
-        {
-            // Create URI
-            Uri endpoint = new Uri("https://accounts.spotify.com" + WebAPI.Requests.RefreshTokenRequest.Endpoint);
-
-
-            // Create request body
-            WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest();
-            tokenRequest.GrantType = "refresh_token";
-            tokenRequest.RefreshToken = RefreshToken;
-            tokenRequest.State = State;
-
-            // Create Headers
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Content-Type", "application/json");
-            headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
-
-            // Get Response
-            var json = Shared.Web.POST(endpoint, tokenRequest.ToJSON(), headers);
-
-            // Process Response
-            WebAPI.Responses.TokenResponse responseObject = null;
-
-            if (!string.IsNullOrEmpty(json))
-            {
-                responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.TokenResponse>(json);
-
-                if (responseObject != null)
-                {
-
-                    if (responseObject.ErrorCode != string.Empty)
-                    {
-                        Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
-                        Authenticated = false;
-                    }
-                    else
-                    {
-                        Token = responseObject.AccessToken;
-                        ExpiresIn = responseObject.ExpiresInSeconds;
-                        Scope = responseObject.Scope;
-                        ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
-
-                        // Flag we are good!
-                        Authenticated = true;
-                    }
-                }
-                else
-                {
-                    Authenticated = false;
-                    Log.Error("Spotify", "Spotify failed to refresh the token. NULL Response Object.");
+                    // Flag we are good!
+                    Authenticated = true;
                 }
             }
             else
             {
                 Authenticated = false;
-                Log.Error("Spotify", "Spotify failed to refresh the token. No Response.");
+                Log.Error("Spotify", "Spotify failed to get the token. NULL Response Object.");
             }
+          
+        }
+
+        void GetRefreshToken()
+        {
+            // Request Body
+            WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest(
+                RefreshToken,
+                State);
+
+            // Add our authorization header
+            tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
+
+            // Get Response
+            WebAPI.Responses.TokenResponse responseObject = tokenRequest.GetResponse();
+
+            if (responseObject != null)
+            {
+
+                if (responseObject.ErrorCode != string.Empty)
+                {
+                    Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
+                    Authenticated = false;
+                }
+                else
+                {
+                    Token = responseObject.AccessToken;
+                    ExpiresIn = responseObject.ExpiresInSeconds;
+                    Scope = responseObject.Scope;
+                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+
+                    // Flag we are good!
+                    Authenticated = true;
+                }
+            }
+            else
+            {
+                Authenticated = false;
+                Log.Error("Spotify", "Spotify failed to refresh the token. NULL Response Object.");
+            }
+           
         }
 
         void GetCurrentlyPlaying()
         {
             if (NextPoll < DateTime.Now) return;
 
-
-            // Create URI
-            Uri endpoint = new Uri("https://api.spotify.com" + WebAPI.Responses.CurrentlyPlayingResponse.Endpoint);
-
             // Create Headers
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("Authorization", "Bearer " + Token);
 
             // Get Response
-            var json = Shared.Web.GET(endpoint, headers);
+            var json = Shared.Web.GET(WebAPI.Responses.CurrentlyPlayingResponse.Endpoint, headers);
 
             // Process Response
             WebAPI.Responses.CurrentlyPlayingResponse responseObject = null;

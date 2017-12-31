@@ -50,17 +50,17 @@ namespace JARVIS.Shared
             request.GetResponse();
         }
 
-        public static string GET(Uri endpoint, Dictionary<string, string> headers = null)
+        public static string GET(string endpoint, Dictionary<string, string> headers = null)
         {
             return GetWebResponse(endpoint, "GET", string.Empty, headers);
         }
 
-        public static string POST(Uri endpoint, string requestBody = "", Dictionary<string, string> headers = null)
+        public static string POST(string endpoint, string requestBody = "", Dictionary<string, string> headers = null)
         {
             return GetWebResponse(endpoint, "POST", requestBody, headers);
         }
 
-        static string GetWebResponse(Uri endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
+        static string GetWebResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
         {
             string responseString = string.Empty;
 
@@ -76,7 +76,7 @@ namespace JARVIS.Shared
                     }
                 }
 
-                HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), endpoint)
+                HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
                 {
                     Content = new StringContent(requestBody, Encoding.UTF8)
                 };
