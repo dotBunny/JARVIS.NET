@@ -15,6 +15,39 @@ namespace JARVIS.Client.Mac
         public Notifications NotificationsHandler { get; set; }
 
 
+        public void OnConnecting()
+        {
+            // Server Menu
+            ServerConnect.Enabled = false;
+            ServerDisconnect.Enabled = true;
+
+            ServicesSpotifyForceAuthentication.Enabled = false;
+        }
+        public void OnConnected()
+        {
+            // Server Menu
+            ServerConnect.Enabled = false;
+            ServerDisconnect.Enabled = true;
+
+            ServicesSpotifyForceAuthentication.Enabled = true;
+        }
+        public void OnDisconnecting()
+        {
+            // Server Menu
+            ServerConnect.Enabled = false;
+            ServerDisconnect.Enabled = false;
+
+            ServicesSpotifyForceAuthentication.Enabled = false;
+        }
+        public void OnDisconnected()
+        {
+            // Server Menu
+            ServerConnect.Enabled = true;
+            ServerDisconnect.Enabled = false;
+
+            ServicesSpotifyForceAuthentication.Enabled = false;
+        }
+
 
         public AppDelegate()
         {
@@ -28,7 +61,7 @@ namespace JARVIS.Client.Mac
             Shared.Log.Notifier = NotificationsHandler;
 
             // Try To Connect - Pass in menu items for status updating
-            Client = new Services.Socket.SocketClient(ServerConnect, ServerDisconnect);
+            Client = new Services.Socket.SocketClient(this);
             Client.Start();
 
         }
@@ -54,6 +87,8 @@ namespace JARVIS.Client.Mac
            ShowMainWindow();
         }
 
+
+        // TODO: Only let this work if the client is connected / disable when not connected
         partial void OnServicesSpotifyForceAuthentication(AppKit.NSMenuItem sender)
         {
             Client.Send(Shared.Protocol.Instruction.OpCode.SPOTIFY_REAUTH, new System.Collections.Generic.Dictionary<string, string>());

@@ -90,9 +90,9 @@
                         <items>
                             <menuItem title="Spotify" id="TiN-xE-Ya9">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Spotify" systemMenu="window" id="Jdl-tF-y9C">
+                                <menu key="submenu" title="Spotify" systemMenu="window" autoenablesItems="NO" id="Jdl-tF-y9C">
                                     <items>
-                                        <menuItem title="Force Authentication" id="MYa-PL-d5i">
+                                        <menuItem title="Force Authentication" enabled="NO" id="MYa-PL-d5i">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="OnServicesSpotifyForceAuthentication:" target="OxR-Zu-dBZ" id="uUi-WT-XVK"/>

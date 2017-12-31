@@ -82,22 +82,24 @@ namespace JARVIS.Core
             Socket.Start();
             ActiveServices.Add(Socket);
 
-            Shared.Log.Message("System", "Startup Complete");
+            Shared.Log.Message("System", "Primary Startup Complete");
 
 
             // Start Secondary Services
             Spotify = new Services.Spotify.SpotifyService();
-            //Spotify.Start();
-            ActiveServices.Add(Socket);
+            Spotify.Start();
+            ActiveServices.Add(Spotify);
 
-
+            Shared.Log.Message("System", "Secondary Startup Complete");
 
 
             // Start Tick Thread
+            Shared.Log.Message("System", "Starting Polling ...");
             ShouldTickFlag = true;
             PollingThread = new Thread(new ThreadStart(Tick));
             PollingThread.Name = "JARVIS-Polling";
             PollingThread.Start();
+
 
 
         }

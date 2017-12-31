@@ -16,15 +16,12 @@ namespace JARVIS.Client.Mac.Services.Socket
         }
 
         Shared.Services.Socket.SocketClient Connection;
+        AppDelegate Application;
 
-        NSMenuItem MenuConnect;
-        NSMenuItem MenuDisconnect;
-
-        public SocketClient(NSMenuItem connect, NSMenuItem disconnect)
+        public SocketClient(AppDelegate application)
         {
-            // Assign menu items
-            MenuConnect = connect;
-            MenuDisconnect = disconnect;
+            // Assign reference to application delegate
+            Application = application;
 
             // Create Client
             Connection = new Shared.Services.Socket.SocketClient();
@@ -38,18 +35,12 @@ namespace JARVIS.Client.Mac.Services.Socket
 
         void Connection_OnClosed(Sender session)
         {
-
-            MenuConnect.Enabled = true;
-            MenuDisconnect.Enabled = false;
-
+            Application.OnDisconnected();
             Shared.Log.Message("socket", "Disconnected from " + Settings.ServerAddress + ":" + Settings.ServerPort.ToString());
         }
         void Connection_OnConnected(Sender session)
         {
-
-            MenuConnect.Enabled = false;
-            MenuDisconnect.Enabled = true;
-
+            Application.OnConnected();
             Shared.Log.Message("socket", "Connected to " + Settings.ServerAddress + ":" + Settings.ServerPort.ToString());
         }
         void Connection_OnException(Sender session, Exception e)
@@ -80,16 +71,17 @@ namespace JARVIS.Client.Mac.Services.Socket
             }
 
 
-           
+            Application.OnConnecting();
             Connection.Connect(Settings.ServerAddress, Settings.ServerPort);
             Connection.Start();
 
-            MenuConnect.Enabled = false;
+
         }
 
         public void Stop()
         {
             // Disconnect
+            Application.OnDisconnecting();
             Connection.Stop();
         }
 

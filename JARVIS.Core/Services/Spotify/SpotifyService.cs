@@ -237,14 +237,16 @@ namespace JARVIS.Core.Services.Spotify
         {
             if (!Enabled) 
             {
-                Shared.Log.Message("Spotify", "Unable to start as service is disabled.");
+                Log.Message("Spotify", "Unable to start as service is disabled.");
                 return;   
             }
 
-            //if (!Authenticated)
-            //{
-            //    Authorize();
-            //}
+            // TODO:    Switch this to use the actual authorized user count of the server
+            //          not implemented at this time though. Need to fix user authentication (NEXT!)
+            if (!Authenticated && Server.Socket.BufferCount > 0)
+            {
+                Authorize();
+            }
         }
 
         public void Stop()
@@ -255,7 +257,8 @@ namespace JARVIS.Core.Services.Spotify
         public void Tick()
         {
 
-            if (!Authenticated && !string.IsNullOrEmpty(Token)) return;
+            // Don't bother if we haven't authenticated and dont have a token
+            if (!Authenticated || string.IsNullOrEmpty(Token)) return;
 
             // Check our token
             if ( DateTime.Now > ExpiresOn ) {
@@ -265,8 +268,7 @@ namespace JARVIS.Core.Services.Spotify
             // To adjust polling speed?
             GetCurrentlyPlaying();
 
-
-            Shared.Log.Message("Spotify", "POLLING SPOTIFY");
+            Log.Message("Spotify", "POLLING SPOTIFY");
         }
 
 

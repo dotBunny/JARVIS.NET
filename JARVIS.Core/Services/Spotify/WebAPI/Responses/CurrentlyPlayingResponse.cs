@@ -25,7 +25,10 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
         public SpotifyTrack GetTrack()
         {
             SpotifyTrack newTrack = new SpotifyTrack();
-           
+            if ( item.id == "" || item.id == "Unavailable" ) {
+                return newTrack;
+            }
+
             // Unique ID
             newTrack.ID = item.id;
 

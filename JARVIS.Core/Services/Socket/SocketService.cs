@@ -9,8 +9,14 @@ namespace JARVIS.Core.Services.Socket
     {
         public Dictionary<Sender, SocketUser> AuthenticatedUsers = new Dictionary<Sender, SocketUser>();
         Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
-        public Dictionary<string, IService> OAuthListeners = new Dictionary<string, IService>();
 
+        public int BufferCount 
+        {
+            get 
+            {
+                return Buffers.Count;
+            }
+        }
 
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH
