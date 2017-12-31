@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace JARVIS.Shared
@@ -48,63 +50,42 @@ namespace JARVIS.Shared
             request.GetResponse();
         }
 
-        public static string GET(Uri endpoint, System.Collections.Specialized.NameValueCollection headers = null)
+        public static string GET(Uri endpoint, Dictionary<string, string> headers = null)
         {
             return GetWebResponse(endpoint, "GET", string.Empty, headers);
         }
 
-        public static string POST(Uri endpoint, string requestBody = "", System.Collections.Specialized.NameValueCollection headers = null)
+        public static string POST(Uri endpoint, string requestBody = "", Dictionary<string, string> headers = null)
         {
             return GetWebResponse(endpoint, "POST", requestBody, headers);
         }
 
-        static string GetWebResponse(Uri endpoint, string method = "GET", string requestBody = "", System.Collections.Specialized.NameValueCollection headers = null)
+        static string GetWebResponse(Uri endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
         {
             string responseString = string.Empty;
 
             // Setup web request
-            HttpWebRequest request = WebRequest.Create(endpoint) as HttpWebRequest;
-
-            // Headers
-            if (headers != null)
+            using (HttpClient client = new HttpClient())
             {
-                request.Headers.Add(headers);
-            }
 
-            // Setup Request
-            //request.Date = DateTime.Now;
-            request.Method = method;
-            request.Timeout = 30000;
-            request.Accept = "application/json";
-
-            if (request.Method == "POST")
-            {
-                byte[] data = Encoding.UTF8.GetBytes(requestBody);
-
-                request.ContentLength = data.LongLength;
-                request.ContentType = "application/json";
-
-                // Populate requests data
-                Stream requestStream = request.GetRequestStream();
-                requestStream.Write(data, 0, data.Length);
-                requestStream.Close();
-            }
-
-            // We use a try catch for safety right now
-            try
-            {
-                HttpWebResponse webResponse = request.GetResponse() as HttpWebResponse;
-
-                using (Stream responseStream = webResponse.GetResponseStream())
-
-                using (StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8))
+                if (headers != null)
                 {
-                    responseString = responseStreamReader.ReadToEnd();
+                    foreach (KeyValuePair<string, string> headerPair in headers)
+                    {
+                        client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
+                    }
                 }
-            }
-            catch ( Exception e )
-            {
-                responseString = "{'error':911, 'error_description':'" + e.Message + "'}";
+
+                HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), endpoint)
+                {
+                    Content = new StringContent(requestBody, Encoding.UTF8)
+                };
+
+                using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
+                {
+                    
+                    responseString = response.Content.ReadAsStringAsync().Result;
+                }
             }
           
             return responseString;   

@@ -83,8 +83,9 @@ namespace JARVIS.Core.Services.Spotify
             tokenRequest.State = State;
 
             // Create Headers
-            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
-            headers.Add("Authorization", "Basic " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Content-Type", "application/json");
+            headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
             var json = Shared.Web.POST(endpoint, tokenRequest.ToJSON(), headers);
@@ -137,13 +138,13 @@ namespace JARVIS.Core.Services.Spotify
 
             // Create request body
             WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest();
-
             tokenRequest.GrantType = "refresh_token";
             tokenRequest.RefreshToken = RefreshToken;
             tokenRequest.State = State;
 
             // Create Headers
-            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Content-Type", "application/json");
             headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
@@ -197,7 +198,7 @@ namespace JARVIS.Core.Services.Spotify
             Uri endpoint = new Uri("https://api.spotify.com" + WebAPI.Responses.CurrentlyPlayingResponse.Endpoint);
 
             // Create Headers
-            System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
+            Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("Authorization", "Bearer " + Token);
 
             // Get Response
