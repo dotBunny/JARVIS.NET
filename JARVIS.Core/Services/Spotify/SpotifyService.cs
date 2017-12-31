@@ -99,7 +99,9 @@ namespace JARVIS.Core.Services.Spotify
                     RefreshToken = responseObject.RefreshToken;
                     ExpiresIn = responseObject.ExpiresInSeconds;
                     Scope = responseObject.Scope;
-                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
+
+                    NextPoll = DateTime.Now;
+                    ExpiresOn = NextPoll.AddSeconds(ExpiresIn);
 
                     // Flag we are good!
                     Log.Message("Spotify", "Authentication Successful. (" + Token + ")");
@@ -155,7 +157,7 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetCurrentlyPlaying()
         {
-            if (NextPoll < DateTime.Now) return;
+            if (NextPoll > DateTime.Now) return;
 
             // Create Headers
             Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -191,6 +193,7 @@ namespace JARVIS.Core.Services.Spotify
                 Log.Error("Spotify", "Spotify failed to update currently playing. No Response.");
             }
 
+            // Poll every 10 seconds?
             NextPoll = DateTime.Now.AddSeconds(10);
         }
 
@@ -261,7 +264,7 @@ namespace JARVIS.Core.Services.Spotify
             if (!Authenticated || string.IsNullOrEmpty(Token)) return;
 
             // Check our token
-            if ( DateTime.Now > ExpiresOn ) {
+            if ( DateTime.Now >= ExpiresOn ) {
                 GetRefreshToken();
             }
 
