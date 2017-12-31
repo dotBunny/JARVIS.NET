@@ -51,17 +51,17 @@ namespace JARVIS.Shared
             request.GetResponse();
         }
 
-        public static string GET(string endpoint, Dictionary<string, string> headers = null)
+        public static string GetJSON(string endpoint, Dictionary<string, string> headers = null)
         {
-            return GetWebResponse(endpoint, "GET", string.Empty, headers);
+            return GetJSONResponse(endpoint, "GET", string.Empty, headers);
         }
 
-        public static string POST(string endpoint, string requestBody = "", Dictionary<string, string> headers = null)
+        public static string PostJSON(string endpoint, string requestBody = "", Dictionary<string, string> headers = null)
         {
-            return GetWebResponse(endpoint, "POST", requestBody, headers);
+            return GetJSONResponse(endpoint, "POST", requestBody, headers);
         }
 
-        static string GetWebResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
+        static string GetJSONResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
         {
             string responseString = string.Empty;
 

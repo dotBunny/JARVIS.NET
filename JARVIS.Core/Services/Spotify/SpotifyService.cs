@@ -71,10 +71,13 @@ namespace JARVIS.Core.Services.Spotify
 
         void GetToken()
         {
-            var tokenRequest = new WebAPI.Requests.TokenRequest(
-                Code, 
-                "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/", 
-                State);
+            // Create our token request
+            var tokenRequest = new WebAPI.Requests.TokenRequest
+            {
+                Code = Code,
+                RedirectURI = "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/",
+                State = State
+            };
 
             // Add our authorization header
             tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
@@ -156,7 +159,7 @@ namespace JARVIS.Core.Services.Spotify
             headers.Add("Authorization", "Bearer " + Token);
 
             // Get Response
-            var json = Shared.Web.GET(WebAPI.Responses.CurrentlyPlayingResponse.Endpoint, headers);
+            var json = Shared.Web.GetJSON(WebAPI.Responses.CurrentlyPlayingResponse.Endpoint, headers);
 
             // Process Response
             WebAPI.Responses.CurrentlyPlayingResponse responseObject = null;
