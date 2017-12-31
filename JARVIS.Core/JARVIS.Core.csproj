@@ -10,7 +10,9 @@
   <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Services\" />
-    <Folder Include="Services\Spotify\JSON\" />
+    <Folder Include="Services\Spotify\WebAPI\" />
+    <Folder Include="Services\Spotify\WebAPI\Requests\" />
+    <Folder Include="Services\Spotify\WebAPI\Responses\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grapevine" Version="4.1.1" />

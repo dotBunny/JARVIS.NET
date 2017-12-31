@@ -29,8 +29,7 @@ namespace JARVIS.Shared
 
         public static string Base64Encode(string plainText)
         {
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            return Convert.ToBase64String(plainTextBytes);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
         }
     }
 }

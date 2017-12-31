@@ -1,12 +1,10 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace JARVIS.Core.Services.Spotify.JSON
+namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
 {
     public class TokenResponse
     {
-        public static string Endpoint = "/api/token/";
-       
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }
 

@@ -48,28 +48,67 @@ namespace JARVIS.Shared
             request.GetResponse();
         }
 
-        public static string GetResponse(Uri endpoint, System.Collections.Specialized.NameValueCollection headers = null)
+        public static string GET(Uri endpoint, System.Collections.Specialized.NameValueCollection headers = null)
         {
+            return GetWebResponse(endpoint, "GET", string.Empty, headers);
+        }
+
+        public static string POST(Uri endpoint, string requestBody = "", System.Collections.Specialized.NameValueCollection headers = null)
+        {
+            return GetWebResponse(endpoint, "POST", requestBody, headers);
+        }
+
+        static string GetWebResponse(Uri endpoint, string method = "GET", string requestBody = "", System.Collections.Specialized.NameValueCollection headers = null)
+        {
+            string responseString = string.Empty;
+
+            // Setup web request
             HttpWebRequest request = WebRequest.Create(endpoint) as HttpWebRequest;
 
+            // Headers
             if (headers != null)
             {
                 request.Headers.Add(headers);
             }
 
-            var response = request.GetResponse();
+            // Setup Request
+            //request.Date = DateTime.Now;
+            request.Method = method;
+            request.Timeout = 30000;
+            request.Accept = "application/json";
 
-            string responseString = string.Empty;
-            using (Stream stream = response.GetResponseStream())
+            if (request.Method == "POST")
             {
-                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
-                responseString = reader.ReadToEnd();
+                byte[] data = Encoding.UTF8.GetBytes(requestBody);
+
+                request.ContentLength = data.LongLength;
+                request.ContentType = "application/json";
+
+                // Populate requests data
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(data, 0, data.Length);
+                requestStream.Close();
             }
-            return responseString;
+
+            // We use a try catch for safety right now
+            try
+            {
+                HttpWebResponse webResponse = request.GetResponse() as HttpWebResponse;
+
+                using (Stream responseStream = webResponse.GetResponseStream())
+
+                using (StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8))
+                {
+                    responseString = responseStreamReader.ReadToEnd();
+                }
+            }
+            catch ( Exception e )
+            {
+                responseString = "{'error':911, 'error_description':'" + e.Message + "'}";
+            }
+          
+            return responseString;   
         }
-
-
-
 
         public static Uri AddQuery(this Uri uri, string name, string value)
         {

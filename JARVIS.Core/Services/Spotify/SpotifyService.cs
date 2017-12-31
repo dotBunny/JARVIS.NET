@@ -55,11 +55,11 @@ namespace JARVIS.Core.Services.Spotify
 
         public void HandleCallbackAsync(IHttpRequest request)
         {
-            string state = request.QueryString.GetValue<string>("state", string.Empty);
+            string state = request.QueryString.GetValue("state", string.Empty);
 
             // Stage 1 
             if ( Code == string.Empty ) {
-                Code = request.QueryString.GetValue<string>("code", string.Empty);
+                Code = request.QueryString.GetValue("code", string.Empty);
 
                 if ( Code != string.Empty ) 
                 {
@@ -73,27 +73,28 @@ namespace JARVIS.Core.Services.Spotify
         void GetToken()
         {
             // Create URI
-            Uri endpoint = new Uri("https://accounts.spotify.com" + JSON.TokenResponse.Endpoint);
+            Uri endpoint = new Uri("https://accounts.spotify.com" + WebAPI.Requests.TokenRequest.Endpoint);
 
-            // Add Parameters
-            endpoint.AddQuery("grant_type", "authorization_code");
-            endpoint.AddQuery("code", Code);
-            endpoint.AddQuery("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
-            endpoint.AddQuery("state", State);
+            // Request Body
+            WebAPI.Requests.TokenRequest tokenRequest = new WebAPI.Requests.TokenRequest();
+            tokenRequest.GrantType = "authorization_code";
+            tokenRequest.Code = Code;
+            tokenRequest.RedirectURI = "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/";
+            tokenRequest.State = State;
 
             // Create Headers
             System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
-            headers.Add("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            headers.Add("Authorization", "Basic " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
-            var json = Shared.Web.GetResponse(endpoint, headers);
+            var json = Shared.Web.POST(endpoint, tokenRequest.ToJSON(), headers);
 
             // Process Response
-            JSON.TokenResponse responseObject = null;
+            WebAPI.Responses.TokenResponse responseObject = null;
 
             if (!string.IsNullOrEmpty(json))
             {
-                responseObject = JsonConvert.DeserializeObject<JSON.TokenResponse>(json);
+                responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.TokenResponse>(json);
 
                 if (responseObject != null)
                 {
@@ -131,26 +132,29 @@ namespace JARVIS.Core.Services.Spotify
         void GetRefreshToken()
         {
             // Create URI
-            Uri endpoint = new Uri("https://accounts.spotify.com" + JSON.TokenResponse.Endpoint);
+            Uri endpoint = new Uri("https://accounts.spotify.com" + WebAPI.Requests.RefreshTokenRequest.Endpoint);
 
-            // Add Parameters
-            endpoint.AddQuery("grant_type", "refresh_token");
-            endpoint.AddQuery("refresh_token", RefreshToken);
-            endpoint.AddQuery("state", State);
+
+            // Create request body
+            WebAPI.Requests.RefreshTokenRequest tokenRequest = new WebAPI.Requests.RefreshTokenRequest();
+
+            tokenRequest.GrantType = "refresh_token";
+            tokenRequest.RefreshToken = RefreshToken;
+            tokenRequest.State = State;
 
             // Create Headers
             System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
-            headers.Add("Authorization", "Basic: " + Shared.Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
 
             // Get Response
-            var json = Shared.Web.GetResponse(endpoint, headers);
+            var json = Shared.Web.POST(endpoint, tokenRequest.ToJSON(), headers);
 
             // Process Response
-            JSON.TokenResponse responseObject = null;
+            WebAPI.Responses.TokenResponse responseObject = null;
 
             if (!string.IsNullOrEmpty(json))
             {
-                responseObject = JsonConvert.DeserializeObject<JSON.TokenResponse>(json);
+                responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.TokenResponse>(json);
 
                 if (responseObject != null)
                 {
@@ -190,21 +194,21 @@ namespace JARVIS.Core.Services.Spotify
 
 
             // Create URI
-            Uri endpoint = new Uri("https://api.spotify.com" + JSON.CurrentlyPlayingResponse.Endpoint);
+            Uri endpoint = new Uri("https://api.spotify.com" + WebAPI.Responses.CurrentlyPlayingResponse.Endpoint);
 
             // Create Headers
             System.Collections.Specialized.NameValueCollection headers = new System.Collections.Specialized.NameValueCollection();
-            headers.Add("Authorization", "Bearer: " + Token);
+            headers.Add("Authorization", "Bearer " + Token);
 
             // Get Response
-            var json = Shared.Web.GetResponse(endpoint, headers);
+            var json = Shared.Web.GET(endpoint, headers);
 
             // Process Response
-            JSON.CurrentlyPlayingResponse responseObject = null;
+            WebAPI.Responses.CurrentlyPlayingResponse responseObject = null;
 
             if (!string.IsNullOrEmpty(json))
             {
-                responseObject = JsonConvert.DeserializeObject<JSON.CurrentlyPlayingResponse>(json);
+                responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.CurrentlyPlayingResponse>(json);
 
                 if (responseObject != null)
                 {
