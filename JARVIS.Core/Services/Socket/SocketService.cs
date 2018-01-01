@@ -113,11 +113,6 @@ namespace JARVIS.Core.Services.Socket
             Server.Stop();
         }
 
-
-
-
-
-
         public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments, bool authRequired = true)
         {
             // Send to sessions

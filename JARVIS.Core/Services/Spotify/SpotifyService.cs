@@ -33,7 +33,8 @@ namespace JARVIS.Core.Services.Spotify
         DateTime NextPoll;
 
         // Track information
-        SpotifyTrack LastTrack = new SpotifyTrack();
+        public SpotifyTrack LastTrack = new SpotifyTrack();
+        public EventHandler<SpotifyTrack> NewTrackEvent;
 
 
 
@@ -175,11 +176,45 @@ namespace JARVIS.Core.Services.Spotify
 
                 if (responseObject != null)
                 {
-                    if (responseObject.TrackID != LastTrack.ID)
+                    if ( responseObject.Error != null)
+                    {
+                        Log.Message("Spotify", "An error (" + responseObject.Error.Code + ") occured while trying to poll the currently playing track. " + responseObject.Error.Description);
+                    }
+                    else if (responseObject.TrackID != LastTrack.ID)
                     {
                         LastTrack = responseObject.GetTrack();
 
-                        // TODO :? Update something?
+                        // Call any subscribers
+                        if (NewTrackEvent != null)
+                        {
+                            NewTrackEvent(this, LastTrack);
+                        }
+
+                        Dictionary<string, string> parameters = new Dictionary<string, string>();
+                        parameters.Add("filename", "Spotify.txt");
+                        parameters.Add("content", LastTrack.ToInfoString());
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        parameters["filename"] = "Spotify_Artist.txt";
+                        parameters["content"] = LastTrack.Artist;
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        parameters["filename"] = "Spotify_Track.txt";
+                        parameters["content"] = LastTrack.Track;
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        parameters["filename"] = "Spotify_URL.txt";
+                        parameters["content"] = LastTrack.TrackURL;
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+
+                        // TODO: Send image data to be saved
+                        if (!string.IsNullOrEmpty(LastTrack.ImageURL))
+                        {
+                            LastTrack.ImageData = Shared.Web.GetBytes(LastTrack.ImageURL);
+                            parameters["filename"] = "Spotify_TrackImage.jpg";
+                            parameters["content"] = Convert.ToBase64String(LastTrack.ImageData);
+
+                            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters);
+
+                        }
+
                         Log.Message("Spotify", LastTrack.ToString());
                     }
                 }
@@ -197,7 +232,6 @@ namespace JARVIS.Core.Services.Spotify
             NextPoll = DateTime.Now.AddSeconds(10);
         }
 
-
         void Authorize()
         {
             Authenticated = false;
@@ -208,7 +242,7 @@ namespace JARVIS.Core.Services.Spotify
             Scope = "";
             ExpiresIn = 0;
 
-            Shared.Log.Message("Spotify", "Initiating authorization process ...");
+            Log.Message("Spotify", "Initiating authorization process ...");
 
             Dictionary<string, string> parameters = new Dictionary<string, string>();
 
@@ -223,7 +257,9 @@ namespace JARVIS.Core.Services.Spotify
             // Data passed to each call (with the execption of the token)
             parameters.Add("client_id", ClientID);
             parameters.Add("client_secret", ClientSecret);
-            parameters.Add("scopes", "user-read-recently-played");
+
+            // Ask for a lot of perms
+            parameters.Add("scope", "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played");
             parameters.Add("state", State);
             parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
 
@@ -270,11 +306,6 @@ namespace JARVIS.Core.Services.Spotify
 
             // To adjust polling speed?
             GetCurrentlyPlaying();
-
-            Log.Message("Spotify", "POLLING SPOTIFY");
         }
-
-
     }
-
 }

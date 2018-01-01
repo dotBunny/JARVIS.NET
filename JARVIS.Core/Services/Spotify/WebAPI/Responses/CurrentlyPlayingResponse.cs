@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
 {
     public class CurrentlyPlayingResponse
     {
+        [JsonIgnore]
         public static string Endpoint = "https://api.spotify.com/v1/me/player/currently-playing";
+
+        [JsonProperty("error")]
+        public ErrorMessage Error { get; set; }
 
         public Context context { get; set; }
         public long timestamp { get; set; }
@@ -13,7 +18,7 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
         public bool is_playing { get; set; }
         public Item item { get; set; }
 
-
+        [JsonIgnore]
         public string TrackID { 
             get
             {
@@ -25,7 +30,7 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
         public SpotifyTrack GetTrack()
         {
             SpotifyTrack newTrack = new SpotifyTrack();
-            if ( item.id == "" || item.id == "Unavailable" ) {
+            if ( item.id == "Unavailable" ) {
                 return newTrack;
             }
 
@@ -65,7 +70,6 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
             return newTrack;
         }
     }
-
 
     public class Context
     {

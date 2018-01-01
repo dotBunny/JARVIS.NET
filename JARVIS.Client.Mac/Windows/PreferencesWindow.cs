@@ -30,11 +30,11 @@ namespace JARVIS.Client.Mac.Windows
                 FeaturesNotifications.State = NSCellStateValue.On;
             }
 
-            if (Settings.FeatureCounterOutputs) {
-                FeaturesCounterOutputs.State = NSCellStateValue.On;
+            if (Settings.FeatureFileOutputs) {
+                FeaturesFileOutputs.State = NSCellStateValue.On;
             }
 
-            FeaturesCounterOutputsPath.StringValue = Settings.FeatureCounterOutputsPath;
+            FeaturesFileOutputsPath.StringValue = Settings.FeatureFileOutputsPath;
 
             if (Settings.FeatureWirecastManipulation)
             {

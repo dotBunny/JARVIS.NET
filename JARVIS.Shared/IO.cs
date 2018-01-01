@@ -9,6 +9,10 @@ namespace JARVIS.Shared
         {
             File.WriteAllText(file, contents, System.Text.Encoding.UTF8);
         }
+        public static void WriteContents(string file, byte[] contents)
+        {
+            File.WriteAllBytes(file, contents);
+        }
         public static void AppendContents(string file, string contents)
         {
             File.AppendAllText(file, contents);

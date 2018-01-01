@@ -53,15 +53,25 @@ namespace JARVIS.Shared
 
         public static string GetJSON(string endpoint, Dictionary<string, string> headers = null)
         {
-            return GetJSONResponse(endpoint, "GET", string.Empty, headers);
+            return GetStringResponse(endpoint, "GET", string.Empty, headers);
+        }
+
+        public static byte[] GetBytes(string endpoint, Dictionary<string, string> headers = null)
+        {
+            return GetBytesResponse(endpoint, "GET", string.Empty, headers);
         }
 
         public static string PostJSON(string endpoint, string requestBody = "", Dictionary<string, string> headers = null)
         {
-            return GetJSONResponse(endpoint, "POST", requestBody, headers);
+            return GetStringResponse(endpoint, "POST", requestBody, headers);
         }
 
-        static string GetJSONResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
+        public static byte[] PostBytes(string endpoint, string requestBody = "", Dictionary<string, string> headers = null)
+        {
+            return GetBytesResponse(endpoint, "POST", requestBody, headers);
+        }
+
+        static string GetStringResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string,string> headers = null)
         {
             string responseString = string.Empty;
             using (HttpClient client = new HttpClient())
@@ -96,12 +106,50 @@ namespace JARVIS.Shared
                 // Get Response
                 using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
                 {
-
                     responseString = response.Content.ReadAsStringAsync().Result;
                 }
             }
             return responseString;   
         }
+
+        static byte[] GetBytesResponse(string endpoint, string method = "GET", string requestBody = "", Dictionary<string, string> headers = null)
+        {
+            byte[] responseBytes = new byte[0];
+
+            using (HttpClient client = new HttpClient())
+            {
+                if (headers != null)
+                {
+                    foreach (KeyValuePair<string, string> headerPair in headers)
+                    {
+                        client.DefaultRequestHeaders.TryAddWithoutValidation(headerPair.Key, headerPair.Value);
+                    }
+                }
+
+                // Stub Request
+                HttpRequestMessage message;
+
+                if (!string.IsNullOrEmpty(requestBody))
+                {
+                    message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
+                    {
+                        Content = new StringContent(requestBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+                    };
+                }
+                else
+                {
+                    message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint));
+                }
+
+                // Get Response
+                using (HttpResponseMessage response = Task.Run(() => client.SendAsync(message)).Result)
+                {
+                    responseBytes = response.Content.ReadAsByteArrayAsync().Result;
+                }
+            }
+            return responseBytes;
+        }
+
 
         public static Uri AddQuery(this Uri uri, string name, string value)
         {

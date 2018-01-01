@@ -19,10 +19,10 @@ namespace JARVIS.Shard.Services.Socket
                     return new Commands.Pong();
                 case Shared.Protocol.Instruction.OpCode.FAIL:
                     return new Commands.Fail();
-                case Shared.Protocol.Instruction.OpCode.COUNTER_SET:
-                case Shared.Protocol.Instruction.OpCode.COUNTER_PLUS:
-                case Shared.Protocol.Instruction.OpCode.COUNTER_MINUS:    
-                    return new Commands.Counter();
+                case Shared.Protocol.Instruction.OpCode.TEXT_FILE:    
+                    return new Commands.TextFile();
+                case Shared.Protocol.Instruction.OpCode.BINARY_FILE:
+                    return new Commands.BinaryFile();
                 case Shared.Protocol.Instruction.OpCode.INFO:
                     return new Shared.Services.Socket.Commands.Info();
             }

@@ -10,9 +10,15 @@ namespace JARVIS.Core.Services.Spotify
         public string ImageURL;
         public string TrackURL;
 
+        public byte[] ImageData;
+
         public override string ToString()
         {
             return "[" + ID + "] " + Artist + " - " + Track;
+        }
+        public string ToInfoString()
+        {
+            return Artist + " - " + Track;
         }
     }
 }

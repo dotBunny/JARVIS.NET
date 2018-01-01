@@ -20,10 +20,10 @@ namespace JARVIS.Client.Mac.Services.Socket
                     return new Commands.Pong();
                 case Shared.Protocol.Instruction.OpCode.FAIL:
                     return new Commands.Fail();
-                case Shared.Protocol.Instruction.OpCode.COUNTER_SET:
-                case Shared.Protocol.Instruction.OpCode.COUNTER_PLUS:
-                case Shared.Protocol.Instruction.OpCode.COUNTER_MINUS:
-                    return new Client.Services.Socket.Commands.Counter();
+                case Shared.Protocol.Instruction.OpCode.TEXT_FILE:
+                    return new Client.Services.Socket.Commands.TextFile();
+                case Shared.Protocol.Instruction.OpCode.BINARY_FILE:
+                    return new Client.Services.Socket.Commands.BinaryFile();
                 case Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST:
                     return new Client.Services.Socket.Commands.OAuth();
                 case Shared.Protocol.Instruction.OpCode.INFO:

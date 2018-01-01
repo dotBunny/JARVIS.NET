@@ -14,7 +14,7 @@ namespace JARVIS.Shard
         public static string OutputPath = "./";
 
         public static bool HasWirecastSupport = false;
-        public static bool HasCounterSupport = false;
+        public static bool HasFileOutputs = false;
 
         public static string Username = "JARVIS";
         public static string Password = "demo";
@@ -38,7 +38,7 @@ namespace JARVIS.Shard
             Username = options.SessionUsername;
             Password = options.SessionPassword;
             OutputPath = options.OutputPath;
-            HasCounterSupport = options.EnableCounters;
+            HasFileOutputs = options.EnableFileOutput;
 
             // TODO: Load Settings File
 

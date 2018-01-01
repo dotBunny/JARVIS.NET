@@ -142,12 +142,12 @@
                                         <button verticalHuggingPriority="750" misplaced="YES" id="57X-Rw-BfN">
                                             <rect key="frame" x="40" y="118" width="168" height="18"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Counter Outputs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qWb-PO-deg">
+                                            <buttonCell key="cell" type="check" title="File Outputs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qWb-PO-deg">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="OnFeaturesCounterOutputs:" target="-2" id="bQA-zn-ZXZ"/>
+                                                <action selector="OnFeaturesFileOutputs:" target="-2" id="d30-3T-sQh"/>
                                             </connections>
                                         </button>
                                         <pathControl verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" id="DUZ-X2-u8p">
@@ -158,7 +158,7 @@
                                                 <url key="url" string="file://localhost/Applications/"/>
                                             </pathCell>
                                             <connections>
-                                                <action selector="OnFeaturesCounterOutputsPath:" target="-2" id="IdR-CC-MRB"/>
+                                                <action selector="OnFeaturesFileOutputsPath:" target="-2" id="jXd-7C-iBW"/>
                                             </connections>
                                         </pathControl>
                                         <button verticalHuggingPriority="750" misplaced="YES" id="o4T-9G-7yy">
@@ -238,6 +238,8 @@
                 <outlet property="EncryptionUseEncryptedProtocol" destination="RdW-AD-Gar" id="KA6-Co-08H"/>
                 <outlet property="FeaturesCounterOutputs" destination="57X-Rw-BfN" id="vti-qv-kuL"/>
                 <outlet property="FeaturesCounterOutputsPath" destination="DUZ-X2-u8p" id="NHX-dR-Xtz"/>
+                <outlet property="FeaturesFileOutputs" destination="57X-Rw-BfN" id="HcP-sG-GGk"/>
+                <outlet property="FeaturesFileOutputsPath" destination="DUZ-X2-u8p" id="dzQ-3q-9p5"/>
                 <outlet property="FeaturesNotifications" destination="h7T-gg-grL" id="esJ-6w-oAp"/>
                 <outlet property="FeaturesWirecastManipulation" destination="o4T-9G-7yy" id="loc-qh-kZQ"/>
                 <outlet property="ServerAddress" destination="VzB-ct-um7" id="dWa-wu-V2e"/>

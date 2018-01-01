@@ -5,7 +5,7 @@ namespace JARVIS.Shard
     class CommandLineOptions
     {
         bool enableCounterSupport = false;
-        public bool EnableCounters
+        public bool EnableFileOutput
         {
             get
             {
@@ -189,7 +189,7 @@ namespace JARVIS.Shard
             CommandOption useOutput = commandLine.Option("--output <PATH>", "Set output path (Default: ./)", CommandOptionType.SingleValue);
             CommandOption useHost = commandLine.Option("--host <IP>", "The hostname or the IP address of the JARVIS.Server", CommandOptionType.SingleValue);
             CommandOption usePort = commandLine.Option("--port <PORT>", "The port of the JARVIS.Server", CommandOptionType.SingleValue);
-            CommandOption useCounters = commandLine.Option("--counters", "Enable Counter Support", CommandOptionType.NoValue);
+            CommandOption useCounters = commandLine.Option("--counters", "Enable Fileout", CommandOptionType.NoValue);
             CommandOption useUsername = commandLine.Option("--username <USERNAME>", "JARVIS Username", CommandOptionType.SingleValue);
             CommandOption usePassword = commandLine.Option("--password <PASSWORD>", "JARVIS Password", CommandOptionType.SingleValue);
             CommandOption useEncryption = commandLine.Option("--encrypt", "Use encryption", CommandOptionType.NoValue);
@@ -241,7 +241,7 @@ namespace JARVIS.Shard
                 // Handle Counters
                 if (useCounters.HasValue())
                 {
-                    EnableCounters = true;
+                    EnableFileOutput = true;
                 }
 
                 // Handle Encryption Key

@@ -18,11 +18,11 @@ namespace JARVIS.Client.Mac.Windows
 		[Action ("OnEncryptionUseEncryptedProtocol:")]
 		partial void OnEncryptionUseEncryptedProtocol (AppKit.NSButton sender);
 
-		[Action ("OnFeaturesCounterOutputs:")]
-		partial void OnFeaturesCounterOutputs (AppKit.NSButton sender);
+		[Action ("OnFeaturesFileOutputs:")]
+		partial void OnFeaturesFileOutputs (AppKit.NSButton sender);
 
-		[Action ("OnFeaturesCounterOutputsPath:")]
-		partial void OnFeaturesCounterOutputsPath (AppKit.NSPathControl sender);
+		[Action ("OnFeaturesFileOutputsPath:")]
+		partial void OnFeaturesFileOutputsPath (AppKit.NSPathControl sender);
 
 		[Action ("OnFeaturesNotifications:")]
 		partial void OnFeaturesNotifications (AppKit.NSButton sender);

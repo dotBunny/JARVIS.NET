@@ -21,12 +21,11 @@ namespace JARVIS.Shared.Protocol
             LOGIN,
             FAIL,
             INFO,
-            COUNTER_SET,
-            COUNTER_PLUS,
-            COUNTER_MINUS,
             WIRECAST_LAYERS,
             OAUTH_REQUEST,
             SPOTIFY_REAUTH,
+            TEXT_FILE, // Send text file to remote system (name, content)
+            BINARY_FILE 
         }
 
         /// <summary>

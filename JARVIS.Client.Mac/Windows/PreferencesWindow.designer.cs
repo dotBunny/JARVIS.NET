@@ -19,10 +19,10 @@ namespace JARVIS.Client.Mac.Windows
 		AppKit.NSButton EncryptionUseEncryptedProtocol { get; set; }
 
 		[Outlet]
-		AppKit.NSButton FeaturesCounterOutputs { get; set; }
+		AppKit.NSButton FeaturesFileOutputs { get; set; }
 
 		[Outlet]
-		AppKit.NSPathControl FeaturesCounterOutputsPath { get; set; }
+		AppKit.NSPathControl FeaturesFileOutputsPath { get; set; }
 
 		[Outlet]
 		AppKit.NSButton FeaturesNotifications { get; set; }
@@ -44,29 +44,29 @@ namespace JARVIS.Client.Mac.Windows
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (EncryptionUseEncryptedProtocol != null) {
-				EncryptionUseEncryptedProtocol.Dispose ();
-				EncryptionUseEncryptedProtocol = null;
-			}
-
 			if (EncryptionServerEncryptionKey != null) {
 				EncryptionServerEncryptionKey.Dispose ();
 				EncryptionServerEncryptionKey = null;
 			}
 
+			if (EncryptionUseEncryptedProtocol != null) {
+				EncryptionUseEncryptedProtocol.Dispose ();
+				EncryptionUseEncryptedProtocol = null;
+			}
+
+			if (FeaturesFileOutputs != null) {
+				FeaturesFileOutputs.Dispose ();
+				FeaturesFileOutputs = null;
+			}
+
+			if (FeaturesFileOutputsPath != null) {
+				FeaturesFileOutputsPath.Dispose ();
+				FeaturesFileOutputsPath = null;
+			}
+
 			if (FeaturesNotifications != null) {
 				FeaturesNotifications.Dispose ();
 				FeaturesNotifications = null;
-			}
-
-			if (FeaturesCounterOutputs != null) {
-				FeaturesCounterOutputs.Dispose ();
-				FeaturesCounterOutputs = null;
-			}
-
-			if (FeaturesCounterOutputsPath != null) {
-				FeaturesCounterOutputsPath.Dispose ();
-				FeaturesCounterOutputsPath = null;
 			}
 
 			if (FeaturesWirecastManipulation != null) {
@@ -79,6 +79,11 @@ namespace JARVIS.Client.Mac.Windows
 				ServerAddress = null;
 			}
 
+			if (ServerPassword != null) {
+				ServerPassword.Dispose ();
+				ServerPassword = null;
+			}
+
 			if (ServerPort != null) {
 				ServerPort.Dispose ();
 				ServerPort = null;
@@ -87,11 +92,6 @@ namespace JARVIS.Client.Mac.Windows
 			if (ServerUsername != null) {
 				ServerUsername.Dispose ();
 				ServerUsername = null;
-			}
-
-			if (ServerPassword != null) {
-				ServerPassword.Dispose ();
-				ServerPassword = null;
 			}
 		}
 	}

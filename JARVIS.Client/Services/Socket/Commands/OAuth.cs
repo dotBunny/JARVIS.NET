@@ -9,7 +9,7 @@ namespace JARVIS.Client.Services.Socket.Commands
     {
         public bool CanExecute()
         {
-            return Settings.FeatureCounterOutputs;
+            return Settings.FeatureFileOutputs;
         }
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
@@ -33,9 +33,6 @@ namespace JARVIS.Client.Services.Socket.Commands
                 message = parameters["message"];
                 parameters.Remove("message");
             }
-
-
- 
 
             // Add left over parameters
             foreach(KeyValuePair<string,string> s in parameters)

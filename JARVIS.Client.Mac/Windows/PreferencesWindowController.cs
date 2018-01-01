@@ -56,18 +56,18 @@ namespace JARVIS.Client.Mac.Windows
 
 
         // Features Tab
-        partial void OnFeaturesCounterOutputs(AppKit.NSButton sender)
+        partial void OnFeaturesFileOutputs(AppKit.NSButton sender)
         {
             if (sender.State == NSCellStateValue.On)
             {
-                Settings.FeatureCounterOutputs = true;
+                Settings.FeatureFileOutputs = true;
             }
             else
             {
-                Settings.FeatureCounterOutputs = false;
+                Settings.FeatureFileOutputs = false;
             }
         }
-        partial void OnFeaturesCounterOutputsPath(AppKit.NSPathControl sender)
+        partial void OnFeaturesFileOutputsPath(AppKit.NSPathControl sender)
         {
             var dlg = NSOpenPanel.OpenPanel;
             dlg.CanChooseFiles = false;
@@ -76,7 +76,7 @@ namespace JARVIS.Client.Mac.Windows
             if (dlg.RunModal() == 1)
             {
                 // TODO: Validate path?
-                Settings.FeatureCounterOutputsPath = dlg.DirectoryUrl.Path;
+                Settings.FeatureFileOutputsPath = dlg.DirectoryUrl.Path;
                 sender.StringValue = dlg.DirectoryUrl.Path;
             }
 

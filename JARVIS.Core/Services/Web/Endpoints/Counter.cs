@@ -47,10 +47,11 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 Shared.Log.Message("DB", "Incremented Counter: " + parameters["name"]);
 
                 // Store value
-                parameters["UPDATED_VALUE"] = previousValue.ToString();
+                parameters["filename"] = parameters["name"] + ".txt";
+                parameters["content"] = previousValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Protocol.Instruction.OpCode.COUNTER_PLUS,
+                    Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
                 
                 context.Response.SendResponse(Shared.Web.SuccessCode);
@@ -95,10 +96,11 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 Shared.Log.Message("DB", "Decremented Counter: " + parameters["name"]);
 
                 // Store value
-                parameters["UPDATED_VALUE"] = previousValue.ToString();
+                parameters["filename"] = parameters["name"] + ".txt";
+                parameters["content"] = previousValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Protocol.Instruction.OpCode.COUNTER_MINUS,
+                    Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 
                 context.Response.SendResponse(Shared.Web.SuccessCode);
@@ -131,12 +133,13 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 Database.Tables.Counters.Set(parameters["name"], setValue);
 
                 Shared.Log.Message("DB", "Set Counter: " + parameters["name"] + " as " + setValue);
-               
+
                 // Store value
-                parameters["UPDATED_VALUE"] = setValue.ToString();
+                parameters["filename"] = parameters["name"] + ".txt";
+                parameters["content"] = setValue.ToString();
 
                 Server.Socket.SendToAllSessions(
-                    Shared.Protocol.Instruction.OpCode.COUNTER_SET,
+                    Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 
                 context.Response.SendResponse(Shared.Web.SuccessCode);

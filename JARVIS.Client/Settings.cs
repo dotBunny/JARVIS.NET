@@ -55,27 +55,27 @@ namespace JARVIS.Client
             }
         }
 
-        public static bool FeatureCounterOutputs
+        public static bool FeatureFileOutputs
         {
             get
             {
-                return AppSettings.GetValueOrDefault("FeatureCounterOutputs", false);
+                return AppSettings.GetValueOrDefault("FeatureFileOutputs", false);
             }
             set
             {
-                AppSettings.AddOrUpdateValue("FeatureCounterOutputs", value);
+                AppSettings.AddOrUpdateValue("FeatureFileOutputs", value);
             }
         }
 
-        public static string FeatureCounterOutputsPath
+        public static string FeatureFileOutputsPath
         {
             get
             {
-                return AppSettings.GetValueOrDefault("FeatureCounterOutputsPath", Shared.Platform.GetBaseDirectory());
+                return AppSettings.GetValueOrDefault("FeatureFileOutputsPath", Shared.Platform.GetBaseDirectory());
             }
             set
             {
-                AppSettings.AddOrUpdateValue("FeatureCounterOutputsPath", value);
+                AppSettings.AddOrUpdateValue("FeatureFileOutputsPath", value);
             }
         }
 
