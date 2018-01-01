@@ -91,7 +91,7 @@ namespace JARVIS.Client.Mac
         // TODO: Only let this work if the client is connected / disable when not connected
         partial void OnServicesSpotifyForceAuthentication(AppKit.NSMenuItem sender)
         {
-            Client.Send(Shared.Protocol.Instruction.OpCode.SPOTIFY_REAUTH, new System.Collections.Generic.Dictionary<string, string>());
+            Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_SPOTIFY, new System.Collections.Generic.Dictionary<string, string>());
         }
 
         //partial void OnWindowTestLogic(AppKit.NSMenuItem sender)

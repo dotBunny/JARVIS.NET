@@ -10,6 +10,7 @@
     <Folder Include="Protocol\" />
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
+    <Folder Include="Services\Notification\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\Icons\jarvis.icns" />

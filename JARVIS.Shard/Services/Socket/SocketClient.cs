@@ -21,7 +21,7 @@ namespace JARVIS.Shard.Services.Socket
 
         public SocketClient()
         {
-            Host = Shared.Net.GetIPAddress(Host);
+            Host = Shared.Network.GetIPAddress(Host);
 
             // Create Client
             Connection = new Shared.Services.Socket.SocketClient();
@@ -70,7 +70,7 @@ namespace JARVIS.Shard.Services.Socket
             }
 
 
-            Host = Shared.Net.GetIPAddress(Host);
+            Host = Shared.Network.GetIPAddress(Host);
             Connection.Connect(Host, Port);
             Connection.Start();
         }

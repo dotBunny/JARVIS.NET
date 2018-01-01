@@ -1,15 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 
 namespace JARVIS.Shared
 {
-    public static class Net
+    /// <summary>
+    /// Network Related Helpers.
+    /// </summary>
+    public static class Network
     {
+        /// <summary>
+        /// Gets the IP address of the specified hostname.
+        /// </summary>
+        /// <returns>The internet protocol address.</returns>
+        /// <param name="hostname">The provided hostname.</param>
         public static string GetIPAddress(string hostname)
         {
-            IPAddress address;
-            if (IPAddress.TryParse(hostname, out address))
+            if (IPAddress.TryParse(hostname, out IPAddress address))
             {
                 switch (address.AddressFamily)
                 {
@@ -23,34 +29,31 @@ namespace JARVIS.Shared
             string returnHost = host.AddressList[0].ToString();
             if ( returnHost == "::1")
             {
-                returnHost = "127.0.0.1";
+                return "127.0.0.1";
             }
 
             return returnHost;
         }
 
         /// <summary>
-        /// Validates the port.
+        /// Validates that a provided port is valid and within acceptable ranges.
         /// </summary>
         /// <param name="port">The port.</param>
-        /// <returns></returns>
+        /// <returns>A exception if there is one, otherwise null.</returns>
         public static Exception ValidatePort(int port)
         {
             if (port >= 0 && port <= 65535)
             {
                 return null;
             }
-            else
-            {
-                return new FormatException("port must be greater than 0 and less than 65535");
-            }
+            return new FormatException("A port must be greater than 0 and less than 65535");
         }
 
         /// <summary>
-        /// Validates the host.
+        /// Validates a provided host address.
         /// </summary>
         /// <param name="host">The host.</param>
-        /// <returns></returns>
+        /// <returns>A exception if there is one, otherwise null.</returns>
         public static Exception ValidateHost(string host)
         {
             if (string.IsNullOrEmpty(host) || host.Trim() == "")
@@ -58,15 +61,11 @@ namespace JARVIS.Shared
                 return new ArgumentNullException(nameof(host));
             }
 
-            IPAddress address = null;
-            if (IPAddress.TryParse(host, out address))
+            if (IPAddress.TryParse(host, out IPAddress address))
             {
                 return null;
             }
-            else
-            {
-                return new FormatException("host format is incorrect");
-            }
+            return new FormatException("The host format is invalid.");
         }
     }
 }

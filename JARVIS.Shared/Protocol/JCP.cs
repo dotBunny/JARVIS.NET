@@ -8,7 +8,15 @@ namespace JARVIS.Shared.Protocol
     /// </summary>
     public class JCP
     {
-        public const int SizeOfLength = sizeof(int);
+        /// <summary>
+        /// The current encryption key.
+        /// </summary>
+        string _currentEncryptionKey;
+
+        /// <summary>
+        /// The encryption key used during the login process.
+        /// </summary>
+        string _initialEncryptionKey;
 
         /// <summary>
         /// An indicator byte that data is not encrypted.
@@ -41,21 +49,6 @@ namespace JARVIS.Shared.Protocol
         public const int Version = 13;
 
         /// <summary>
-        /// The Encryption Key
-        /// </summary>
-        public string EncryptionKey
-        {
-            get
-            {
-                if (IsAuthenticated)
-                {
-                    return currentEncryptionKey;
-                }
-                return initialEncryptionKey;
-            }
-        }
-
-        /// <summary>
         /// Has the JCP protocol session been authenticated? 
         /// </summary>
         public bool IsAuthenticated = false;
@@ -66,14 +59,19 @@ namespace JARVIS.Shared.Protocol
         public bool UseEncryption = true;
 
         /// <summary>
-        /// The current encryption key
+        /// The Encryption Key
         /// </summary>
-        string currentEncryptionKey;
-
-        /// <summary>
-        /// The encryption key used during the login process.
-        /// </summary>
-        string initialEncryptionKey;
+        public string EncryptionKey
+        {
+            get
+            {
+                if (IsAuthenticated)
+                {
+                    return _currentEncryptionKey;
+                }
+                return _initialEncryptionKey;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.JCP"/> class.
@@ -83,8 +81,8 @@ namespace JARVIS.Shared.Protocol
         public JCP(bool useEncryption = true, string encryptionKey = "max")
         {
             UseEncryption = useEncryption;
-            initialEncryptionKey = encryptionKey;
-            currentEncryptionKey = encryptionKey;
+            _initialEncryptionKey = encryptionKey;
+            _currentEncryptionKey = encryptionKey;
 
             Log.Message("Socket", "Using JCP Version " + Version.ToString());
         }

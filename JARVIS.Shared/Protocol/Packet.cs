@@ -11,10 +11,9 @@ namespace JARVIS.Shared.Protocol
     public class Packet
     {
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:JARVIS.Shared.Protocol.Packet"/> was encryped.
+        /// A list of instructions in the packet.
         /// </summary>
-        /// <value><c>true</c> if was encryped; otherwise, <c>false</c>.</value>
-        public bool WasEncryped { get; private set; }
+        List<Instruction> Instructions = new List<Instruction>();
 
         /// <summary>
         /// The text encoding used.
@@ -22,9 +21,10 @@ namespace JARVIS.Shared.Protocol
         public readonly Encoding TextEncoding = Encoding.UTF8;
 
         /// <summary>
-        /// A list of instructions in the packet.
+        /// Gets a value indicating whether this <see cref="T:JARVIS.Shared.Protocol.Packet"/> was encryped.
         /// </summary>
-        List<Instruction> Instructions = new List<Instruction>();
+        /// <value><c>true</c> if was encryped; otherwise, <c>false</c>.</value>
+        public bool WasEncryped { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Packet"/> class.
@@ -82,18 +82,18 @@ namespace JARVIS.Shared.Protocol
             while (parsing)
             {
 
-                if (workingData.Count >= JCP.SizeOfLength)
+                if (workingData.Count >= Platform.ByteSizeOfInt)
                 {
-                    byte[] lengthBytes = workingData.GetRange(0, JCP.SizeOfLength).ToArray();
+                    byte[] lengthBytes = workingData.GetRange(0, Platform.ByteSizeOfInt).ToArray();
                     int instructionLength = BitConverter.ToInt32(lengthBytes, 0);
 
                     // We've got a complete packet at this point
-                    if (workingData.Count >= (instructionLength + JCP.SizeOfLength))
+                    if (workingData.Count >= (instructionLength + Platform.ByteSizeOfInt))
                     {
-                        Instructions.Add(new Instruction(workingData.GetRange(JCP.SizeOfLength, instructionLength).ToArray()));
+                        Instructions.Add(new Instruction(workingData.GetRange(Platform.ByteSizeOfInt, instructionLength).ToArray()));
 
                         // Remove processed data
-                        workingData.RemoveRange(0, JCP.SizeOfLength + instructionLength);
+                        workingData.RemoveRange(0, Platform.ByteSizeOfInt + instructionLength);
                     }
                     else
                     {

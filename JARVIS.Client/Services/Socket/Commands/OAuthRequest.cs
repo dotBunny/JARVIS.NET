@@ -5,7 +5,7 @@ using JARVIS.Shared;
 
 namespace JARVIS.Client.Services.Socket.Commands
 {
-    public class OAuth : JARVIS.Shared.Services.Socket.ISocketCommand
+    public class OAuthRequest : ISocketCommand
     {
         public bool CanExecute()
         {
@@ -13,12 +13,8 @@ namespace JARVIS.Client.Services.Socket.Commands
         }
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
-            // Build URI - errors if we dont have it
-
-
             Uri endpoint = new Uri(parameters["endpoint"]);
             parameters.Remove("endpoint");
-
 
             string title = "OAuth Request";
             if (parameters.ContainsKey("title"))
@@ -47,8 +43,5 @@ namespace JARVIS.Client.Services.Socket.Commands
             }
             Log.Notifier.Notify(notification);
         }
-
-       
-
     }
 }

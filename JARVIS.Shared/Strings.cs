@@ -1,25 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace JARVIS.Shared
 {
+    /// <summary>
+    /// String Related Helpers
+    /// </summary>
     public static class Strings
     {
-        public static string Truncate(this string value, int maxLength)
+        /// <summary>
+        /// Encode a string into bytes and get its Base64 string representation.
+        /// </summary>
+        /// <returns>The encoded string.</returns>
+        /// <param name="source">The source string.</param>
+        public static string Base64Encode(this string source)
         {
-            if (string.IsNullOrEmpty(value)) return value;
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(source));
         }
 
-        public static string SHA256(this string value)
+        /// <summary>
+        /// Get the SHA256 hash of the string.
+        /// </summary>
+        /// <returns>The string hash.</returns>
+        /// <param name="source">The source string.</param>
+        public static string SHA256(this string source)
         {
             StringBuilder Sb = new StringBuilder();
 
-            using (var hash =System.Security.Cryptography.SHA256.Create())
+            using (var hash = System.Security.Cryptography.SHA256.Create())
             {
                 Encoding enc = Encoding.UTF8;
-                Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+                Byte[] result = hash.ComputeHash(enc.GetBytes(source));
 
                 foreach (Byte b in result)
                     Sb.Append(b.ToString("x2"));
@@ -28,9 +39,16 @@ namespace JARVIS.Shared
             return Sb.ToString();
         }
 
-        public static string Base64Encode(string plainText)
+        /// <summary>
+        /// Truncate the target string to a maximum length.
+        /// </summary>
+        /// <returns>The truncated string.</returns>
+        /// <param name="target">The source string.</param>
+        /// <param name="maximumLength">The maximum allowed length for the string.</param>
+        public static string Truncate(this string target, int maximumLength)
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
+            if (string.IsNullOrEmpty(target)) return target;
+            return target.Length <= maximumLength ? target : target.Substring(0, maximumLength);
         }
     }
 }

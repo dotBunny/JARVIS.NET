@@ -38,14 +38,14 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Iterate over commands
             foreach(string key in commands.Keys)
             {
-                currentCommand = commands[key].Split(new[] { Shared.Web.Deliminator }, StringSplitOptions.None)[0];
+                currentCommand = commands[key].Split(new[] { Shared.Web.StringDeliminator }, StringSplitOptions.None)[0];
 
                 currentParameters.Clear();
 
                 currentParameters = Shared.Web.GetStringDictionaryEscaped(
                     commands[key].Substring(
                         currentCommand.Length + 
-                        Shared.Web.Deliminator.Length));
+                        Shared.Web.StringDeliminator.Length));
 
                 // Create parameters for individual command to be issued
                 urlParameters = "";

@@ -13,7 +13,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/wirecast/layers/")]
 		public IHttpContext Layers(IHttpContext context)
 		{
-            // ?layer1=name&layer2=name&layer3=name&layer4=name&layer5=name
+            // ?L1=name&layer2=name&3=name&layer4=name&layer5=name
 
             // Send command via socket
             Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 

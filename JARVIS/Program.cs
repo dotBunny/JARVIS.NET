@@ -27,7 +27,7 @@ namespace JARVIS
             {
 #endif
             // Capture Log
-            Shared.Log.Capture(true);
+            Shared.Log.StartCapture(true);
              
             // Indicate that we're starting the party
             Shared.Log.Message("system", "Starting up ... ");
@@ -102,6 +102,9 @@ namespace JARVIS
                 Quit(1);
             }
 #endif
+            // Stop Capture Log
+            Shared.Log.StopCapture();
+
             // Exit
             Quit(0);
         }

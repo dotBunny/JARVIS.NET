@@ -96,7 +96,7 @@ namespace JARVIS.Shared.Services.Socket
         /// <param name="host">The host.</param>
         protected void SetHost(string host)
         {
-            Exception ex = Net.ValidateHost(host);
+            Exception ex = Network.ValidateHost(host);
             if (ex == null)
             {
                 Host = host;
@@ -113,7 +113,7 @@ namespace JARVIS.Shared.Services.Socket
         /// <param name="port">The port.</param>
         protected void SetPort(int port)
         {
-            Exception ex = Net.ValidatePort(port);
+            Exception ex = Network.ValidatePort(port);
             if (ex == null)
             {
                 Port = port;
@@ -134,14 +134,14 @@ namespace JARVIS.Shared.Services.Socket
         /// </exception>
         protected void CheckHostAndPort()
         {
-            Exception exception = Net.ValidateHost(Host);
+            Exception exception = Network.ValidateHost(Host);
 
             if (exception != null)
             {
                 throw new Exception("Host is incorrect", exception);
             }
 
-            exception = Net.ValidatePort(Port);
+            exception = Network.ValidatePort(Port);
 
             if (exception != null)
             {

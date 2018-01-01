@@ -11,12 +11,15 @@ namespace JARVIS.Core.Services.Socket
             {
                 case Instruction.OpCode.AUTH:
                     return new Commands.Auth();
+                case Instruction.OpCode.AUTH_SPOTIFY:
+                    return new Commands.AuthSpotify();
+                case Instruction.OpCode.LOGIN:
+                    return new Commands.Login();
                 case Instruction.OpCode.INFO:
                     return new Shared.Services.Socket.Commands.Info();
                 case Instruction.OpCode.PING:
                     return new Commands.Ping();   
-                case Instruction.OpCode.SPOTIFY_REAUTH:
-                    return new Commands.SpotifyReauth();
+
             }
             return new Shared.Services.Socket.Commands.Default();
 

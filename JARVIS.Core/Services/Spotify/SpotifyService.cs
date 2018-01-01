@@ -271,7 +271,6 @@ namespace JARVIS.Core.Services.Spotify
             Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, false);
         }
       
-
         public void Start()
         {
             if (!Enabled) 

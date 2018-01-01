@@ -16,18 +16,18 @@ namespace JARVIS.Shared.Services.Socket
             bool parsing = true;
             while (parsing)
             {
-                if (buffer.Count >= JCP.SizeOfLength)
+                if (buffer.Count >= Platform.ByteSizeOfInt)
                 {
-                    byte[] lengthBytes = buffer.GetRange(0, JCP.SizeOfLength).ToArray();
+                    byte[] lengthBytes = buffer.GetRange(0, Platform.ByteSizeOfInt).ToArray();
                     int packetLength = BitConverter.ToInt32(lengthBytes, 0);
 
                     // We've got a complete packet at this point
-                    if (buffer.Count >= (packetLength + JCP.SizeOfLength))
+                    if (buffer.Count >= (packetLength + Platform.ByteSizeOfInt))
                     {
-                        Packet packet = new Packet(buffer.GetRange(JCP.SizeOfLength, packetLength).ToArray(), protocol.EncryptionKey);
+                        Packet packet = new Packet(buffer.GetRange(Platform.ByteSizeOfInt, packetLength).ToArray(), protocol.EncryptionKey);
 
                         // Remove processed data
-                        buffer.RemoveRange(0, JCP.SizeOfLength + packetLength);
+                        buffer.RemoveRange(0, Platform.ByteSizeOfInt + packetLength);
 
                         // Execute packet instructions
                         foreach (Instruction i in packet.GetInstructions())

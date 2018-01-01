@@ -125,9 +125,9 @@
     <Compile Include="Services\Socket\SocketClient.cs" />
     <Compile Include="Services\Socket\CommandFactory.cs" />
     <Compile Include="Services\Socket\Commands\Auth.cs" />
-    <Compile Include="Services\Socket\Commands\Fail.cs" />
-    <Compile Include="Services\Socket\Commands\Pong.cs" />
-    <Compile Include="Services\Socket\Commands\Wirecast.cs" />
+    <Compile Include="Services\Socket\Commands\LoginFail.cs" />
+    <Compile Include="Services\Socket\Commands\Ping.cs" />
+    <Compile Include="Services\Socket\Commands\WirecastLayers.cs" />
     <Compile Include="Helpers\Settings.cs" />
   </ItemGroup>
   <ItemGroup>

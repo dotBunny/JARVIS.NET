@@ -14,20 +14,56 @@ namespace JARVIS.Shared.Protocol
         /// </summary>
         public enum OpCode
         {
+            /// <summary>
+            /// Non-event based protocol operation that should do nothing.
+            /// </summary>
             DEFAULT,
+
+            /// <summary>
+            /// The originating sacred 'PING' command which will force a 'PONG' response.
+            /// </summary>
             PING,
+
+            /// <summary>
+            /// The response to a 'PING'.
+            /// </summary>
             PONG,
+
+            /// <summary>
+            /// A request for authentication, when sent from server, it will force clients to send 'LOGIN' information back. 
+            /// When sent from a client, it will force the server to send it back to them to reauth.
+            /// </summary>
             AUTH,
+
+            /// <summary>
+            /// Login credentials (sent from client to server).
+            /// </summary>
             LOGIN,
-            FAIL,
+
+            /// <summary>
+            /// Sent to clients when login has failed.
+            /// </summary>
+            LOGIN_FAIL,
+
+            /// <summary>
+            /// Informational packet sent for debugging information.
+            /// </summary>
             INFO,
+
+            /// <summary>
+            /// Adjust Wirecast layers on a client.
+            /// </summary>
             WIRECAST_LAYERS,
+
+            /// <summary>
+            /// A request for clients/shards to authenticate a service via OAuth.
+            /// </summary>
             OAUTH_REQUEST,
 
             /// <summary>
-            /// Force server (only handler) to reauthenticate with Spotify
+            /// Force server (only handler) to reauthenticate with Spotify.
             /// </summary>
-            SPOTIFY_REAUTH,
+            AUTH_SPOTIFY,
 
             /// <summary>
             /// Send text file to remote system (filename, content).
@@ -40,12 +76,12 @@ namespace JARVIS.Shared.Protocol
         }
 
         /// <summary>
-        /// Instruction Operation Code
+        /// The instructions operation code.
         /// </summary>
         public OpCode Operation = OpCode.DEFAULT;
 
         /// <summary>
-        /// Instruction Parameters
+        /// The instructions parameters to pass to the operation's command.
         /// </summary>
         public Dictionary<string, string> Parameters = new Dictionary<string, string>();
 

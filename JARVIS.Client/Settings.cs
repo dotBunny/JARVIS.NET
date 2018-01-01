@@ -96,11 +96,11 @@ namespace JARVIS.Client
         {
             get 
             {
-                return AppSettings.GetValueOrDefault("ServerAddress", Shared.Net.GetIPAddress("localhost"));
+                return AppSettings.GetValueOrDefault("ServerAddress", Shared.Network.GetIPAddress("localhost"));
             }
             set
             {
-                AppSettings.AddOrUpdateValue("ServerAddress", Shared.Net.GetIPAddress(value));
+                AppSettings.AddOrUpdateValue("ServerAddress", Shared.Network.GetIPAddress(value));
             }
         }
 

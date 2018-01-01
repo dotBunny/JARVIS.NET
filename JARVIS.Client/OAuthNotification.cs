@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JARVIS.Client
 {
-    public class OAuthNotification : Shared.INotification
+    public class OAuthNotification : Shared.Services.Notification.INotification
     {
         string URI = string.Empty;
         string Title = string.Empty;
@@ -17,7 +17,7 @@ namespace JARVIS.Client
             Message = message;
         }
 
-        public Dictionary<string,string> GetDictionary()
+        public Dictionary<string,string> GetParameters()
         {
             return new Dictionary<string, string>() { { "Shared.Platform.Run.Path", URI } };
         }

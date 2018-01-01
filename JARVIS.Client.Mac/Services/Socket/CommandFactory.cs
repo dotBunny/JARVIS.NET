@@ -16,20 +16,20 @@ namespace JARVIS.Client.Mac.Services.Socket
             {
                 case Shared.Protocol.Instruction.OpCode.AUTH:
                     return new Commands.Auth(Client);
-                case Shared.Protocol.Instruction.OpCode.PONG:
-                    return new Commands.Pong();
-                case Shared.Protocol.Instruction.OpCode.FAIL:
-                    return new Commands.Fail();
+                case Shared.Protocol.Instruction.OpCode.PING:
+                    return new Commands.Ping(Client);
+                case Shared.Protocol.Instruction.OpCode.LOGIN_FAIL:
+                    return new Commands.LoginFail();
                 case Shared.Protocol.Instruction.OpCode.TEXT_FILE:
                     return new Client.Services.Socket.Commands.TextFile();
                 case Shared.Protocol.Instruction.OpCode.BINARY_FILE:
                     return new Client.Services.Socket.Commands.BinaryFile();
                 case Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST:
-                    return new Client.Services.Socket.Commands.OAuth();
+                    return new Client.Services.Socket.Commands.OAuthRequest();
                 case Shared.Protocol.Instruction.OpCode.INFO:
                     return new Shared.Services.Socket.Commands.Info();
                 case Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS:
-                    return new Commands.Wirecast();
+                    return new Commands.WirecastLayers();
             }
             return new Shared.Services.Socket.Commands.Default();
 

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using AppKit;
 using Foundation;
 
 namespace JARVIS.Client.Mac
 {
-    public class Notifications : JARVIS.Shared.INotifier
+    public class Notifications : Shared.Services.Notification.INotifier
     {
         NSUserNotificationCenter NotificationCenter { get; set; }
 
@@ -80,7 +79,7 @@ namespace JARVIS.Client.Mac
             Notify(notification);
         }
 
-        public void Notify(Shared.INotification notification)
+        public void Notify(Shared.Services.Notification.INotification notification)
         {
             // Trigger a local notification after the time has elapsed
             var sysNotification = new NSUserNotification();
@@ -93,12 +92,12 @@ namespace JARVIS.Client.Mac
             sysNotification.HasReplyButton = false;
 
 
-            if (notification.GetDictionary().Count > 0)
+            if (notification.GetParameters().Count > 0)
             {
                 List<string> keys = new List<string>();
                 List<string> values = new List<string>();
 
-                foreach (KeyValuePair<string, string> item in notification.GetDictionary())
+                foreach (KeyValuePair<string, string> item in notification.GetParameters())
                 {
                     keys.Add(item.Key);
                     values.Add(item.Value);

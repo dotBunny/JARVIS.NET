@@ -15,10 +15,10 @@ namespace JARVIS.Shard.Services.Socket
             {
                 case Shared.Protocol.Instruction.OpCode.AUTH:
                     return new Commands.Auth();
-                case Shared.Protocol.Instruction.OpCode.PONG:
-                    return new Commands.Pong();
-                case Shared.Protocol.Instruction.OpCode.FAIL:
-                    return new Commands.Fail();
+                case Shared.Protocol.Instruction.OpCode.PING:
+                    return new Commands.Ping();
+                case Shared.Protocol.Instruction.OpCode.LOGIN_FAIL:
+                    return new Commands.LoginFail();
                 case Shared.Protocol.Instruction.OpCode.TEXT_FILE:    
                     return new Commands.TextFile();
                 case Shared.Protocol.Instruction.OpCode.BINARY_FILE:

@@ -19,8 +19,8 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
         {
             // Send Auth
             Client.Send(
-                Shared.Protocol.Instruction.OpCode.AUTH,
-                new Dictionary<string, string>() {
+                Shared.Protocol.Instruction.OpCode.LOGIN,
+                new Dictionary<string, string> {
                 {"username",Settings.SessionUsername},
                 {"password",Settings.SessionPassword}
             });

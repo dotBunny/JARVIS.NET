@@ -13,10 +13,10 @@ namespace JARVIS.Shard.Services.Socket.Commands
         {
             // Send Auth
             Program.Client.Send(
-                Shared.Protocol.Instruction.OpCode.AUTH, 
-                new Dictionary<string, string>() {
+                Shared.Protocol.Instruction.OpCode.LOGIN, 
+                new Dictionary<string, string> {
                     {"username",Program.Username},
-                    {"password",Program.Password},
+                    {"password",Program.Password}
             });
 
             Shared.Log.Message("AUTH","Login Sent");

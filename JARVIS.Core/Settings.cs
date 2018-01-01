@@ -88,7 +88,7 @@ namespace JARVIS.Core
             }
 
             // Resolve hostname into IP of not IP
-            Host = Shared.Net.GetIPAddress(Host);
+            Host = Shared.Network.GetIPAddress(Host);
 
             // Web Port
             if (RawSettings.ContainsKey(Database.Tables.Settings.ServerWebPortID))

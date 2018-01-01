@@ -3,29 +3,60 @@ using System.Collections.Generic;
 
 namespace JARVIS.Shared
 {
+    /// <summary>
+    /// Input/Output Related Helpers.
+    /// </summary>
     public static class IO
     {
-        public static void WriteContents(string file, string contents)
+        /// <summary>
+        /// Write the provided contents to a file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        /// <param name="contents">The contents to be written to the file.</param>
+        public static void WriteContents(string filePath, string contents)
         {
-            File.WriteAllText(file, contents, System.Text.Encoding.UTF8);
+            File.WriteAllText(filePath, contents, System.Text.Encoding.UTF8);
         }
-        public static void WriteContents(string file, byte[] contents)
+
+        /// <summary>
+        /// Write the provided contents to a file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        /// <param name="contents">The contents to be written to the file.</param>
+        public static void WriteContents(string filePath, byte[] contents)
         {
-            File.WriteAllBytes(file, contents);
+            File.WriteAllBytes(filePath, contents);
         }
-        public static void AppendContents(string file, string contents)
+
+        /// <summary>
+        /// Appends the provided contents to a file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        /// <param name="contents">The contents to be appended to the file.</param>
+        public static void AppendContents(string filePath, string contents)
         {
-            File.AppendAllText(file, contents);
+            File.AppendAllText(filePath, contents);
         }
-        public static void AppendContents(string file, List<string> contents)
+
+        /// <summary>
+        /// Appends the provided contents to a file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        /// <param name="contents">The contents to be appended to the file.</param>
+        public static void AppendContents(string filePath, List<string> contents)
         {
-            File.AppendAllLines(file, contents);
+            File.AppendAllLines(filePath, contents);
         }
-        public static void DeleteFile(string path)
+
+        /// <summary>
+        /// Deletes the specified file.
+        /// </summary>
+        /// <param name="filePath">The path to the file.</param>
+        public static void DeleteFile(string filePath)
         {
-            if (File.Exists(path))
+            if (File.Exists(filePath))
             {
-                File.Delete(path);
+                File.Delete(filePath);
             }
         }
     }
