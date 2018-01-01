@@ -23,8 +23,19 @@ namespace JARVIS.Shared.Protocol
             INFO,
             WIRECAST_LAYERS,
             OAUTH_REQUEST,
+
+            /// <summary>
+            /// Force server (only handler) to reauthenticate with Spotify
+            /// </summary>
             SPOTIFY_REAUTH,
-            TEXT_FILE, // Send text file to remote system (name, content)
+
+            /// <summary>
+            /// Send text file to remote system (filename, content).
+            /// </summary>
+            TEXT_FILE,
+            /// <summary>
+            /// Send binary file to remote system (filename, content).
+            /// </summary>
             BINARY_FILE 
         }
 
@@ -43,7 +54,7 @@ namespace JARVIS.Shared.Protocol
         /// </summary>
         public Instruction()
         {
-            
+
         }
 
         /// <summary>

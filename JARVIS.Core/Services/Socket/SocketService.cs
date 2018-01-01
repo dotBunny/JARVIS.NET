@@ -7,9 +7,16 @@ namespace JARVIS.Core.Services.Socket
 {
     public class SocketService : IService
     {
+        /// <summary>
+        /// Collection of Authenticated Users, and their profiles
+        /// </summary>
         public Dictionary<Sender, SocketUser> AuthenticatedUsers = new Dictionary<Sender, SocketUser>();
-        Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
 
+      
+        /// <summary>
+        /// The number of available buffers (total active clients)
+        /// </summary>
+        /// <value>Buffers Count</value>
         public int BufferCount 
         {
             get 
@@ -17,6 +24,24 @@ namespace JARVIS.Core.Services.Socket
                 return Buffers.Count;
             }
         }
+
+        /// <summary>
+        /// The number of authenticated users.
+        /// </summary>
+        /// <value>Authenticated User Count</value>
+        public int AuthenticatedUserCount
+        {
+            get
+            {
+                return AuthenticatedUsers.Count;    
+            }
+        }
+
+        /// <summary>
+        /// Session based read buffers
+        /// </summary>
+        Dictionary<Sender, List<byte>> Buffers = new Dictionary<Sender, List<byte>>();
+
 
         // TODO: Add ability to sub to events that get rebroadcasted
         // TODO: Add REAUTH/AUTH

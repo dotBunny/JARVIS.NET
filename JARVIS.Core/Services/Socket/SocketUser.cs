@@ -16,5 +16,14 @@ namespace JARVIS.Core.Services.Socket
         {
             Server.Socket.AuthenticatedUsers.Remove(Session);
         }
+
+
+        public enum Scopes
+        {
+            SHARD,
+            CLIENT,
+            SPOTIFY,
+            COUNTERS
+        }
     }
 }
