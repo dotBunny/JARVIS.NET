@@ -3,17 +3,27 @@ using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Client.Services.Socket.Commands
 {
-    public class TextFile : JARVIS.Shared.Services.Socket.ISocketCommand
+    /// <summary>
+    /// Write To Text File Command
+    /// </summary>
+    public class TextFile : ISocketCommand
     {
+        /// <summary>
+        /// Can this command be executed?
+        /// </summary>
+        /// <returns><c>true</c>, if settings look good, <c>false</c> otherwise.</returns>
         public bool CanExecute()
         {
             return Settings.FeatureFileOutputs;
         }
+
+        /// <summary>
+        /// Execute the command.
+        /// </summary>
+        /// <param name="session">The user session.</param>
+        /// <param name="parameters">The parameters (filename, content) to use while executing the command.</param>
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
-            // Check Permission
-
-
             if (parameters.ContainsKey("filename") && parameters.ContainsKey("content"))
             {
                 Shared.Log.Message("file", "Setting " + parameters["filename"].Trim() + " => " + parameters["content"].Trim());

@@ -8,16 +8,16 @@ namespace JARVIS.Shared.Services.Notification
     public interface INotification
     {
         /// <summary>
-        /// Get a the parameters of the notification.
-        /// </summary>
-        /// <returns>A string based <see cref="T:System.Collections.Generic.KeyValuePair"/> <see cref="T:System.Collections.Generic.Dictionary"/>.</returns>
-        Dictionary<string, string> GetParameters();
-
-        /// <summary>
         /// Gets the message of the notification.
         /// </summary>
         /// <returns>The message.</returns>
         string GetMessage();
+
+        /// <summary>
+        /// Get a the parameters of the notification.
+        /// </summary>
+        /// <returns>A string based <see cref="T:System.Collections.Generic.KeyValuePair"/> <see cref="T:System.Collections.Generic.Dictionary"/>.</returns>
+        Dictionary<string, string> GetParameters();
 
         /// <summary>
         /// Get the title of the notification.

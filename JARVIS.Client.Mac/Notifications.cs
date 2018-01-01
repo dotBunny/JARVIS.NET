@@ -8,9 +8,7 @@ namespace JARVIS.Client.Mac
     {
         NSUserNotificationCenter NotificationCenter { get; set; }
 
-        NSString runPathKey = new NSString("Shared.Platform.Run.Path");
-        NSString runArguementsKey = new NSString("Shared.Platform.Run.Arguements");
-        NSString runHideKey = new NSString("Shared.Platform.Run.Hide");
+        NSString executablePathKey = new NSString("Shared.Platform.Run.executablePath");
 
         //List<NSUserNotification> ActiveNotifications = new List<NSUserNotification>();
         //int CachedNotificationCount;
@@ -36,10 +34,10 @@ namespace JARVIS.Client.Mac
                         Console.WriteLine("Action Touched");
 
 
-                        if ( e.Notification.UserInfo.ContainsKey(runPathKey) ){
+                        if ( e.Notification.UserInfo.ContainsKey(executablePathKey) ){
 
-                            Console.WriteLine("[" + e.Notification.UserInfo.ValueForKey(runPathKey).ToString() + "]");
-                            Shared.Platform.Run(e.Notification.UserInfo.ValueForKey(runPathKey).ToString(), string.Empty, false);
+                            Console.WriteLine("[" + e.Notification.UserInfo.ValueForKey(executablePathKey).ToString() + "]");
+                            Shared.Platform.Run(e.Notification.UserInfo.ValueForKey(executablePathKey).ToString(), string.Empty, false);
                         }
 
                         break;

@@ -5,12 +5,25 @@ using JARVIS.Shared;
 
 namespace JARVIS.Client.Services.Socket.Commands
 {
+    /// <summary>
+    /// OAuth Request Command
+    /// </summary>
     public class OAuthRequest : ISocketCommand
     {
+        /// <summary>
+        /// Can this command be executed?
+        /// </summary>
+        /// <returns><c>true</c>, if settings look good, <c>false</c> otherwise.</returns>
         public bool CanExecute()
         {
             return Settings.FeatureFileOutputs;
         }
+
+        /// <summary>
+        /// Execute the command.
+        /// </summary>
+        /// <param name="session">The user session.</param>
+        /// <param name="parameters">The parameters (endpoint, title, message, state) to use while executing the command.</param>
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
             Uri endpoint = new Uri(parameters["endpoint"]);
