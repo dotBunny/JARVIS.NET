@@ -1,8 +1,8 @@
-﻿using System;
-using Grapevine.Interfaces.Server;
-using Discord.Rest;
-using JARVIS.Core.Protocols.OAuth2;
+﻿using JARVIS.Core.Protocols.OAuth2;
 using JARVIS.Shared;
+using Microsoft.Extensions.DependencyInjection;
+
+using Discord;
 
 namespace JARVIS.Core.Services.Discord
 {
@@ -29,6 +29,7 @@ namespace JARVIS.Core.Services.Discord
         string _guildID;
 
         OAuth2Provider OAuth2 = new OAuth2Provider();
+        //IDiscordClient Client = new DiscordClientExtensions.
 
         public DiscordService()
         {
@@ -73,8 +74,8 @@ namespace JARVIS.Core.Services.Discord
                 Log.Message("Discord", "Unable to start as service is disabled.");
                 return;
             }
-
-            if (!OAuth2.IsValid() && Server.Socket.AuthenticatedUserCount > 0)
+           
+            if (!OAuth2.IsValid() && Server.Provider.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }

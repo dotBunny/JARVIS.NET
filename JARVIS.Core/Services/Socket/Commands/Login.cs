@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JARVIS.Shared.Services.Socket;
+using Microsoft.Extensions.DependencyInjection;
 namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Login : ISocketCommand
@@ -11,6 +12,9 @@ namespace JARVIS.Core.Services.Socket.Commands
 
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
+
+            // Get socket service
+            SocketService socket = Server.Provider.GetService<SocketService>();
 
             if (parameters.ContainsKey("username") && parameters.ContainsKey("password"))
             {
@@ -24,13 +28,13 @@ namespace JARVIS.Core.Services.Socket.Commands
                     SocketUser newUser = new SocketUser(session, user);
 
                     // Add to authenticated list
-                    if (Server.Socket.AuthenticatedUsers.ContainsKey(session))
+                    if (socket.AuthenticatedUsers.ContainsKey(session))
                     {
-                        Server.Socket.AuthenticatedUsers[session] = newUser;
+                        socket.AuthenticatedUsers[session] = newUser;
                     }
                     else
                     {
-                        Server.Socket.AuthenticatedUsers.Add(session, newUser);
+                        socket.AuthenticatedUsers.Add(session, newUser);
                     }
                 }
                 else
@@ -41,7 +45,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             else
             {
                 Shared.Log.Error("Login", "Invalid Login Attempt (E1) from " + session.RemoteEndPoint.GetHost());
-                Server.Socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.LOGIN_FAIL);
+                socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.LOGIN_FAIL);
             }
         }
     }

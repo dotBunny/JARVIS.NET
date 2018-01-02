@@ -3,6 +3,7 @@ using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
 using JARVIS.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
@@ -20,7 +21,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             }
 
             // Send command via socket
-            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.INFO, parameters, false);
+            Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.INFO, parameters, false);
 
             context.Response.SendResponse(Shared.Web.SuccessCode);
             return context;

@@ -3,6 +3,7 @@ using Grapevine.Interfaces.Server;
 using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
@@ -50,7 +51,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = previousValue.ToString();
 
-                Server.Socket.SendToAllSessions(
+                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
                 
@@ -99,7 +100,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = previousValue.ToString();
 
-                Server.Socket.SendToAllSessions(
+                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 
@@ -138,7 +139,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = setValue.ToString();
 
-                Server.Socket.SendToAllSessions(
+                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 

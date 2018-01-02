@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JARVIS.Core.Protocols.OAuth2;
 using JARVIS.Shared;
 using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Services.Spotify
 {
@@ -96,19 +97,22 @@ namespace JARVIS.Core.Services.Spotify
                             { "filename", "Spotify.txt" },
                             { "content", LastTrack.ToInfoString() }
                         };
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+
+
+                        Socket.SocketService socket = Server.Provider.GetService<Socket.SocketService>();
+                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_Artist.txt";
                         parameters["content"] = LastTrack.Artist;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_Track.txt";
                         parameters["content"] = LastTrack.Track;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_URL.txt";
                         parameters["content"] = LastTrack.TrackURL;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         // TODO: Send image data to be saved
                         if (!string.IsNullOrEmpty(LastTrack.ImageURL) && LastTrack.ImageURL != "")
@@ -117,7 +121,7 @@ namespace JARVIS.Core.Services.Spotify
                             parameters["filename"] = "Spotify_TrackImage.jpg";
                             parameters["content"] = Convert.ToBase64String(LastTrack.ImageData);
 
-                            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
+                            socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
 
                         }
 
@@ -151,7 +155,7 @@ namespace JARVIS.Core.Services.Spotify
                 return;   
             }
 
-            if (!OAuth2.IsValid() && Server.Socket.AuthenticatedUserCount > 0)
+            if (!OAuth2.IsValid() && Server.Provider.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }

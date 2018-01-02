@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JARVIS.Shared.Services.Socket;
+using Microsoft.Extensions.DependencyInjection;
 namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Auth : ISocketCommand
@@ -11,14 +12,17 @@ namespace JARVIS.Core.Services.Socket.Commands
 
         public void Execute(Sender session, Dictionary<string,string> parameters)
         {
+            // Get socket service
+            SocketService socket = Server.Provider.GetService<SocketService>();
+
             // Remove previous authentication
-            if (Server.Socket.AuthenticatedUsers.ContainsKey(session))
+            if (socket.AuthenticatedUsers.ContainsKey(session))
             {
-                Server.Socket.AuthenticatedUsers.Remove(session);
+                socket.AuthenticatedUsers.Remove(session);
             }
 
             // Send auth request to session
-            Server.Socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.AUTH);
+            socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.AUTH);
         }
     }
 }

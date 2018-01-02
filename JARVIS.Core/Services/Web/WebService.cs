@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Grapevine.Server;
 using JARVIS.Core.Protocols.OAuth2;
 
@@ -6,6 +7,7 @@ namespace JARVIS.Core.Services.Web
 {
     public class WebService : Services.IService
     {
+        IServiceProvider _provider;
 
         RestServer Server;
         ServerSettings Settings;
@@ -13,7 +15,7 @@ namespace JARVIS.Core.Services.Web
         public Dictionary<string, OAuth2Provider> CallbackListeners = new Dictionary<string, OAuth2Provider>();
  
         // Pass by reference the config and hte ?
-        public WebService(string host, string port)
+        public WebService(string host, string port, IServiceProvider provider)
         {
             Settings = new ServerSettings
             {
@@ -24,6 +26,7 @@ namespace JARVIS.Core.Services.Web
 
             Server = new RestServer(Settings);
             Shared.Log.Message("web", "Attempting to listen on " + host + ":" + port);
+            _provider = provider;
         }
 
         ~WebService()

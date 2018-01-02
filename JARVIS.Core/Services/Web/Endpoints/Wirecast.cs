@@ -2,6 +2,7 @@
 using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
@@ -15,17 +16,21 @@ namespace JARVIS.Core.Services.Web.Endpoints
 		public IHttpContext Layers(IHttpContext context)
 		{
             
-
-          //      .Request.RemoteEndPoint.Address)
+            //      .Request.RemoteEndPoint.Address)
             // ?L1=name&layer2=name&3=name&layer4=name&layer5=name
 
-            // Send command via socket
-            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 
-                                            Shared.Web.GetStringDictionary(context.Request.QueryString), 
-                                            true,
-                                            ScopeWirecastLayer);
+            // Send command
+           // Server.Provider.GetService<Socket.SocketService>();
 
+            Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 
+                                     Shared.Web.GetStringDictionary(context.Request.QueryString), 
+                                     true,
+                                     ScopeWirecastLayer);
+
+            // Create our response code
             context.Response.SendResponse(Shared.Web.SuccessCode);
+
+            // Send output to the viewing browser
 			return context;
 		}
 	}

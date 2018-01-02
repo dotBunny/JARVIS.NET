@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core
 {
@@ -27,11 +28,6 @@ namespace JARVIS.Core
         public static Database.Provider Database;
 
         /// <summary>
-        /// Socket Service Reference
-        /// </summary>
-        public static Services.Socket.SocketService Socket;
-
-        /// <summary>
         /// Web Service Reference
         /// </summary>
         public static Services.Web.WebService Web;
@@ -42,6 +38,11 @@ namespace JARVIS.Core
         public static Services.Discord.DiscordService Discord;
 
         public static Services.Spotify.SpotifyService Spotify;
+
+
+        public static Microsoft.Extensions.DependencyInjection.ServiceCollection Services;
+        public static ServiceProvider Provider;
+
 
 
         static volatile bool ShouldTickFlag;
@@ -73,13 +74,31 @@ namespace JARVIS.Core
             Config.Load();
 
             // Initialize Services
-            Web = new Services.Web.WebService(Config.Host, Config.WebPort.ToString());
-            Web.Start();
-            ActiveServices.Add(Web);
+            Services = new ServiceCollection();
 
-            Socket = new Services.Socket.SocketService(Config.Host, Config.SocketPort, Config.SocketEncryption, Config.SocketEncryptionKey);
-            Socket.Start();
-            ActiveServices.Add(Socket);
+            // Create Socket Service
+            Services.AddSingleton(
+                new Services.Socket.SocketService(
+                    Config.Host, 
+                    Config.SocketPort,
+                    Config.SocketEncryption, 
+                    Config.SocketEncryptionKey));
+
+            // Create Web Service
+            Services.AddSingleton(
+                new Services.Web.WebService(
+                    Config.Host, 
+                    Config.WebPort.ToString(), 
+                    Services.BuildServiceProvider()));
+            
+            Provider = Services.BuildServiceProvider();
+
+            // Start services in order
+            foreach (Services.IService s in Provider.GetServices<Services.IService>())
+            {
+                s.Start();
+            }
+
 
             Shared.Log.Message("System", "Primary Startup Complete");
 
@@ -111,8 +130,10 @@ namespace JARVIS.Core
         {
             Shared.Log.Message("System", "Server Shutdown");
 
-            Socket.Stop();
-            Web.Stop();
+            foreach (Services.IService s in Provider.GetServices<Services.IService>())
+            {
+                s.Stop();
+            }
         }
 
         static void Tick()

@@ -116,7 +116,10 @@ namespace JARVIS.Core.Protocols.OAuth2
 
             // Add to listeners
             Server.Web.CallbackListeners.Add(_state, this);
-            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
+
+            // Get socket service
+            Services.Socket.SocketService socket = (Services.Socket.SocketService)Server.Provider.GetService(typeof(Services.Socket.SocketService));
+            socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
         }
 
         string GenerateState()

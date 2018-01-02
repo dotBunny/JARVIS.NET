@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JARVIS.Core.Database.Rows;
 using JARVIS.Shared.Services.Socket;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Services.Socket
 {
@@ -18,7 +18,7 @@ namespace JARVIS.Core.Services.Socket
         }
         public void Terminate()
         {
-            Server.Socket.AuthenticatedUsers.Remove(Session);
+            Server.Provider.GetService<SocketService>().AuthenticatedUsers.Remove(Session);
         }
 
         public bool HasPemission(string scope)
