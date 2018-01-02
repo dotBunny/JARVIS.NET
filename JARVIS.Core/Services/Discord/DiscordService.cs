@@ -47,7 +47,7 @@ namespace JARVIS.Core.Services.Discord
             _botUsername = Server.Config.Get(SettingsBotUsernameKey);
             _guildID = Server.Config.Get(SettingsGuildIDKey);
 
-            OAuth2 = new OAuth2Provider("Discord", 
+            OAuth2 = new OAuth2Provider(GetName(), 
                                         Server.Config.Get(SettingsClientIDKey), 
                                         Server.Config.Get(SettingsClientSecretKey),
                                         "bot messages.read connections rpc guilds identify guilds.join webhook.incoming rpc.notifications.read gdm.join email rpc.api",

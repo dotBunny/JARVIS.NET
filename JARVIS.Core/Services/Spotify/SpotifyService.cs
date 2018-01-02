@@ -41,13 +41,13 @@ namespace JARVIS.Core.Services.Spotify
 
         void LoadSettings()
         {
-            OAuth2 = new OAuth2Provider("Spotify",
-                                                Server.Config.Get(SettingsClientIDKey),
-                                                Server.Config.Get(SettingsClientSecretKey),
-                                                "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played",
-                                                "https://accounts.spotify.com/authorize/?response_type=code",
-                                                "https://accounts.spotify.com/api/token",
-                                                "https://accounts.spotify.com/api/token", ScopeAuthentication);
+            OAuth2 = new OAuth2Provider(GetName(),
+                                        Server.Config.Get(SettingsClientIDKey),
+                                        Server.Config.Get(SettingsClientSecretKey),
+                                        "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played",
+                                        "https://accounts.spotify.com/authorize/?response_type=code",
+                                        "https://accounts.spotify.com/api/token",
+                                        "https://accounts.spotify.com/api/token", ScopeAuthentication);
         }
 
         public string GetName()
