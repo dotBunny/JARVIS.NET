@@ -7,15 +7,13 @@ namespace JARVIS.Core.Services.Web
 {
     public class WebService : Services.IService
     {
-        IServiceProvider _provider;
-
         RestServer Server;
         ServerSettings Settings;
 
         public Dictionary<string, OAuth2Provider> CallbackListeners = new Dictionary<string, OAuth2Provider>();
  
         // Pass by reference the config and hte ?
-        public WebService(string host, string port, IServiceProvider provider)
+        public WebService(string host, string port)
         {
             Settings = new ServerSettings
             {
@@ -26,7 +24,6 @@ namespace JARVIS.Core.Services.Web
 
             Server = new RestServer(Settings);
             Shared.Log.Message("web", "Attempting to listen on " + host + ":" + port);
-            _provider = provider;
         }
 
         ~WebService()

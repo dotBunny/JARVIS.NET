@@ -43,8 +43,7 @@ namespace JARVIS.Core
             Database.Open(Config.DatabaseFilePath);
 
             Shared.Log.Message("DB", "Opened version " + Database.Version);
-            Shared.IO.WriteContents(Path.Combine(Shared.Platform.GetBaseDirectory(), "JARVIS.db.version"), Database.Version); 
-                
+            Shared.IO.WriteContents(Path.Combine(Shared.Platform.GetBaseDirectory(), "JARVIS.db.version"), Database.Version);  
         }
 
         public static void Start()
@@ -69,12 +68,11 @@ namespace JARVIS.Core
             _serviceList.AddSingleton(
                 new Services.Web.WebService(
                     Config.Host, 
-                    Config.WebPort.ToString(), 
-                    _serviceList.BuildServiceProvider()));
+                    Config.WebPort.ToString()));
 
             // Add Secondary Services
-            _serviceList.AddSingleton<Services.Spotify.SpotifyService>()
-                        .AddSingleton<Services.Discord.DiscordService>();
+            _serviceList.AddSingleton(new Services.Spotify.SpotifyService())
+                        .AddSingleton(new Services.Discord.DiscordService());
 
             // Create provider
             Services = _serviceList.BuildServiceProvider();
@@ -85,12 +83,8 @@ namespace JARVIS.Core
             Shared.Log.Message("System", "Primary Startup Complete");
 
             // Spin up any other service not fired up yet (spotify, discord, etc.)
-            foreach (Services.IService s in Services.GetServices<Services.IService>())
-            {
-                s.Start();
-            }
-            Shared.Log.Message("System", "Secondary Startup Complete");
-
+            Services.GetService<Services.Spotify.SpotifyService>().Start();
+            Services.GetService<Services.Discord.DiscordService>().Start();
 
             // Start Tick Thread
             Shared.Log.Message("System", "Starting Polling ...");
@@ -104,10 +98,10 @@ namespace JARVIS.Core
         {
             Shared.Log.Message("System", "Server Shutdown");
 
-            foreach (Services.IService s in Services.GetServices<Services.IService>())
-            {
-                s.Stop();
-            }
+            Services.GetService<Services.Discord.DiscordService>().Stop();
+            Services.GetService<Services.Spotify.SpotifyService>().Stop();
+            Services.GetService<Services.Web.WebService>().Stop();
+            Services.GetService<Services.Socket.SocketService>().Stop();
         }
 
         static void Tick()
@@ -118,10 +112,9 @@ namespace JARVIS.Core
                 Thread.Sleep(PollingDelayMS);
 
                 // Threaded tick
-                Parallel.ForEach(Services.GetServices<Services.IService>(), s =>
-                {
-                    s.Tick();
-                });
+                Services.GetService<Services.Spotify.SpotifyService>().Tick();
+                Services.GetService<Services.Discord.DiscordService>().Tick();
+
             }
         }
 

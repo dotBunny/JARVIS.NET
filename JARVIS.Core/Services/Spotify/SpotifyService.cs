@@ -168,15 +168,8 @@ namespace JARVIS.Core.Services.Spotify
 
         public void Tick()
         {
-
             // Don't bother if we haven't authenticated and dont have a token
             if (!OAuth2.IsValid()) return;
-
-            // TODO Implement refresh
-            //// Check our token
-            //if ( DateTime.Now >= ExpiresOn ) {
-            //    GetRefreshToken();
-            //}
 
             // To adjust polling speed?
             GetCurrentlyPlaying();
