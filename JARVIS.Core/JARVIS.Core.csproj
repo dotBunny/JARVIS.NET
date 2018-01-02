@@ -7,6 +7,13 @@
     <AssemblyName>JARVIS.Core</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>NU1701;1701;1702;1705</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType></DebugType>
+    <NoWarn>NU1701;1701;1702;1705</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Services\" />

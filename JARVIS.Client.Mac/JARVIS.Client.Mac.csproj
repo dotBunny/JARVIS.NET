@@ -98,10 +98,6 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Socket\" />
     <Folder Include="Services\Socket\Commands\" />
-    <Folder Include="Assets.xcassets\AppIcon.appiconset\" />
-    <Folder Include="Assets.xcassets\AppIconRed.appiconset\" />
-    <Folder Include="Assets.xcassets\AppIconGreen.appiconset\" />
-    <Folder Include="Assets.xcassets\AppIconYellow.appiconset\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
