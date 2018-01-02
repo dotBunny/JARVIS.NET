@@ -57,9 +57,6 @@
     <Reference Include="Xamarin.Mac" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="Flurl">
-      <HintPath>..\packages\Flurl.2.6.0\lib\netstandard1.3\Flurl.dll</HintPath>
-    </Reference>
     <Reference Include="Plugin.Settings.Abstractions">
       <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\Xamarin.Mac20\Plugin.Settings.Abstractions.dll</HintPath>
     </Reference>
@@ -69,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_1024.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_128.png" />
@@ -78,6 +74,23 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_32.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_512.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_64.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_196.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_172.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_88.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_80.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_76.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_40.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_20.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_48.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_55.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_58.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_167.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_152.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_87.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_60.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_120.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_180.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_29.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
