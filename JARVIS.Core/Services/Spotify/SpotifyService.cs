@@ -169,7 +169,7 @@ namespace JARVIS.Core.Services.Spotify
         public void Tick()
         {
             // Don't bother if we haven't authenticated and dont have a token
-            if (!OAuth2.IsValid()) return;
+            if (!Enabled || !OAuth2.IsValid()) return;
 
             // To adjust polling speed?
             GetCurrentlyPlaying();

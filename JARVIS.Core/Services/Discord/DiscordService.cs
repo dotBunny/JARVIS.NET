@@ -88,7 +88,7 @@ namespace JARVIS.Core.Services.Discord
 
         public void Tick()
         {
-
+            if (!Enabled) return;
         }
 
         void OAuth2_OnComplete()
