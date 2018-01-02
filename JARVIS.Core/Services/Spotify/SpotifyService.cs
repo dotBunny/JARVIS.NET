@@ -12,6 +12,7 @@ namespace JARVIS.Core.Services.Spotify
         public const string ScopeAuthentication = "spotify-authenticate";
         public const string ScopeOutput = "spotify-output";
 
+
         // Settings Reference Keys
         const string SettingsEnabledKey = "Spotify.Enabled";
         const string SettingsClientIDKey = "Spotify.ClientID";
@@ -221,6 +222,9 @@ namespace JARVIS.Core.Services.Spotify
                             Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
 
                         }
+
+                        // Save track to database
+                        LastTrack.SaveToDatabase();
 
                         Log.Message("Spotify", LastTrack.ToString());
                     }

@@ -55,9 +55,10 @@ namespace JARVIS.Core.Database.Tables
             Shared.Log.Message("DB", "Set KeyValueBytes " + name + " to " + newValue);
 
             Server.Database.ExecuteNonQuery(
-                "REPLACE INTO KeyValueBytes (Name, Value) VALUES (@Name, @Value)",
+                "REPLACE INTO KeyValueBytes (Name, Size, Value) VALUES (@Name, @Size, @Value)",
                 new Dictionary<string, object>() {
                                 {"@Name",name},
+                                {"@Size",newValue.Length},
                                 {"@Value",newValue},
                 }
             );
