@@ -13,7 +13,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/callback/")]
         public IHttpContext Response(IHttpContext context)
         {
-            string state = context.Request.QueryString.GetValue<string>("state", string.Empty);
+            string state = context.Request.QueryString.GetValue("state", string.Empty);
             WebService web = Server.Services.GetService<WebService>();
             if (web.CallbackListeners.ContainsKey(state) ) {
 

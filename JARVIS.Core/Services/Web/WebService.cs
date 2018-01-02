@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Grapevine.Server;
-using JARVIS.Core.Protocols.OAuth2;
 
 namespace JARVIS.Core.Services.Web
 {
-    public class WebService : Services.IService
+    public class WebService : IService
     {
         RestServer Server;
         ServerSettings Settings;
 
-        public Dictionary<string, OAuth2Provider> CallbackListeners = new Dictionary<string, OAuth2Provider>();
+        public Dictionary<string, ICallbackListener> CallbackListeners = new Dictionary<string, ICallbackListener>();
  
         // Pass by reference the config and hte ?
         public WebService(string host, string port)

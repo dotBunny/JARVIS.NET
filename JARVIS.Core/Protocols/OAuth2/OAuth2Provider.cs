@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using Grapevine.Interfaces.Server;
 using Grapevine.Shared;
+using JARVIS.Core.Services.Web;
 using JARVIS.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Protocols.OAuth2
 {
-    public class OAuth2Provider
+    public class OAuth2Provider : ICallbackListener
     {
         string _code = string.Empty;
         public string Token { get; private set; }
@@ -125,7 +126,7 @@ namespace JARVIS.Core.Protocols.OAuth2
            return  _provider.ToLower() + "-" + Guid.NewGuid().ToString();
         }
 
-        internal void Callback(IHttpRequest request)
+        public void Callback(IHttpRequest request)
         {
             string state = request.QueryString.GetValue("state", string.Empty);
 
