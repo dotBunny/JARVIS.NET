@@ -5,6 +5,7 @@
     <Description>JARVIS Core Logic (Server)</Description>
     <ReleaseVersion>1.0</ReleaseVersion>
     <AssemblyName>JARVIS.Core</AssemblyName>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

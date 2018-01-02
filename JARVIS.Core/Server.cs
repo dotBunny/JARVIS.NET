@@ -44,13 +44,12 @@ namespace JARVIS.Core
         public static Services.Spotify.SpotifyService Spotify;
 
 
-        static volatile bool ShouldTickFlag = false;
+        static volatile bool ShouldTickFlag;
 
-        private static Thread PollingThread;
-       
+        static Thread PollingThread;
+
 
         public static int PollingDelayMS = 2000;
-
 
         public static void Initialize()
         {
