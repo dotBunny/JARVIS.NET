@@ -42,6 +42,9 @@ namespace JARVIS.Core.Services.Web
 
         public void Start()
         {
+            // Prevent double
+            if (Server.IsListening) return;
+
             Server.LogToConsole().Start();
         }
 

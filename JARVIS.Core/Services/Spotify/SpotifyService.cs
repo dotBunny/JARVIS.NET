@@ -99,7 +99,7 @@ namespace JARVIS.Core.Services.Spotify
                         };
 
 
-                        Socket.SocketService socket = Server.Provider.GetService<Socket.SocketService>();
+                        Socket.SocketService socket = Server.Services.GetService<Socket.SocketService>();
                         socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_Artist.txt";
@@ -155,7 +155,7 @@ namespace JARVIS.Core.Services.Spotify
                 return;   
             }
 
-            if (!OAuth2.IsValid() && Server.Provider.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
+            if (!OAuth2.IsValid() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }

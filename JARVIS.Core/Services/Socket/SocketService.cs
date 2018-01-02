@@ -136,6 +136,9 @@ namespace JARVIS.Core.Services.Socket
 
         public void Start()
         {
+            // Prevent double start
+            if (Server.Running) return;
+
             Server.Listen();
             Server.Start();
             Shared.Log.Message("socket", "Listening on " + Server.Port.ToString());

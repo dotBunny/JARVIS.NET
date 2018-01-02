@@ -14,7 +14,7 @@ namespace JARVIS.Core.Services.Socket.Commands
         public void Execute(Sender session, Dictionary<string, string> parameters)
         {
             
-            Server.Provider.GetService<SocketService>().SendToSession(session, 
+            Server.Services.GetService<SocketService>().SendToSession(session, 
                                         Shared.Protocol.Instruction.OpCode.PONG,
                                         new Dictionary<string, string>() { { "message", "Hi!" } });
         }

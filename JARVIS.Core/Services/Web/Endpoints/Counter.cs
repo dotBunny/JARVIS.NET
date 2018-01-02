@@ -51,7 +51,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = previousValue.ToString();
 
-                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
+                Server.Services.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
                 
@@ -100,7 +100,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = previousValue.ToString();
 
-                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
+                Server.Services.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 
@@ -139,7 +139,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 parameters["filename"] = parameters["name"] + ".txt";
                 parameters["content"] = setValue.ToString();
 
-                Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(
+                Server.Services.GetService<Socket.SocketService>().SendToAllSessions(
                     Shared.Protocol.Instruction.OpCode.TEXT_FILE,
                     parameters);
 

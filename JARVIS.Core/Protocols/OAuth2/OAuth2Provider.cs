@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Grapevine.Interfaces.Server;
 using Grapevine.Shared;
 using JARVIS.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JARVIS.Core.Protocols.OAuth2
 {
@@ -115,11 +116,8 @@ namespace JARVIS.Core.Protocols.OAuth2
             parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
 
             // Add to listeners
-            Server.Web.CallbackListeners.Add(_state, this);
-
-            // Get socket service
-            Services.Socket.SocketService socket = (Services.Socket.SocketService)Server.Provider.GetService(typeof(Services.Socket.SocketService));
-            socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
+            Server.Services.GetService<Core.Services.Web.WebService>().CallbackListeners.Add(_state, this);
+            Server.Services.GetService<Core.Services.Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
         }
 
         string GenerateState()

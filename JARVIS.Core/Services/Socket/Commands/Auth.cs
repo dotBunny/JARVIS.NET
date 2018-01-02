@@ -13,7 +13,7 @@ namespace JARVIS.Core.Services.Socket.Commands
         public void Execute(Sender session, Dictionary<string,string> parameters)
         {
             // Get socket service
-            SocketService socket = Server.Provider.GetService<SocketService>();
+            SocketService socket = Server.Services.GetService<SocketService>();
 
             // Remove previous authentication
             if (socket.AuthenticatedUsers.ContainsKey(session))

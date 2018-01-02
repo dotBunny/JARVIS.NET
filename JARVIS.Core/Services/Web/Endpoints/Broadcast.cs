@@ -21,7 +21,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             }
 
             // Send command via socket
-            Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.INFO, parameters, false);
+            Server.Services.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.INFO, parameters, false);
 
             context.Response.SendResponse(Shared.Web.SuccessCode);
             return context;

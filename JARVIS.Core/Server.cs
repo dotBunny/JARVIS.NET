@@ -13,11 +13,6 @@ namespace JARVIS.Core
     public static class Server
     {
         /// <summary>
-        /// List Of Active Services
-        /// </summary>
-        public static ConcurrentBag<Services.IService> ActiveServices = new ConcurrentBag<Services.IService>();
-
-        /// <summary>
         /// Settings Reference
         /// </summary>
         public static Settings Config;
@@ -27,23 +22,9 @@ namespace JARVIS.Core
         /// </summary>
         public static Database.Provider Database;
 
-        /// <summary>
-        /// Web Service Reference
-        /// </summary>
-        public static Services.Web.WebService Web;
+        static ServiceCollection _serviceList;
 
-        /// <summary>
-        /// Discord Service Reference
-        /// </summary>
-        public static Services.Discord.DiscordService Discord;
-
-        public static Services.Spotify.SpotifyService Spotify;
-
-
-        public static Microsoft.Extensions.DependencyInjection.ServiceCollection Services;
-        public static ServiceProvider Provider;
-
-
+        public static ServiceProvider Services;
 
         static volatile bool ShouldTickFlag;
 
@@ -74,10 +55,10 @@ namespace JARVIS.Core
             Config.Load();
 
             // Initialize Services
-            Services = new ServiceCollection();
+            _serviceList = new ServiceCollection();
 
             // Create Socket Service
-            Services.AddSingleton(
+            _serviceList.AddSingleton(
                 new Services.Socket.SocketService(
                     Config.Host, 
                     Config.SocketPort,
@@ -85,33 +66,29 @@ namespace JARVIS.Core
                     Config.SocketEncryptionKey));
 
             // Create Web Service
-            Services.AddSingleton(
+            _serviceList.AddSingleton(
                 new Services.Web.WebService(
                     Config.Host, 
                     Config.WebPort.ToString(), 
-                    Services.BuildServiceProvider()));
-            
-            Provider = Services.BuildServiceProvider();
+                    _serviceList.BuildServiceProvider()));
 
-            // Start services in order
-            foreach (Services.IService s in Provider.GetServices<Services.IService>())
+            // Add Secondary Services
+            _serviceList.AddSingleton<Services.Spotify.SpotifyService>()
+                        .AddSingleton<Services.Discord.DiscordService>();
+
+            // Create provider
+            Services = _serviceList.BuildServiceProvider();
+
+            // Start primary services ahead of everything else manaully
+            Services.GetService<Services.Socket.SocketService>().Start();
+            Services.GetService<Services.Web.WebService>().Start();
+            Shared.Log.Message("System", "Primary Startup Complete");
+
+            // Spin up any other service not fired up yet (spotify, discord, etc.)
+            foreach (Services.IService s in Services.GetServices<Services.IService>())
             {
                 s.Start();
             }
-
-
-            Shared.Log.Message("System", "Primary Startup Complete");
-
-
-            // Start Secondary Services
-            Spotify = new Services.Spotify.SpotifyService();
-            Spotify.Start();
-            ActiveServices.Add(Spotify);
-
-            Discord = new Services.Discord.DiscordService();
-            Discord.Start();
-            ActiveServices.Add(Spotify);
-
             Shared.Log.Message("System", "Secondary Startup Complete");
 
 
@@ -121,16 +98,13 @@ namespace JARVIS.Core
             PollingThread = new Thread(new ThreadStart(Tick));
             PollingThread.Name = "JARVIS-Polling";
             PollingThread.Start();
-
-
-
         }
 
         public static void Stop()
         {
             Shared.Log.Message("System", "Server Shutdown");
 
-            foreach (Services.IService s in Provider.GetServices<Services.IService>())
+            foreach (Services.IService s in Services.GetServices<Services.IService>())
             {
                 s.Stop();
             }
@@ -144,7 +118,7 @@ namespace JARVIS.Core
                 Thread.Sleep(PollingDelayMS);
 
                 // Threaded tick
-                Parallel.ForEach(ActiveServices, s =>
+                Parallel.ForEach(Services.GetServices<Services.IService>(), s =>
                 {
                     s.Tick();
                 });

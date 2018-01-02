@@ -22,7 +22,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             // Send command
            // Server.Provider.GetService<Socket.SocketService>();
 
-            Server.Provider.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 
+            Server.Services.GetService<Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 
                                      Shared.Web.GetStringDictionary(context.Request.QueryString), 
                                      true,
                                      ScopeWirecastLayer);

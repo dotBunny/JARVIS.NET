@@ -75,7 +75,7 @@ namespace JARVIS.Core.Services.Discord
                 return;
             }
            
-            if (!OAuth2.IsValid() && Server.Provider.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
+            if (!OAuth2.IsValid() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }

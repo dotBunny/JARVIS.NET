@@ -18,7 +18,7 @@ namespace JARVIS.Core.Services.Socket
         }
         public void Terminate()
         {
-            Server.Provider.GetService<SocketService>().AuthenticatedUsers.Remove(Session);
+            Server.Services.GetService<SocketService>().AuthenticatedUsers.Remove(Session);
         }
 
         public bool HasPemission(string scope)

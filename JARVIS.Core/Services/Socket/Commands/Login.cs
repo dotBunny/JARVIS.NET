@@ -14,7 +14,7 @@ namespace JARVIS.Core.Services.Socket.Commands
         {
 
             // Get socket service
-            SocketService socket = Server.Provider.GetService<SocketService>();
+            SocketService socket = Server.Services.GetService<SocketService>();
 
             if (parameters.ContainsKey("username") && parameters.ContainsKey("password"))
             {
