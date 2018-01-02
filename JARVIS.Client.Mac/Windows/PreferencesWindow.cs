@@ -21,7 +21,7 @@ namespace JARVIS.Client.Mac.Windows
 
             // Server Settings
             ServerAddress.StringValue = Settings.ServerAddress;
-            ServerPort.IntValue = Settings.ServerPort;
+            ServerPort.StringValue = Settings.ServerPort.ToString();
             ServerUsername.StringValue = Settings.SessionUsername;
             ServerPassword.StringValue = Settings.SessionPassword;
 
