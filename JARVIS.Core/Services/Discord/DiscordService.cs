@@ -1,11 +1,34 @@
 ﻿using System;
 using Grapevine.Interfaces.Server;
-//using Discord.Rest;
+using Discord.Rest;
 
 namespace JARVIS.Core.Services.Discord
 {
     public class DiscordService : IService
     {
+        public const string ScopeAuthentication = "discord-authenticate";       
+
+        // Settings Reference Keys
+        const string SettingsEnabledKey = "Discord.Enabled";
+        const string SettingsGuildIDKey = "Discord.GuildID";
+        const string SettingsTokenKey = "Discord.Token";
+
+        // Settings Values (pulled from DB)
+        public bool Enabled { get; private set; }
+        string _guildID;
+        string _token;
+
+        public DiscordService()
+        {
+            // Initialize Settings
+            Enabled = Server.Config.GetBool(SettingsEnabledKey);
+            if (Enabled)
+            {
+                _guildID = Server.Config.Get(SettingsGuildIDKey);
+                _token = Server.Config.Get(SettingsTokenKey);
+            }
+        }
+
         //DiscordRestConfig Config;
         //DiscordRestClient Client;
         //RestGuild Guild;
@@ -22,6 +45,7 @@ namespace JARVIS.Core.Services.Discord
 
         public void Start()
         {
+            
             //DiscordClient c = new DiscordClient();
             //Config = new DiscordRestConfig();
             //Config.
