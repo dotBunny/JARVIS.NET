@@ -40,6 +40,27 @@ namespace JARVIS.Shared
         }
 
         /// <summary>
+        /// Get the SHA512 hash of the string.
+        /// </summary>
+        /// <returns>The string hash.</returns>
+        /// <param name="source">The source string.</param>
+        public static string SHA512(this string source)
+        {
+            StringBuilder Sb = new StringBuilder();
+
+            using (var hash = System.Security.Cryptography.SHA512.Create())
+            {
+                Encoding enc = Encoding.UTF8;
+                Byte[] result = hash.ComputeHash(enc.GetBytes(source));
+
+                foreach (Byte b in result)
+                    Sb.Append(b.ToString("x2"));
+            }
+
+            return Sb.ToString();
+        }
+
+        /// <summary>
         /// Truncate the target string to a maximum length.
         /// </summary>
         /// <returns>The truncated string.</returns>
@@ -47,7 +68,7 @@ namespace JARVIS.Shared
         /// <param name="maximumLength">The maximum allowed length for the string.</param>
         public static string Truncate(this string target, int maximumLength)
         {
-            if (string.IsNullOrEmpty(target)) return target;
+            if (string.IsNullOrEmpty(target) || target == "") return target;
             return target.Length <= maximumLength ? target : target.Substring(0, maximumLength);
         }
     }

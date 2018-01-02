@@ -53,7 +53,7 @@
         public static string GetBaseDirectory()
         {
             // This actually gets the library folder
-            if (string.IsNullOrEmpty(_cachedBaseDirectory))
+            if (string.IsNullOrEmpty(_cachedBaseDirectory) || _cachedBaseDirectory == "")
             {
                 _cachedBaseDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace("file:/", ""));
             }

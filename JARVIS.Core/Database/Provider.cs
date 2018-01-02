@@ -147,7 +147,7 @@ namespace JARVIS.Core.Database
                 HasConnection = true;
             }
 
-            string tempVersion = Tables.Settings.Get(Tables.Settings.DatabaseVersionID).Value;
+            string tempVersion = Tables.Settings.Get(Tables.Settings.DatabaseVersionKey).Value;
             if (tempVersion != string.Empty)
             {
                 Version = tempVersion;

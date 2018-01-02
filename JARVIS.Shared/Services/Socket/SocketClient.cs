@@ -104,7 +104,7 @@ namespace JARVIS.Shared.Services.Socket
         /// </summary>
         public override void Stop()
         {
-            if (listener.Running)
+            if (listener != null && listener.Running)
             {
                 listener.Stop();
             }

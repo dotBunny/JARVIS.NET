@@ -4,48 +4,48 @@ using JARVIS.Core.Database.Rows;
 namespace JARVIS.Core.Database.Tables
 {
     /// <summary>
-    /// JARVIS Counters Table
+    /// Key Value String Table
     /// </summary>
-    public static class Counters
+    public static class KeyValueString
     {
         /// <summary>
-        /// Get the specified counter from the Counters table.
+        /// Get the specified counter from the KeyValueString table.
         /// </summary>
         /// <returns>The specified row.</returns>
-        /// <param name="name">The counter name.</param>
-        public static CountersRow Get(string name)
+        /// <param name="name">The key.</param>
+        public static KeyValueRow<string> Get(string name)
         {
             // Max length
             name = Shared.Strings.Truncate(name, 128);
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT Value FROM Counters WHERE Name = @Name LIMIT 1",
+                "SELECT Value FROM KeyValueString WHERE Name = @Name LIMIT 1",
                 new Dictionary<string, object>() {
                     {"@Name",name}
             }, System.Data.CommandBehavior.SingleResult);
 
-            if ( result.Data != null && result.Data.HasRows ) 
+            if (result.Data != null && result.Data.HasRows)
             {
                 result.Data.Read();
-                return new CountersRow(name, result.Data.GetInt32(0));
+                return new KeyValueRow<string>(name, result.Data.GetString(0));
             }
 
-            return new CountersRow();
+            return new KeyValueRow<string>();
         }
 
         /// <summary>
-        /// Set the specified value of the counter.
+        /// Set the specified value of the KeyValueString.
         /// </summary>
-        /// <param name="name">Counter Name</param>
-        /// <param name="newValue">Counter Value</param>
-        public static void Set(string name, int newValue)
+        /// <param name="name">Name</param>
+        /// <param name="newValue">Value</param>
+        public static void Set(string name, string newValue)
         {
             name = Shared.Strings.Truncate(name, 128);
 
-            Shared.Log.Message("DB", "Set counter " + name + " to " + newValue);
+            Shared.Log.Message("DB", "Set KeyValueInt " + name + " to " + newValue);
 
             Server.Database.ExecuteNonQuery(
-                "REPLACE INTO Counters (Name, Value) VALUES (@Name, @Value)",
+                "REPLACE INTO KeyValueString (Name, Value) VALUES (@Name, @Value)",
                 new Dictionary<string, object>() {
                                 {"@Name",name},
                                 {"@Value",newValue},

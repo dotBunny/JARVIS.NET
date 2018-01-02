@@ -17,14 +17,11 @@ namespace JARVIS.Core.Services.Socket.Commands
 
                 Database.Rows.UsersRow user = Database.Tables.Users.Login(parameters["username"], parameters["password"]);
 
-                if (user.ID != -1 && user.CanShard)
+                if (user.ID != -1)
                 {
                     Shared.Log.Message("Login", "Login from " + user.Username + " successful.");
 
-                    SocketUser newUser = new SocketUser(session)
-                    {
-                        DataObject = user
-                    };
+                    SocketUser newUser = new SocketUser(session, user);
 
                     // Add to authenticated list
                     if (Server.Socket.AuthenticatedUsers.ContainsKey(session))

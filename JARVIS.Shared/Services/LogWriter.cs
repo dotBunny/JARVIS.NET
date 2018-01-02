@@ -74,7 +74,7 @@ namespace JARVIS.Shared.Services
         /// </summary>
         public void WriteCache()
         {
-            if (_cachedLines.Count == 0) return;
+            if (_cachedLines == null || _cachedLines.Count == 0) return;
 
 #if DEBUG
             _consoleOutput.WriteLine("[CACHE]\tWriting " + _cachedLines.Count + " lines to LOG file.");

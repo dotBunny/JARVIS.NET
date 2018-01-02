@@ -129,7 +129,7 @@ namespace JARVIS.Shared
                 // Stub Request
                 HttpRequestMessage message;
 
-                if (!string.IsNullOrEmpty(requestBody))
+                if (!string.IsNullOrEmpty(requestBody) || requestBody != "")
                 {
                     message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
                     {
@@ -228,7 +228,7 @@ namespace JARVIS.Shared
                 // Stub Request
                 HttpRequestMessage message;
 
-                if ( !string.IsNullOrEmpty(requestBody))
+                if (!string.IsNullOrEmpty(requestBody) && requestBody != "")
                 {
                     message = new HttpRequestMessage(new HttpMethod(method), new Uri(endpoint))
                     {

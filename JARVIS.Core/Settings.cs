@@ -9,6 +9,7 @@ namespace JARVIS.Core
 
         public int WebPort = 8080;
         public int SocketPort = 8081;
+        public string Salt = "JARVIS";
         public string Host = "localhost";
         public string SocketEncryptionKey = "max";
         public bool SocketEncryption = true;
@@ -74,49 +75,54 @@ namespace JARVIS.Core
 
 
             // Convert into dictionary
-            List<Database.Rows.SettingsRow> rows = Database.Tables.Settings.GetAll();
+            List<Database.Rows.KeyValueRow<string>> rows = Database.Tables.Settings.GetAll();
             RawSettings.Clear();
-            foreach (Database.Rows.SettingsRow r in rows)
+            foreach (Database.Rows.KeyValueRow<string> r in rows)
             {
                 RawSettings.Add(r.Name, r.Value);
             }
 
             // Server Host Address
-            if ( RawSettings.ContainsKey(Database.Tables.Settings.ServerHostID) )
+            if ( RawSettings.ContainsKey(Database.Tables.Settings.ServerHostKey) )
             {
-                Host = RawSettings[Database.Tables.Settings.ServerHostID];    
+                Host = RawSettings[Database.Tables.Settings.ServerHostKey];    
             }
 
             // Resolve hostname into IP of not IP
             Host = Shared.Network.GetIPAddress(Host);
 
             // Web Port
-            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerWebPortID))
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerWebPortKey))
             {
-                int.TryParse(RawSettings[Database.Tables.Settings.ServerWebPortID], out WebPort);
+                int.TryParse(RawSettings[Database.Tables.Settings.ServerWebPortKey], out WebPort);
             }
 
             // Socket Port
-            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketPortID))
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketPortKey))
             {
-                int.TryParse(RawSettings[Database.Tables.Settings.ServerSocketPortID], out SocketPort);
+                int.TryParse(RawSettings[Database.Tables.Settings.ServerSocketPortKey], out SocketPort);
             }
 
             // Socket Port
-            if (RawSettings.ContainsKey(Database.Tables.Settings.DatabaseVersionID))
+            if (RawSettings.ContainsKey(Database.Tables.Settings.DatabaseVersionKey))
             {
-                int.TryParse(RawSettings[Database.Tables.Settings.DatabaseVersionID], out DatabaseVersion);
+                int.TryParse(RawSettings[Database.Tables.Settings.DatabaseVersionKey], out DatabaseVersion);
+            }
+
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSaltKey))
+            {
+                Salt = RawSettings[Database.Tables.Settings.ServerSaltKey];
             }
 
             // Socket Encryption Key
-            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionKeyID))
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionKeyKey))
             {
-                SocketEncryptionKey = RawSettings[Database.Tables.Settings.ServerSocketEncryptionKeyID];
+                SocketEncryptionKey = RawSettings[Database.Tables.Settings.ServerSocketEncryptionKeyKey];
             }
             // Socket Encryption
-            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionID))
+            if (RawSettings.ContainsKey(Database.Tables.Settings.ServerSocketEncryptionKey))
             {
-                bool.TryParse(RawSettings[Database.Tables.Settings.ServerSocketEncryptionID], out SocketEncryption);
+                bool.TryParse(RawSettings[Database.Tables.Settings.ServerSocketEncryptionKey], out SocketEncryption);
             }
 
 

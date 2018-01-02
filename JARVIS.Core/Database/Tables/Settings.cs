@@ -8,44 +8,47 @@ namespace JARVIS.Core.Database.Tables
     /// </summary>
     public static class Settings
     {
-       
-
         /// <summary>
         /// The settings key of the database version.
         /// </summary>
-        public const string DatabaseVersionID = "Database.Version";
+        public const string DatabaseVersionKey = "Database.Version";
 
         /// <summary>
         /// The settings key of the server host.
         /// </summary>
-        public const string ServerHostID = "Server.Host";
+        public const string ServerHostKey = "Server.Host";
+
+        /// <summary>
+        /// The settings key of the salt used when hashing passwords.
+        /// </summary>
+        public const string ServerSaltKey = "Server.Salt";
 
         /// <summary>
         /// The settings key of the socket encryption setting.
         /// </summary>
-        public const string ServerSocketEncryptionID = "Server.SocketEncryption";
+        public const string ServerSocketEncryptionKey = "Server.SocketEncryption";
 
         /// <summary>
         /// The settings key of the socket encryption key.
         /// </summary>
-        public const string ServerSocketEncryptionKeyID = "Server.SocketEncryptionKey";
+        public const string ServerSocketEncryptionKeyKey = "Server.SocketEncryptionKey";
 
         /// <summary>
         /// The settings key for the socket listen port.
         /// </summary>
-        public const string ServerSocketPortID = "Server.SocketPort";
+        public const string ServerSocketPortKey = "Server.SocketPort";
 
         /// <summary>
         /// The settings key of the web server listen port.
         /// </summary>
-        public const string ServerWebPortID = "Server.WebPort";
+        public const string ServerWebPortKey = "Server.WebPort";
 
         /// <summary>
         /// Get the specified row from the Settings table.
         /// </summary>
         /// <returns>The specified row.</returns>
         /// <param name="key">The settings key.</param>
-        public static SettingsRow Get(string key)
+        public static KeyValueRow<string> Get(string key)
         {
             key = Shared.Strings.Truncate(key, 128);
 
@@ -58,19 +61,19 @@ namespace JARVIS.Core.Database.Tables
             if (result.Data != null && result.Data.HasRows)
             {
                 result.Data.Read();
-                return new SettingsRow(key, result.Data.GetString(0));
+                return new KeyValueRow<string>(key, result.Data.GetString(0));
             }
 
-            return new SettingsRow();
+            return new KeyValueRow<string>();
         }
 
         /// <summary>
         /// Get all of the rows from the Settings table.
         /// </summary>
         /// <returns>All rows from the table.</returns>
-        public static List<SettingsRow> GetAll()
+        public static List<KeyValueRow<string>> GetAll()
         {
-            List<SettingsRow> Rows = new List<SettingsRow>();
+            List<KeyValueRow<string>> Rows = new List<KeyValueRow<string>>();
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
                 "SELECT Name, Value FROM Settings",
@@ -84,9 +87,9 @@ namespace JARVIS.Core.Database.Tables
                     // Handle NULL Value
                     if (result.Data.IsDBNull(1))
                     {
-                        Rows.Add(new SettingsRow(result.Data.GetString(0), string.Empty));
+                        Rows.Add(new KeyValueRow<string>(result.Data.GetString(0), string.Empty));
                     } else {
-                        Rows.Add(new SettingsRow(result.Data.GetString(0), result.Data.GetString(1)));    
+                        Rows.Add(new KeyValueRow<string>(result.Data.GetString(0), result.Data.GetString(1)));    
                     }
 
                     result.Data.NextResult();

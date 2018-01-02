@@ -173,7 +173,10 @@ namespace JARVIS.Shared
         /// </summary>
         public static void WriteCache()
         {
-            _writer.WriteCache();
+            if (_writer != null)
+            {
+                _writer.WriteCache();
+            }
         }
        
     }

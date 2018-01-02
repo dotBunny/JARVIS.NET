@@ -9,6 +9,9 @@ namespace JARVIS.Core.Services.Spotify
 {
     public class SpotifyService : IService
     {
+        public const string ScopeAuthentication = "spotify-authenticate";
+        public const string ScopeOutput = "spotify-output";
+
         // Settings Reference Keys
         const string SettingsEnabledKey = "Spotify.Enabled";
         const string SettingsClientIDKey = "Spotify.ClientID";
@@ -20,7 +23,7 @@ namespace JARVIS.Core.Services.Spotify
         string ClientSecret;
 
 
-        public bool Authenticated = false;
+        public bool Authenticated;
 
 
         string State;
@@ -28,7 +31,7 @@ namespace JARVIS.Core.Services.Spotify
         string Token = string.Empty;
         string RefreshToken = string.Empty;
         string Scope = string.Empty;
-        int ExpiresIn = 0;
+        int ExpiresIn;
         DateTime ExpiresOn;
         DateTime NextPoll;
 
@@ -81,7 +84,7 @@ namespace JARVIS.Core.Services.Spotify
             };
 
             // Add our authorization header
-            tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            tokenRequest.Headers.Add("Authorization", "Basic " + (ClientID + ":" + ClientSecret).Base64Encode());
 
             // Get Response
             var responseObject = tokenRequest.GetResponse();
@@ -89,7 +92,7 @@ namespace JARVIS.Core.Services.Spotify
             if (responseObject != null)
             {
 
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode) && responseObject.ErrorCode != "")
                 {
                     Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
                     Authenticated = false;
@@ -124,7 +127,7 @@ namespace JARVIS.Core.Services.Spotify
             var tokenRequest = new WebAPI.Requests.RefreshTokenRequest(RefreshToken, State);
 
             // Add our authorization header
-            tokenRequest.Headers.Add("Authorization", "Basic " + Strings.Base64Encode(ClientID + ":" + ClientSecret));
+            tokenRequest.Headers.Add("Authorization", "Basic " + (ClientID + ":" + ClientSecret).Base64Encode());
 
             // Get Response
             var responseObject = tokenRequest.GetResponse();
@@ -132,7 +135,7 @@ namespace JARVIS.Core.Services.Spotify
             if (responseObject != null)
             {
 
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode))
+                if (!string.IsNullOrEmpty(responseObject.ErrorCode) && responseObject.ErrorCode != "")
                 {
                     Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
                     Authenticated = false;
@@ -161,8 +164,10 @@ namespace JARVIS.Core.Services.Spotify
             if (NextPoll > DateTime.Now) return;
 
             // Create Headers
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Authorization", "Bearer " + Token);
+            Dictionary<string, string> headers = new Dictionary<string, string>
+            {
+                { "Authorization", "Bearer " + Token }
+            };
 
             // Get Response
             var json = Shared.Web.GetJSON(WebAPI.Responses.CurrentlyPlayingResponse.Endpoint, headers);
@@ -170,7 +175,7 @@ namespace JARVIS.Core.Services.Spotify
             // Process Response
             WebAPI.Responses.CurrentlyPlayingResponse responseObject = null;
 
-            if (!string.IsNullOrEmpty(json))
+            if (!string.IsNullOrEmpty(json) && json != "")
             {
                 responseObject = JsonConvert.DeserializeObject<WebAPI.Responses.CurrentlyPlayingResponse>(json);
 
@@ -185,33 +190,35 @@ namespace JARVIS.Core.Services.Spotify
                         LastTrack = responseObject.GetTrack();
 
                         // Call any subscribers
-                        if (NewTrackEvent != null)
-                        {
-                            NewTrackEvent(this, LastTrack);
-                        }
+                        NewTrackEvent?.Invoke(this, LastTrack);
 
-                        Dictionary<string, string> parameters = new Dictionary<string, string>();
-                        parameters.Add("filename", "Spotify.txt");
-                        parameters.Add("content", LastTrack.ToInfoString());
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        Dictionary<string, string> parameters = new Dictionary<string, string>
+                        {
+                            { "filename", "Spotify.txt" },
+                            { "content", LastTrack.ToInfoString() }
+                        };
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+
                         parameters["filename"] = "Spotify_Artist.txt";
                         parameters["content"] = LastTrack.Artist;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+
                         parameters["filename"] = "Spotify_Track.txt";
                         parameters["content"] = LastTrack.Track;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+
                         parameters["filename"] = "Spotify_URL.txt";
                         parameters["content"] = LastTrack.TrackURL;
-                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters);
+                        Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         // TODO: Send image data to be saved
-                        if (!string.IsNullOrEmpty(LastTrack.ImageURL))
+                        if (!string.IsNullOrEmpty(LastTrack.ImageURL) && LastTrack.ImageURL != "")
                         {
                             LastTrack.ImageData = Shared.Web.GetBytes(LastTrack.ImageURL);
                             parameters["filename"] = "Spotify_TrackImage.jpg";
                             parameters["content"] = Convert.ToBase64String(LastTrack.ImageData);
 
-                            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters);
+                            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
 
                         }
 
@@ -268,7 +275,7 @@ namespace JARVIS.Core.Services.Spotify
 
             // Only send to our client based OAUTH manager
             // TODO: Make this so it requires logged in(false->True)
-            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, false);
+            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, ScopeAuthentication);
         }
       
         public void Start()
@@ -281,7 +288,7 @@ namespace JARVIS.Core.Services.Spotify
 
             // TODO:    Switch this to use the actual authorized user count of the server
             //          not implemented at this time though. Need to fix user authentication (NEXT!)
-            if (!Authenticated && Server.Socket.BufferCount > 0)
+            if (!Authenticated && Server.Socket.AuthenticatedUserCount > 0)
             {
                 Authorize();
             }
@@ -296,7 +303,7 @@ namespace JARVIS.Core.Services.Spotify
         {
 
             // Don't bother if we haven't authenticated and dont have a token
-            if (!Authenticated || string.IsNullOrEmpty(Token)) return;
+            if (!Authenticated || (string.IsNullOrEmpty(Token) || Token == "")) return;
 
             // Check our token
             if ( DateTime.Now >= ExpiresOn ) {

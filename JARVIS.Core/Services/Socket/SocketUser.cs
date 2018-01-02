@@ -1,29 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
+using JARVIS.Core.Database.Rows;
 using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Core.Services.Socket
 {
     public class SocketUser
     {
-        public Database.Rows.UsersRow DataObject;
+        
         public Sender Session;
+        List<string> UserPermissions;
 
-        public SocketUser(Sender session)
+        public SocketUser(Sender session, UsersRow data)
         {
             Session = session;
+            UserPermissions = data.Scopes;
         }
         public void Terminate()
         {
             Server.Socket.AuthenticatedUsers.Remove(Session);
         }
 
-
-        public enum Scopes
+        public bool HasPemission(string scope)
         {
-            SHARD,
-            CLIENT,
-            SPOTIFY,
-            COUNTERS
+            if (UserPermissions.Contains(scope))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

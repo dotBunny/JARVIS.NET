@@ -138,14 +138,22 @@ namespace JARVIS.Core.Services.Socket
             Server.Stop();
         }
 
-        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments, bool authRequired = true)
+        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments, bool authenticatedUserRequired = true, string requiredScope = "")
         {
             // Send to sessions
             foreach(Sender session in Server.Clients)
             {
-                if ( authRequired && AuthenticatedUsers.ContainsKey(session)) {
-                    SendToSession(session, type, arguments);
-                } else {
+                if ( authenticatedUserRequired && AuthenticatedUsers.ContainsKey(session)) {
+
+                    // Check scope
+                    if ( AuthenticatedUsers[session].HasPemission(requiredScope) )
+                    {
+                        SendToSession(session, type, arguments);    
+                    } 
+                   
+                } 
+                else 
+                {
                     SendToSession(session, type, arguments);                    
                 }
             }

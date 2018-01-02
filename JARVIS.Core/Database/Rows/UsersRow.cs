@@ -1,5 +1,5 @@
 ﻿using System;
-using JARVIS.Shared.Services.Socket;
+using System.Collections.Generic;
 
 namespace JARVIS.Core.Database.Rows
 {
@@ -7,7 +7,7 @@ namespace JARVIS.Core.Database.Rows
     {
         public int ID = -1;
         public string Username = "Undefined";
-        public bool CanShard = false;
+        public List<string> Scopes = new List<string>();
         public DateTime LastLogin;
 
         public bool IsValid()
@@ -19,25 +19,34 @@ namespace JARVIS.Core.Database.Rows
         {
             
         }
-        public UsersRow(int rowID, string username, bool shard)
+        public UsersRow(int rowID, string username, string scopes)
         {
             ID = rowID;
             Username = username;
-            CanShard = shard;
+            if (!string.IsNullOrEmpty(scopes) || scopes != "")
+            {
+                Scopes.AddRange(scopes.Split(' '));
+            }
             LastLogin = DateTime.Now;
         }
-        public UsersRow(int rowID, string username, bool shard, string datestamp)
+        public UsersRow(int rowID, string username, string scopes, string datestamp)
         {
             ID = rowID;
             Username = username;
-            CanShard = shard;
+            if (!string.IsNullOrEmpty(scopes))
+            {
+                Scopes.AddRange(scopes.Split(' '));
+            }
             LastLogin = DateTime.Parse(datestamp);
         }
-        public UsersRow(int rowID, string username, bool shard, DateTime datestamp)
+        public UsersRow(int rowID, string username, string scopes, DateTime datestamp)
         {
             ID = rowID;
             Username = username;
-            CanShard = shard;
+            if (!string.IsNullOrEmpty(scopes) || scopes != "")
+            {
+                Scopes.AddRange(scopes.Split(' '));
+            }
             LastLogin = datestamp;
         }
     }

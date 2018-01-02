@@ -29,7 +29,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             {
 
                 // Get previous value
-                previousValue = Database.Tables.Counters.Get(parameters["name"]).Value;
+                previousValue = Database.Tables.KeyValueInt.Get(parameters["name"]).Value;
 
                 if (parameters.ContainsKey("value"))
                 {
@@ -42,7 +42,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                     previousValue++;
                 }
 
-                Database.Tables.Counters.Set(parameters["name"], previousValue);
+                Database.Tables.KeyValueInt.Set(parameters["name"], previousValue);
 
                 Shared.Log.Message("DB", "Incremented Counter: " + parameters["name"]);
 
@@ -78,7 +78,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             {
 
                 // Get previous value
-                previousValue = Database.Tables.Counters.Get(parameters["name"]).Value;
+                previousValue = Database.Tables.KeyValueInt.Get(parameters["name"]).Value;
 
                 // Decrease Value
                 if (parameters.ContainsKey("value"))
@@ -91,7 +91,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
                 }
                 if (previousValue < 0) previousValue = 0;
 
-                Database.Tables.Counters.Set(parameters["name"], previousValue);
+                Database.Tables.KeyValueInt.Set(parameters["name"], previousValue);
 
                 Shared.Log.Message("DB", "Decremented Counter: " + parameters["name"]);
 
@@ -130,7 +130,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             {
                 int.TryParse(parameters["value"].Trim(), out setValue);
 
-                Database.Tables.Counters.Set(parameters["name"], setValue);
+                Database.Tables.KeyValueInt.Set(parameters["name"], setValue);
 
                 Shared.Log.Message("DB", "Set Counter: " + parameters["name"] + " as " + setValue);
 

@@ -1,10 +1,9 @@
-﻿using System;
-namespace JARVIS.Core.Database.Rows
+﻿namespace JARVIS.Core.Database.Rows
 {
     /// <summary>
-    /// A counters row.
+    /// A generic KeyValue row.
     /// </summary>
-    public class CountersRow
+    public class KeyValueRow<T>
     {
         /// <summary>
         /// The name field.
@@ -14,22 +13,22 @@ namespace JARVIS.Core.Database.Rows
         /// <summary>
         /// The value field.
         /// </summary>
-        public int Value;
+        public T Value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.CountersRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.KeyValueRow"/> class.
         /// </summary>
-        public CountersRow()
+        public KeyValueRow()
         {
 
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.CountersRow"/> class.
+        /// Initializes a new instance of the <see cref="T:JARVIS.Core.Database.Rows.KeyValueRow"/> class.
         /// </summary>
         /// <param name="name">Name</param>
         /// <param name="newValue">Value</param>
-        public CountersRow(string name, int newValue)
+        public KeyValueRow(string name, T newValue)
         {
             Name = name;
             Value = newValue;

@@ -2,13 +2,14 @@
 using Grapevine.Server;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared;
-using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Core.Services.Web.Endpoints
 {
 	[RestResource]
 	public class Wirecast
 	{
+        public const string ScopeWirecastLayer = "wirecast-layers";
+
 		[RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/wirecast/layers")]
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/wirecast/layers/")]
 		public IHttpContext Layers(IHttpContext context)
@@ -17,8 +18,9 @@ namespace JARVIS.Core.Services.Web.Endpoints
 
             // Send command via socket
             Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.WIRECAST_LAYERS, 
-                                            Shared.Web.GetStringDictionary(
-                                                context.Request.QueryString));
+                                            Shared.Web.GetStringDictionary(context.Request.QueryString), 
+                                            true,
+                                            ScopeWirecastLayer);
 
             context.Response.SendResponse(Shared.Web.SuccessCode);
 			return context;

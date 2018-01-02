@@ -55,20 +55,20 @@ namespace JARVIS
             if (options.SetServerHost)
             {
                 Core.Database.Tables.Settings.Set(
-                  Core.Database.Tables.Settings.ServerHostID,
+                  Core.Database.Tables.Settings.ServerHostKey,
                     options.ServerHost);
             }
 
             if (options.SetSocketPort)
             {
                 Core.Database.Tables.Settings.Set(
-                    Core.Database.Tables.Settings.ServerSocketPortID,
+                    Core.Database.Tables.Settings.ServerSocketPortKey,
                     options.ServerSocketPort.ToString());
             }
             if (options.SetWebPort)
             {
                 Core.Database.Tables.Settings.Set(
-                    Core.Database.Tables.Settings.ServerWebPortID,
+                    Core.Database.Tables.Settings.ServerWebPortKey,
                     options.ServerWebPort.ToString());
             }
 
