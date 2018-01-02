@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using JARVIS.Core.Services.Spotify.WebAPI.Responses;
+using JARVIS.Core.Protocols.OAuth2.Responses;
 using Newtonsoft.Json;
 
-namespace JARVIS.Core.Services.Spotify.WebAPI.Requests
+namespace JARVIS.Core.Protocols.OAuth2.Requests
 {
     public class RefreshTokenRequest
     {
-        [JsonIgnore]
-        public static string Endpoint = "https://accounts.spotify.com/api/token";
-
         [JsonIgnore]
         public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
@@ -35,9 +32,9 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Requests
             State = state;
         }
 
-        public TokenResponse GetResponse()
+        public TokenResponse GetResponse(string endpoint)
         {
-            var json = Shared.Web.PostJSON(Endpoint, ToFormData(), Headers);
+            var json = Shared.Web.PostJSON(endpoint, ToFormData(), Headers);
             return JsonConvert.DeserializeObject<TokenResponse>(json);
         }
 

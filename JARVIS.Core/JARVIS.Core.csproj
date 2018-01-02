@@ -19,8 +19,11 @@
     <Folder Include="Database\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Spotify\WebAPI\" />
-    <Folder Include="Services\Spotify\WebAPI\Requests\" />
     <Folder Include="Services\Spotify\WebAPI\Responses\" />
+    <Folder Include="Protocols\" />
+    <Folder Include="Protocols\OAuth2\" />
+    <Folder Include="Protocols\OAuth2\Requests\" />
+    <Folder Include="Protocols\OAuth2\Responses\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grapevine" Version="4.1.1" />

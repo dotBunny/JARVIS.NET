@@ -16,7 +16,7 @@ namespace JARVIS.Core.Services.Web.Endpoints
             if ( Server.Web.CallbackListeners.ContainsKey(state) ) {
 
                 // Handle callback
-                Server.Web.CallbackListeners[state].HandleCallbackAsync(context.Request);
+                Server.Web.CallbackListeners[state].Callback(context.Request);
 
                 // Only get one shot
                 Server.Web.CallbackListeners.Remove(state);

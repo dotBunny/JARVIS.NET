@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JARVIS.Core.Protocols.OAuth2.Responses;
 using Newtonsoft.Json;
 
 namespace JARVIS.Core.Services.Spotify.WebAPI.Responses

@@ -16,7 +16,7 @@ namespace JARVIS.Core.Database.Tables
             password = (password + Server.Config.Salt).SHA512();
 
             Provider.ProviderResult result = Server.Database.ExecuteQuery(
-                "SELECT ID, Username, Scopes, LastLogin FROM Users WHERE Username = @Username AND Password = @Password LIMIT 1",
+                "SELECT ID, Username, Scope, LastLogin FROM Users WHERE Username = @Username AND Password = @Password LIMIT 1",
                 new Dictionary<string, object>() {
                     {"@Username",username},
                     {"@Password",password}
@@ -29,7 +29,7 @@ namespace JARVIS.Core.Database.Tables
                 // Apply Data
                 returnUser.ID = result.Data.GetInt32(0);
                 returnUser.Username = result.Data.GetString(1);
-                returnUser.Scopes.AddRange(result.Data.GetString(2).Split(' '));
+                returnUser.Scope.AddRange(result.Data.GetString(2).Split(' '));
 
                 // Create if the last login is null
                 if (!result.Data.IsDBNull(result.Data.GetOrdinal("LastLogin")))

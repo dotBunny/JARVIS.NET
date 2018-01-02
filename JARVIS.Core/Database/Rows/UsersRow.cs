@@ -7,7 +7,7 @@ namespace JARVIS.Core.Database.Rows
     {
         public int ID = -1;
         public string Username = "Undefined";
-        public List<string> Scopes = new List<string>();
+        public List<string> Scope = new List<string>();
         public DateTime LastLogin;
 
         public bool IsValid()
@@ -25,7 +25,7 @@ namespace JARVIS.Core.Database.Rows
             Username = username;
             if (!string.IsNullOrEmpty(scopes) || scopes != "")
             {
-                Scopes.AddRange(scopes.Split(' '));
+                Scope.AddRange(scopes.Split(' '));
             }
             LastLogin = DateTime.Now;
         }
@@ -35,7 +35,7 @@ namespace JARVIS.Core.Database.Rows
             Username = username;
             if (!string.IsNullOrEmpty(scopes))
             {
-                Scopes.AddRange(scopes.Split(' '));
+                Scope.AddRange(scopes.Split(' '));
             }
             LastLogin = DateTime.Parse(datestamp);
         }
@@ -45,7 +45,7 @@ namespace JARVIS.Core.Database.Rows
             Username = username;
             if (!string.IsNullOrEmpty(scopes) || scopes != "")
             {
-                Scopes.AddRange(scopes.Split(' '));
+                Scope.AddRange(scopes.Split(' '));
             }
             LastLogin = datestamp;
         }

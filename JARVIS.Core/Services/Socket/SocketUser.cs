@@ -14,7 +14,7 @@ namespace JARVIS.Core.Services.Socket
         public SocketUser(Sender session, UsersRow data)
         {
             Session = session;
-            UserPermissions = data.Scopes;
+            UserPermissions = data.Scope;
         }
         public void Terminate()
         {

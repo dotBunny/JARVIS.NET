@@ -12,6 +12,14 @@ namespace JARVIS.Core.Services.Socket
         /// </summary>
         public Dictionary<Sender, SocketUser> AuthenticatedUsers = new Dictionary<Sender, SocketUser>();
 
+        //public bool ValidSourceIP(string ip)
+        //{
+        //    foreach(Sender s in AuthenticatedUsers)
+        //    {
+        //        if (s.RemoteEndPoint.GetHost() == )
+        //    }
+        //}
+
       
         /// <summary>
         /// The number of available buffers (total active clients)

@@ -89,6 +89,10 @@ namespace JARVIS.Core
             Spotify.Start();
             ActiveServices.Add(Spotify);
 
+            Discord = new Services.Discord.DiscordService();
+            Discord.Start();
+            ActiveServices.Add(Spotify);
+
             Shared.Log.Message("System", "Secondary Startup Complete");
 
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Grapevine.Interfaces.Server;
-using Grapevine.Shared;
+using JARVIS.Core.Protocols.OAuth2;
 using JARVIS.Shared;
 using Newtonsoft.Json;
 
@@ -20,20 +19,9 @@ namespace JARVIS.Core.Services.Spotify
 
         // Settings Values (pulled from DB)
         public bool Enabled { get; private set; }
-        string ClientID;
-        string ClientSecret;
+        OAuth2Provider OAuth2 = new OAuth2Provider();
 
-
-        public bool Authenticated;
-
-
-        string State;
-        string Code = string.Empty;
-        string Token = string.Empty;
-        string RefreshToken = string.Empty;
-        string Scope = string.Empty;
-        int ExpiresIn;
-        DateTime ExpiresOn;
+ 
         DateTime NextPoll;
 
         // Track information
@@ -47,127 +35,37 @@ namespace JARVIS.Core.Services.Spotify
             // Initialize Settings
             Enabled = Server.Config.GetBool(SettingsEnabledKey);
             if ( Enabled ) {
-                ClientID = Server.Config.Get(SettingsClientIDKey);
-                ClientSecret = Server.Config.Get(SettingsClientSecretKey);
+                LoadSettings();
             }
         }
 
+        void LoadSettings()
+        {
+            OAuth2 = new OAuth2Provider("Spotify",
+                                                Server.Config.Get(SettingsClientIDKey),
+                                                Server.Config.Get(SettingsClientSecretKey),
+                                                "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played",
+                                                "https://accounts.spotify.com/authorize/?response_type=code",
+                                                "https://accounts.spotify.com/api/token",
+                                                "https://accounts.spotify.com/api/token", ScopeAuthentication);
+        }
 
         public string GetName()
         {
             return "Spotify";
         }
 
-        public void HandleCallbackAsync(IHttpRequest request)
-        {
-            string state = request.QueryString.GetValue("state", string.Empty);
-
-            // Stage 1 
-            if ( Code == string.Empty ) {
-                Code = request.QueryString.GetValue("code", string.Empty);
-
-                if ( Code != string.Empty ) 
-                {
-                    GetToken();
-                }
-            }
-        }
-
-
-        void GetToken()
-        {
-            // Create our token request
-            var tokenRequest = new WebAPI.Requests.TokenRequest
-            {
-                Code = Code,
-                RedirectURI = "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/",
-                State = State
-            };
-
-            // Add our authorization header
-            tokenRequest.Headers.Add("Authorization", "Basic " + (ClientID + ":" + ClientSecret).Base64Encode());
-
-            // Get Response
-            var responseObject = tokenRequest.GetResponse();
-
-            if (responseObject != null)
-            {
-
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode) && responseObject.ErrorCode != "")
-                {
-                    Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while getting the token. " + responseObject.ErrorDescription);
-                    Authenticated = false;
-                }
-                else
-                {
-                    Token = responseObject.AccessToken;
-                    RefreshToken = responseObject.RefreshToken;
-                    ExpiresIn = responseObject.ExpiresInSeconds;
-                    Scope = responseObject.Scope;
-
-                    NextPoll = DateTime.Now;
-                    ExpiresOn = NextPoll.AddSeconds(ExpiresIn);
-
-                    // Flag we are good!
-                    Log.Message("Spotify", "Authentication Successful. (" + Token + ")");
-                    Authenticated = true;
-                }
-            }
-            else
-            {
-                Authenticated = false;
-                Log.Error("Spotify", "Spotify failed to get the token. NULL Response Object.");
-            }
-          
-        }
-
-        void GetRefreshToken()
-        {
-            Log.Message("Spotify", "Refreshing Token");
-
-            var tokenRequest = new WebAPI.Requests.RefreshTokenRequest(RefreshToken, State);
-
-            // Add our authorization header
-            tokenRequest.Headers.Add("Authorization", "Basic " + (ClientID + ":" + ClientSecret).Base64Encode());
-
-            // Get Response
-            var responseObject = tokenRequest.GetResponse();
-
-            if (responseObject != null)
-            {
-
-                if (!string.IsNullOrEmpty(responseObject.ErrorCode) && responseObject.ErrorCode != "")
-                {
-                    Log.Error("Spotify", "An error occured (" + responseObject.ErrorCode + ") while refreshing the token. " + responseObject.ErrorDescription);
-                    Authenticated = false;
-                }
-                else
-                {
-                    Token = responseObject.AccessToken;
-                    ExpiresIn = responseObject.ExpiresInSeconds;
-                    Scope = responseObject.Scope;
-                    ExpiresOn = DateTime.Now.AddSeconds(ExpiresIn);
-
-                    // Flag we are good!
-                    Authenticated = true;
-                }
-            }
-            else
-            {
-                Authenticated = false;
-                Log.Error("Spotify", "Spotify failed to refresh the token. NULL Response Object.");
-            }
-           
-        }
-
         void GetCurrentlyPlaying()
         {
             if (NextPoll > DateTime.Now) return;
 
+            // Check token / authentication
+            if (!OAuth2.IsValid()) { return;  }
+
             // Create Headers
             Dictionary<string, string> headers = new Dictionary<string, string>
             {
-                { "Authorization", "Bearer " + Token }
+                { "Authorization", "Bearer " + OAuth2.Token }
             };
 
             // Get Response
@@ -243,44 +141,7 @@ namespace JARVIS.Core.Services.Spotify
             NextPoll = DateTime.Now.AddSeconds(10);
         }
 
-        void Authorize()
-        {
-            Authenticated = false;
 
-            Token = string.Empty;
-            Code = string.Empty;
-            RefreshToken = string.Empty;
-            Scope = "";
-            ExpiresIn = 0;
-
-            Log.Message("Spotify", "Initiating authorization process ...");
-
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-
-            // Create random key that is used later to make sure this is the one that processes it
-            State = Guid.NewGuid().ToString();
-
-            // These will be split and used in the function itself
-            parameters.Add("endpoint", "https://accounts.spotify.com/authorize/?response_type=code");
-            parameters.Add("title", "Spotify Authentication");
-            parameters.Add("message", "JARVIS needs to you to authenticate with your Spotify account for it to be able to poll data.");
-
-            // Data passed to each call (with the execption of the token)
-            parameters.Add("client_id", ClientID);
-            parameters.Add("client_secret", ClientSecret);
-
-            // Ask for a lot of perms
-            parameters.Add("scope", "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played");
-            parameters.Add("state", State);
-            parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
-
-            // Add to listeners
-            Server.Web.CallbackListeners.Add(State, this);
-
-            // Only send to our client based OAUTH manager
-            // TODO: Make this so it requires logged in(false->True)
-            Server.Socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, ScopeAuthentication);
-        }
       
         public void Start()
         {
@@ -290,29 +151,28 @@ namespace JARVIS.Core.Services.Spotify
                 return;   
             }
 
-            // TODO:    Switch this to use the actual authorized user count of the server
-            //          not implemented at this time though. Need to fix user authentication (NEXT!)
-            if (!Authenticated && Server.Socket.AuthenticatedUserCount > 0)
+            if (!OAuth2.IsValid() && Server.Socket.AuthenticatedUserCount > 0)
             {
-                Authorize();
+                OAuth2.Login();
             }
         }
 
         public void Stop()
         {
-            Authenticated = false;
+            OAuth2.Reset();
         }
 
         public void Tick()
         {
 
             // Don't bother if we haven't authenticated and dont have a token
-            if (!Authenticated || (string.IsNullOrEmpty(Token) || Token == "")) return;
+            if (!OAuth2.IsValid()) return;
 
-            // Check our token
-            if ( DateTime.Now >= ExpiresOn ) {
-                GetRefreshToken();
-            }
+            // TODO Implement refresh
+            //// Check our token
+            //if ( DateTime.Now >= ExpiresOn ) {
+            //    GetRefreshToken();
+            //}
 
             // To adjust polling speed?
             GetCurrentlyPlaying();

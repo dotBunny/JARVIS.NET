@@ -14,6 +14,9 @@ namespace JARVIS.Core.Services.Web.Endpoints
         [RestRoute(HttpMethod = HttpMethod.GET, PathInfo = "/wirecast/layers/")]
 		public IHttpContext Layers(IHttpContext context)
 		{
+            
+
+          //      .Request.RemoteEndPoint.Address)
             // ?L1=name&layer2=name&3=name&layer4=name&layer5=name
 
             // Send command via socket

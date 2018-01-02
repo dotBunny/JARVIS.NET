@@ -1,22 +1,34 @@
 ﻿using System;
 using Grapevine.Interfaces.Server;
 using Discord.Rest;
+using JARVIS.Core.Protocols.OAuth2;
+using JARVIS.Shared;
 
 namespace JARVIS.Core.Services.Discord
 {
     public class DiscordService : IService
     {
-        public const string ScopeAuthentication = "discord-authenticate";       
+        public const string ScopeAuthentication = "discord-authenticate";
 
         // Settings Reference Keys
+        const string SettingsClientIDKey = "Discord.ClientID";
+        const string SettingsClientSecretKey = "Discord.ClientSecret";
         const string SettingsEnabledKey = "Discord.Enabled";
         const string SettingsGuildIDKey = "Discord.GuildID";
         const string SettingsTokenKey = "Discord.Token";
+        const string SettingsBotTokenKey = "Discord.BotToken";
+        const string SettingsBotUsernameKey = "Discord.BotUsername";
+
 
         // Settings Values (pulled from DB)
         public bool Enabled { get; private set; }
+
+
+        string _botUsername;
+        string _botToken;
         string _guildID;
-        string _token;
+
+        OAuth2Provider OAuth2 = new OAuth2Provider();
 
         public DiscordService()
         {
@@ -24,59 +36,63 @@ namespace JARVIS.Core.Services.Discord
             Enabled = Server.Config.GetBool(SettingsEnabledKey);
             if (Enabled)
             {
-                _guildID = Server.Config.Get(SettingsGuildIDKey);
-                _token = Server.Config.Get(SettingsTokenKey);
+               LoadSettings();
             }
         }
 
-        //DiscordRestConfig Config;
-        //DiscordRestClient Client;
-        //RestGuild Guild;
+        void LoadSettings()
+        {
+
+            _botToken = Server.Config.Get(SettingsBotTokenKey);
+            _botUsername = Server.Config.Get(SettingsBotUsernameKey);
+            _guildID = Server.Config.Get(SettingsGuildIDKey);
+
+            OAuth2 = new OAuth2Provider("Discord", 
+                                        Server.Config.Get(SettingsClientIDKey), 
+                                        Server.Config.Get(SettingsClientSecretKey),
+                                        "bot messages.read connections rpc guilds identify guilds.join webhook.incoming rpc.notifications.read gdm.join email rpc.api",
+                                        "https://discordapp.com/api/oauth2/authorize?response_type=code&permissions=8",
+                                        "https://discordapp.com/api/oauth2/authorize?response_type=token",
+                                        "https://discordapp.com/api/oauth2/authorize?response_type=token",
+                                        ScopeAuthentication);
+
+            OAuth2.OnComplete += OAuth2_OnComplete;
+        }
+
 
         public string GetName()
         {
             return "Discord";
         }
 
-        public void HandleCallbackAsync(IHttpRequest request)
-        {
-
-        }
 
         public void Start()
         {
-            
-            //DiscordClient c = new DiscordClient();
-            //Config = new DiscordRestConfig();
-            //Config.
-            //      ]
-            //      ]var config = new DiscordRestConfig
-            //       {
-            //           RestClientProvider = url =>
-            //           {
-            //               _cache.SetUrl(url);
-            //               return _cache;
-            //           }
-            //       };
-            //Config.RestClientProvider = new Discord.Net.Rest.RestClientProvider();
-            //)
+            if (!Enabled)
+            {
+                Log.Message("Discord", "Unable to start as service is disabled.");
+                return;
+            }
 
-            //Client = new DiscordRestClient(Config);
-
-            //Client.LoginAsync(Discord.TokenType.Bot, Server.Config.Get("Discord.Token")).Wait();
-
-            ////MigrateAsync().Wait();
-            //Guild = Client.GetGuildAsync(ulong.Parse(Server.Config.Get("Discord.GuildID"))).Result;
+            if (!OAuth2.IsValid() && Server.Socket.AuthenticatedUserCount > 0)
+            {
+                OAuth2.Login();
+            }
         }
 
         public void Stop()
         {
-            throw new NotImplementedException();
+           OAuth2.Reset();
         }
 
         public void Tick()
         {
 
+        }
+
+        void OAuth2_OnComplete()
+        {
+            
         }
     }
 

@@ -1,7 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
+namespace JARVIS.Core.Protocols.OAuth2.Responses
 {
     public class TokenResponse
     {
