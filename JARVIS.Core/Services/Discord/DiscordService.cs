@@ -52,8 +52,7 @@ namespace JARVIS.Core.Services.Discord
                                         Server.Config.Get(SettingsClientIDKey), 
                                         Server.Config.Get(SettingsClientSecretKey),
                                         "bot messages.read connections rpc guilds identify guilds.join webhook.incoming rpc.notifications.read gdm.join email rpc.api",
-                                        "https://discordapp.com/api/oauth2/authorize?response_type=code&permissions=8",
-                                        "https://discordapp.com/api/oauth2/authorize?response_type=token",
+                                        "https://discordapp.com/api/oauth2/authorize?permissions=8",
                                         "https://discordapp.com/api/oauth2/authorize?response_type=token",
                                         ScopeAuthentication);
 

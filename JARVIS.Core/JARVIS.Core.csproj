@@ -24,6 +24,7 @@
     <Folder Include="Protocols\OAuth2\" />
     <Folder Include="Protocols\OAuth2\Requests\" />
     <Folder Include="Protocols\OAuth2\Responses\" />
+    <Folder Include="Services\Streamlabs\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grapevine" Version="4.1.1" />

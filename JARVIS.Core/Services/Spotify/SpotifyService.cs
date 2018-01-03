@@ -46,9 +46,9 @@ namespace JARVIS.Core.Services.Spotify
                                         Server.Config.Get(SettingsClientIDKey),
                                         Server.Config.Get(SettingsClientSecretKey),
                                         "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played",
-                                        "https://accounts.spotify.com/authorize/?response_type=code",
+                                        "https://accounts.spotify.com/authorize",
                                         "https://accounts.spotify.com/api/token",
-                                        "https://accounts.spotify.com/api/token", ScopeAuthentication);
+                                        ScopeAuthentication);
         }
 
         public string GetName()

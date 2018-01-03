@@ -22,9 +22,8 @@ namespace JARVIS.Core.Protocols.OAuth2
         string _clientSecret = string.Empty;
         string _clientEncoded = string.Empty;
         string _scope = string.Empty;
-        string _codeEndpoint = string.Empty;
+        string _authorizeEndpoint = string.Empty;
         string _tokenEndpoint = string.Empty;
-        string _refreshEndpoint = string.Empty;
 
         string _jarvisScope = string.Empty;
 
@@ -56,8 +55,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             Token = string.Empty;
         }
         public OAuth2Provider(string providerName, string clientID, string clientSecret, 
-                              string scope, string codeEndpoint, string tokenEndpoint, 
-                              string refreshEndpoint,
+                              string scope, string authorizeEndpoint, string tokenEndpoint, 
                               string jarvisScope = "default")
         {
 
@@ -67,9 +65,8 @@ namespace JARVIS.Core.Protocols.OAuth2
             _clientID = clientID;
             _clientSecret = clientSecret;
             _scope = scope;
-            _codeEndpoint = codeEndpoint;
+            _authorizeEndpoint = authorizeEndpoint;
             _tokenEndpoint = tokenEndpoint;
-            _refreshEndpoint = refreshEndpoint;
             _jarvisScope = jarvisScope;
 
             _clientEncoded = (_clientID + ":" + _clientSecret).Base64Encode();
@@ -103,7 +100,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             _state = GenerateState();
 
             // These will be split and used in the function itself
-            parameters.Add("endpoint", _codeEndpoint);
+            parameters.Add("endpoint", _authorizeEndpoint);
             parameters.Add("title", _provider + " Authentication");
             parameters.Add("message", "JARVIS needs to you to authenticate with your " + _provider + " account for it to be able to poll data.");
 
@@ -114,11 +111,12 @@ namespace JARVIS.Core.Protocols.OAuth2
             // Ask for a lot of perms
             parameters.Add("scope", _scope);
             parameters.Add("state", _state);
+            parameters.Add("response_type", "code");
             parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
 
             // Add to listeners
-            Server.Services.GetService<Core.Services.Web.WebService>().CallbackListeners.Add(_state, this);
-            Server.Services.GetService<Core.Services.Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
+            Server.Services.GetService<WebService>().CallbackListeners.Add(_state, this);
+            Server.Services.GetService<Services.Socket.SocketService>().SendToAllSessions(Shared.Protocol.Instruction.OpCode.OAUTH_REQUEST, parameters, true, _jarvisScope);
         }
 
         string GenerateState()
@@ -200,7 +198,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             tokenRequest.Headers.Add("Authorization", "Basic " + _clientEncoded);
 
             // Get Response
-            var responseObject = tokenRequest.GetResponse(_refreshEndpoint);
+            var responseObject = tokenRequest.GetResponse(_tokenEndpoint);
 
             if (responseObject != null)
             {
