@@ -6,7 +6,7 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
 {
     public class WirecastLayers : ISocketCommand
     {
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return Settings.FeatureWirecastManipulation;
         }

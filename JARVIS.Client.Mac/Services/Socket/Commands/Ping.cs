@@ -11,7 +11,7 @@ namespace JARVIS.Client.Mac.Services.Socket.Commands
         {
             Client = client;
         }
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return true;
         }

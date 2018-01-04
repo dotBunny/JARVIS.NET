@@ -5,7 +5,7 @@ namespace JARVIS.Shared.Services.Socket
 {
     public interface ISocketCommand
     {
-        bool CanExecute();
+        bool CanExecute(Sender session);
         void Execute(Sender session, Dictionary<string, string> parameters);
     }
 }

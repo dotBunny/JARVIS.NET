@@ -61,7 +61,7 @@ namespace JARVIS.Core.Services.Spotify
             if (NextPoll > DateTime.Now) return;
 
             // Check token / authentication
-            if (!OAuth2.IsValid()) { return;  }
+            if (!OAuth2.CheckToken()) { return;  }
 
             // Create Headers
             Dictionary<string, string> headers = new Dictionary<string, string>
@@ -128,6 +128,8 @@ namespace JARVIS.Core.Services.Spotify
                         // Save track to database
                         LastTrack.SaveToDatabase();
 
+                       // Server.Services.GetService<Streamlabs.StreamlabsService>().Alert(LastTrack.ToInfoString(), "30000", LastTrack.ImageURL);
+
                         Log.Message("Spotify", LastTrack.ToString());
                     }
                 }
@@ -155,7 +157,7 @@ namespace JARVIS.Core.Services.Spotify
                 return;   
             }
 
-            if (!OAuth2.IsValid() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
+            if (!OAuth2.CheckToken() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }
@@ -169,7 +171,7 @@ namespace JARVIS.Core.Services.Spotify
         public void Tick()
         {
             // Don't bother if we haven't authenticated and dont have a token
-            if (!Enabled || !OAuth2.IsValid()) return;
+            if (!Enabled || !OAuth2.CheckToken()) return;
 
             // To adjust polling speed?
             GetCurrentlyPlaying();

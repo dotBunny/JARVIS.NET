@@ -13,7 +13,7 @@ namespace JARVIS.Client.Services.Socket.Commands
         /// Can this command be executed?
         /// </summary>
         /// <returns><c>true</c>, if settings look good, <c>false</c> otherwise.</returns>
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return Settings.FeatureFileOutputs;
         }

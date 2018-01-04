@@ -24,6 +24,7 @@ namespace JARVIS.Core.Protocols.OAuth2
         string _scope = string.Empty;
         string _authorizeEndpoint = string.Empty;
         string _tokenEndpoint = string.Empty;
+        bool _callbackRequiresTrailingSlash = true;
 
         string _jarvisScope = string.Empty;
 
@@ -35,19 +36,14 @@ namespace JARVIS.Core.Protocols.OAuth2
             get; private set;
         }
 
-        public bool IsValid()
+        public bool CheckToken()
         {
-            if (!Authenticated) return false;
-
-            // Check/make for token refresh
-            if ( DateTime.Now >= _expiresOn)
+            if (_refreshToken != string.Empty && DateTime.Now >= _expiresOn)
             {
                 GetRefreshToken();
             }
 
-            if (!Authenticated) return false;
-
-            return true;
+            return Authenticated;
         }
 
         public OAuth2Provider()
@@ -56,9 +52,10 @@ namespace JARVIS.Core.Protocols.OAuth2
         }
         public OAuth2Provider(string providerName, string clientID, string clientSecret, 
                               string scope, string authorizeEndpoint, string tokenEndpoint, 
-                              string jarvisScope = "default")
+                              string jarvisScope = "default", bool callbackRequiresTrailingSlash = true)
         {
 
+            // TODO ADD thing to toggle if trailing /
             Token = string.Empty;
 
             _provider = providerName;
@@ -68,6 +65,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             _authorizeEndpoint = authorizeEndpoint;
             _tokenEndpoint = tokenEndpoint;
             _jarvisScope = jarvisScope;
+            _callbackRequiresTrailingSlash = callbackRequiresTrailingSlash;
 
             _clientEncoded = (_clientID + ":" + _clientSecret).Base64Encode();
 
@@ -112,7 +110,8 @@ namespace JARVIS.Core.Protocols.OAuth2
             parameters.Add("scope", _scope);
             parameters.Add("state", _state);
             parameters.Add("response_type", "code");
-            parameters.Add("redirect_uri", "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/");
+
+            parameters.Add("redirect_uri", GenerateCallbackURI());
 
             // Add to listeners
             Server.Services.GetService<WebService>().CallbackListeners.Add(_state, this);
@@ -122,6 +121,15 @@ namespace JARVIS.Core.Protocols.OAuth2
         string GenerateState()
         {
            return  _provider.ToLower() + "-" + Guid.NewGuid().ToString();
+        }
+
+        string GenerateCallbackURI()
+        {
+            if ( !_callbackRequiresTrailingSlash )
+            {
+                return "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback";
+            }
+            return "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/";
         }
 
         public void Callback(IHttpRequest request)
@@ -146,7 +154,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             var tokenRequest = new Requests.TokenRequest
             {
                 Code = _code,
-                RedirectURI = "http://" + Server.Config.Host + ":" + Server.Config.WebPort + "/callback/",
+                RedirectURI = GenerateCallbackURI(),
                 State = _state
             };
 
@@ -193,6 +201,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             Log.Message(_provider, "Refreshing Token");
 
             var tokenRequest = new Requests.RefreshTokenRequest(_refreshToken, _state);
+
 
             // Add our authorization header
             tokenRequest.Headers.Add("Authorization", "Basic " + _clientEncoded);

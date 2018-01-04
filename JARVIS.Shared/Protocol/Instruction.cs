@@ -61,14 +61,25 @@ namespace JARVIS.Shared.Protocol
             OAUTH_REQUEST,
 
             /// <summary>
+            /// Force server (only handler) to reauthenticate with Discord.
+            /// </summary>
+            AUTH_DISCORD,
+
+            /// <summary>
             /// Force server (only handler) to reauthenticate with Spotify.
             /// </summary>
             AUTH_SPOTIFY,
 
             /// <summary>
+            /// Force server (only handler) to reauthenticate with Streamlabs.
+            /// </summary>
+            AUTH_STREAMLABS,
+
+            /// <summary>
             /// Send text file to remote system (filename, content).
             /// </summary>
             TEXT_FILE,
+
             /// <summary>
             /// Send binary file to remote system (filename, content).
             /// </summary>

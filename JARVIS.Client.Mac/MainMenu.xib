@@ -88,6 +88,32 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Services" systemMenu="window" id="gJe-No-J8t">
                         <items>
+                            <menuItem title="Discord" id="4SW-ea-MgG">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Discord" systemMenu="window" autoenablesItems="NO" id="ITb-Ks-45W">
+                                    <items>
+                                        <menuItem title="Force Authentication" enabled="NO" id="vM6-NC-MxW">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="OnServicesDiscordForceAuthentication:" target="OxR-Zu-dBZ" id="6X1-t4-aPF"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Streamlabs" id="fkQ-ex-ARq">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Streamlabs" systemMenu="window" autoenablesItems="NO" id="LfU-iK-34e">
+                                    <items>
+                                        <menuItem title="Force Authentication" enabled="NO" id="ZgA-jN-zZi">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="OnServicesStreamlabsForceAuthentication:" target="OxR-Zu-dBZ" id="7af-VS-Bq5"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Spotify" id="TiN-xE-Ya9">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Spotify" systemMenu="window" autoenablesItems="NO" id="Jdl-tF-y9C">
@@ -154,7 +180,9 @@
             <connections>
                 <outlet property="ServerConnect" destination="297" id="lBh-gY-lQs"/>
                 <outlet property="ServerDisconnect" destination="298" id="0hj-Ez-FKG"/>
+                <outlet property="ServicesDiscordForceAuthentication" destination="vM6-NC-MxW" id="acI-gV-eUq"/>
                 <outlet property="ServicesSpotifyForceAuthentication" destination="MYa-PL-d5i" id="KjX-Iw-91g"/>
+                <outlet property="ServicesStreamlabsForceAuthentication" destination="ZgA-jN-zZi" id="6Ep-iZ-S8l"/>
             </connections>
         </customObject>
     </objects>

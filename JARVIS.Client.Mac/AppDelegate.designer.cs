@@ -9,48 +9,70 @@ using System.CodeDom.Compiler;
 
 namespace JARVIS.Client.Mac
 {
-    partial class AppDelegate
-    {
-        [Outlet]
-        AppKit.NSMenuItem ServerConnect { get; set; }
+	partial class AppDelegate
+	{
+		[Outlet]
+		AppKit.NSMenuItem ServerConnect { get; set; }
 
-        [Outlet]
-        AppKit.NSMenuItem ServerDisconnect { get; set; }
+		[Outlet]
+		AppKit.NSMenuItem ServerDisconnect { get; set; }
 
-        [Outlet]
-        AppKit.NSMenuItem ServicesSpotifyForceAuthentication { get; set; }
+		[Outlet]
+		AppKit.NSMenuItem ServicesDiscordForceAuthentication { get; set; }
 
-        [Action ("OnJARVISPreferences:")]
-        partial void OnJARVISPreferences (AppKit.NSMenuItem sender);
+		[Outlet]
+		AppKit.NSMenuItem ServicesSpotifyForceAuthentication { get; set; }
 
-        [Action ("OnServerConnect:")]
-        partial void OnServerConnect (AppKit.NSMenuItem sender);
+		[Outlet]
+		AppKit.NSMenuItem ServicesStreamlabsForceAuthentication { get; set; }
 
-        [Action ("OnServerDisconnect:")]
-        partial void OnServerDisconnect (AppKit.NSMenuItem sender);
+		[Action ("OnJARVISPreferences:")]
+		partial void OnJARVISPreferences (AppKit.NSMenuItem sender);
 
-        [Action ("OnServicesSpotifyForceAuthentication:")]
-        partial void OnServicesSpotifyForceAuthentication (AppKit.NSMenuItem sender);
+		[Action ("OnServerConnect:")]
+		partial void OnServerConnect (AppKit.NSMenuItem sender);
 
-        [Action ("OnWindowShow:")]
-        partial void OnWindowShow (AppKit.NSMenuItem sender);
-        
-        void ReleaseDesignerOutlets ()
-        {
-            if (ServerConnect != null) {
-                ServerConnect.Dispose ();
-                ServerConnect = null;
-            }
+		[Action ("OnServerDisconnect:")]
+		partial void OnServerDisconnect (AppKit.NSMenuItem sender);
 
-            if (ServerDisconnect != null) {
-                ServerDisconnect.Dispose ();
-                ServerDisconnect = null;
-            }
+		[Action ("OnServicesDiscordForceAuthentication:")]
+		partial void OnServicesDiscordForceAuthentication (AppKit.NSMenuItem sender);
 
-            if (ServicesSpotifyForceAuthentication != null) {
-                ServicesSpotifyForceAuthentication.Dispose ();
-                ServicesSpotifyForceAuthentication = null;
-            }
-        }
-    }
+		[Action ("OnServicesSpotifyForceAuthentication:")]
+		partial void OnServicesSpotifyForceAuthentication (AppKit.NSMenuItem sender);
+
+		[Action ("OnServicesStreamlabsForceAuthentication:")]
+		partial void OnServicesStreamlabsForceAuthentication (AppKit.NSMenuItem sender);
+
+		[Action ("OnWindowShow:")]
+		partial void OnWindowShow (AppKit.NSMenuItem sender);
+		
+		void ReleaseDesignerOutlets ()
+		{
+			if (ServerConnect != null) {
+				ServerConnect.Dispose ();
+				ServerConnect = null;
+			}
+
+			if (ServerDisconnect != null) {
+				ServerDisconnect.Dispose ();
+				ServerDisconnect = null;
+			}
+
+			if (ServicesSpotifyForceAuthentication != null) {
+				ServicesSpotifyForceAuthentication.Dispose ();
+				ServicesSpotifyForceAuthentication = null;
+			}
+
+			if (ServicesDiscordForceAuthentication != null) {
+				ServicesDiscordForceAuthentication.Dispose ();
+				ServicesDiscordForceAuthentication = null;
+			}
+
+			if (ServicesStreamlabsForceAuthentication != null) {
+				ServicesStreamlabsForceAuthentication.Dispose ();
+				ServicesStreamlabsForceAuthentication = null;
+			}
+		}
+	}
 }

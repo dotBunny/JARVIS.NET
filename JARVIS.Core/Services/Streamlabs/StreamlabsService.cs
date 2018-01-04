@@ -4,11 +4,19 @@ using JARVIS.Core.Protocols.OAuth2;
 using JARVIS.Shared;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.WebUtilities;
 
-namespace JARVIS.Core.Services.Spotify
+namespace JARVIS.Core.Services.Streamlabs
 {
     public class StreamlabsService : IService
     {
+        public enum AlertType
+        {
+            Follow,
+            Subscription,
+            Donation,
+            Host
+        }
         public const string ScopeAuthentication = "streamlabs-authenticate";
 
         // Settings Reference Keys
@@ -40,7 +48,7 @@ namespace JARVIS.Core.Services.Spotify
                                         "alerts.create alerts.write",
                                         "https://streamlabs.com/api/v1.0/authorize",
                                         "https://streamlabs.com/api/v1.0/token",
-                                        ScopeAuthentication);
+                                        ScopeAuthentication, false);
         }
 
         public string GetName()
@@ -57,7 +65,7 @@ namespace JARVIS.Core.Services.Spotify
                 return;
             }
 
-            if (!OAuth2.IsValid() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
+            if (!OAuth2.CheckToken() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
             {
                 OAuth2.Login();
             }
@@ -72,5 +80,59 @@ namespace JARVIS.Core.Services.Spotify
         {
            
         }
+
+        string AlertTypeToString(AlertType alertType)
+        {
+            switch(alertType)
+            {
+                case AlertType.Follow:
+                    return "follow";
+                case AlertType.Subscription:
+                    return "subscription";
+                case AlertType.Host:
+                    return "host";
+                default:
+                    return "donation";
+            }
+
+        }
+
+
+        public void Alert(string alertMessage, string alertMilliseconds = "2000", string alertImage = "", AlertType alertType = AlertType.Donation )
+        {
+            if (!Enabled) { return; }
+
+            // Check token / authentication
+            if (!OAuth2.CheckToken()) { return; }
+
+            // Create URI
+            string endpoint = QueryHelpers.AddQueryString("https://streamlabs.com/api/v1.0/alerts", 
+                                                          new Dictionary<string, string>()
+            {
+                { "type", AlertTypeToString(alertType) },
+                { "image_href", alertImage },
+                { "message", alertMessage },
+                { "duration", alertMilliseconds }
+            });
+
+            // Create Headers
+            var json = Shared.Web.PostJSON(endpoint, string.Empty, new Dictionary<string, string>
+            {
+                { "Authorization", "Bearer " + OAuth2.Token }
+            });
+
+            Protocols.OAuth2.Responses.StatusMessage responseObject = JsonConvert.DeserializeObject<Protocols.OAuth2.Responses.StatusMessage>(json);
+
+            if ( responseObject != null ) {
+                if (responseObject.Successful) {
+                    
+                } else {
+                    Log.Error("Streamlabs", "An error (" + responseObject.Code + ") occured. " + responseObject.Description);
+                }
+            } else {
+                Log.Error("Streamlabs", "An error occured. NULL response object.");
+            }
+        }
+
     }
 }

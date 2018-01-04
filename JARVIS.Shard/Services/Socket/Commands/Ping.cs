@@ -5,7 +5,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
 {
     public class Ping : ISocketCommand
     {
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return true;
         }

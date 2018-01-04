@@ -5,7 +5,7 @@ namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Login : ISocketCommand
     {
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return true;
         }

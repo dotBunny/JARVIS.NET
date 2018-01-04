@@ -5,9 +5,9 @@ namespace JARVIS.Core.Services.Socket.Commands
 {
     public class Auth : ISocketCommand
     {
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
-            return true;
+            return Server.Services.GetService<SocketService>().AuthenticatedUsers[session].HasPemission(Streamlabs.StreamlabsService.ScopeAuthentication);
         }
 
         public void Execute(Sender session, Dictionary<string,string> parameters)

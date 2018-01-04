@@ -22,6 +22,8 @@ namespace JARVIS.Client.Mac
             ServerDisconnect.Enabled = true;
 
             ServicesSpotifyForceAuthentication.Enabled = false;
+            ServicesDiscordForceAuthentication.Enabled = false;
+            ServicesStreamlabsForceAuthentication.Enabled = false;
         }
         public void OnConnected()
         {
@@ -30,6 +32,8 @@ namespace JARVIS.Client.Mac
             ServerDisconnect.Enabled = true;
 
             ServicesSpotifyForceAuthentication.Enabled = true;
+            ServicesDiscordForceAuthentication.Enabled = true;
+            ServicesStreamlabsForceAuthentication.Enabled = true;
         }
         public void OnDisconnecting()
         {
@@ -38,6 +42,8 @@ namespace JARVIS.Client.Mac
             ServerDisconnect.Enabled = false;
 
             ServicesSpotifyForceAuthentication.Enabled = false;
+            ServicesDiscordForceAuthentication.Enabled = false;
+            ServicesStreamlabsForceAuthentication.Enabled = false;
         }
         public void OnDisconnected()
         {
@@ -46,6 +52,8 @@ namespace JARVIS.Client.Mac
             ServerDisconnect.Enabled = false;
 
             ServicesSpotifyForceAuthentication.Enabled = false;
+            ServicesDiscordForceAuthentication.Enabled = false;
+            ServicesStreamlabsForceAuthentication.Enabled = false;
         }
 
 
@@ -88,34 +96,29 @@ namespace JARVIS.Client.Mac
         }
 
 
-        // TODO: Only let this work if the client is connected / disable when not connected
+
         partial void OnServicesSpotifyForceAuthentication(AppKit.NSMenuItem sender)
         {
-            Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_SPOTIFY, new System.Collections.Generic.Dictionary<string, string>());
+            if (Client != null && Client.IsConnected)
+            {
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_SPOTIFY, new System.Collections.Generic.Dictionary<string, string>());
+            }
+        }
+        partial void OnServicesStreamlabsForceAuthentication(NSMenuItem sender)
+        {
+            if (Client != null && Client.IsConnected)
+            {
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS, new System.Collections.Generic.Dictionary<string, string>());
+            }
+        }
+        partial void OnServicesDiscordForceAuthentication(NSMenuItem sender)
+        {
+            if (Client != null && Client.IsConnected)
+            {
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS, new System.Collections.Generic.Dictionary<string, string>());
+            }
         }
 
-        //partial void OnWindowTestLogic(AppKit.NSMenuItem sender)
-        //{
-            
-
-        //    // Trigger a local notification after the time has elapsed
-        //    var notification = new NSUserNotification();
-
-        //    // Add text and sound to the notification
-        //    notification.Title = "Authentication Required";
-        //    notification.InformativeText = "The server needs you to approve its access to Spotify";
-        //    notification.SoundName = NSUserNotification.NSUserNotificationDefaultSoundName;
-        //    notification.HasActionButton = true;
-        //    notification.HasReplyButton = false;
-        //    notification.ActionButtonTitle = "Resolve";
-
-        //    // Add data keys
-        //    notification.UserInfo = NSDictionary.FromObjectAndKey(
-        //        new NSString("Oauth CODE?"),
-        //        new NSString("OP"));
-
-        //    NotificationsHandler.Notify(notification);
-        //}
 
         partial void OnServerConnect(AppKit.NSMenuItem sender)
         {

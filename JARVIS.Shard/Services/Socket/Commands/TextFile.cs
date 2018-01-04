@@ -5,7 +5,7 @@ namespace JARVIS.Shard.Services.Socket.Commands
 {
     public class TextFile : ISocketCommand
     {
-        public bool CanExecute()
+        public bool CanExecute(Sender session)
         {
             return Program.HasFileOutputs;
         }

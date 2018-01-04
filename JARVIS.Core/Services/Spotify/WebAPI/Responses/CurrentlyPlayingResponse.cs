@@ -11,7 +11,7 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
         public static string Endpoint = "https://api.spotify.com/v1/me/player/currently-playing";
 
         [JsonProperty("error")]
-        public ErrorMessage Error { get; set; }
+        public StatusMessage Error { get; set; }
 
         public Context context { get; set; }
         public long timestamp { get; set; }

@@ -13,6 +13,10 @@ namespace JARVIS.Core.Services.Socket
                     return new Commands.Auth();
                 case Instruction.OpCode.AUTH_SPOTIFY:
                     return new Commands.AuthSpotify();
+                case Instruction.OpCode.AUTH_DISCORD:
+                    return new Commands.AuthDiscord();
+                case Instruction.OpCode.AUTH_STREAMLABS:
+                    return new Commands.AuthStreamlabs();
                 case Instruction.OpCode.LOGIN:
                     return new Commands.Login();
                 case Instruction.OpCode.INFO:

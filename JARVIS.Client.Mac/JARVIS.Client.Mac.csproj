@@ -94,7 +94,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\jarvis_29.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\" />
     <Folder Include="Windows\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Socket\" />
@@ -108,10 +107,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="Components\SourceListItem.cs" />
-    <Compile Include="Components\SourceListDataSource.cs" />
-    <Compile Include="Components\SourceListDelegate.cs" />
-    <Compile Include="Components\SourceListView.cs" />
     <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="Windows\MainWindow.designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
@@ -138,7 +133,6 @@
     <Compile Include="Services\Socket\Commands\LoginFail.cs" />
     <Compile Include="Services\Socket\Commands\Ping.cs" />
     <Compile Include="Services\Socket\Commands\WirecastLayers.cs" />
-    <Compile Include="Helpers\Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JARVIS.Shared\JARVIS.Shared.csproj">

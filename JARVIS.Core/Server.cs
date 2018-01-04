@@ -72,7 +72,8 @@ namespace JARVIS.Core
 
             // Add Secondary Services
             _serviceList.AddSingleton(new Services.Spotify.SpotifyService())
-                        .AddSingleton(new Services.Discord.DiscordService());
+                        .AddSingleton(new Services.Discord.DiscordService())
+                        .AddSingleton(new Services.Streamlabs.StreamlabsService());
 
             // Create provider
             Services = _serviceList.BuildServiceProvider();
@@ -85,12 +86,15 @@ namespace JARVIS.Core
             // Spin up any other service not fired up yet (spotify, discord, etc.)
             Services.GetService<Services.Spotify.SpotifyService>().Start();
             Services.GetService<Services.Discord.DiscordService>().Start();
+            Services.GetService<Services.Streamlabs.StreamlabsService>().Start();
 
             // Start Tick Thread
             Shared.Log.Message("System", "Starting Polling ...");
             ShouldTickFlag = true;
-            PollingThread = new Thread(new ThreadStart(Tick));
-            PollingThread.Name = "JARVIS-Polling";
+            PollingThread = new Thread(new ThreadStart(Tick))
+            {
+                Name = "JARVIS-Polling"
+            };
             PollingThread.Start();
         }
 

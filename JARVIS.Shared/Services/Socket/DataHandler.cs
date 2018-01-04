@@ -39,7 +39,7 @@ namespace JARVIS.Shared.Services.Socket
 
 
                             // Execute (decide what to do though)
-                            if (receivedCommand.CanExecute())
+                            if (receivedCommand.CanExecute(session))
                             {
                                 receivedCommand.Execute(session, i.Parameters);
                             }
@@ -56,54 +56,6 @@ namespace JARVIS.Shared.Services.Socket
                     parsing = false;
                 }
             }
-
-
-           
-
-                
-
-
-
-
-
-
-
-
-            //// Terminator is the position, 0 being the first character
-            //int terminator = buffer.IndexOf(JCP.TransmissionTerminator);
-
-            //// Only process when we know we've got a complete package (and something to look at)
-            //while (terminator != -1 && buffer.Count >= 1)
-            //{
-                //Log.Message("JCP", "Read packet from 0 to " + terminator);
-
-                //Packet[] packets = protocol.GetPackets(buffer.GetRange(0, terminator).ToArray());
-
-                //Log.Message("Socket", "Process Packets");
-
-                //foreach (Packet p in packets)
-                //{
-                //    foreach (Instruction i in p.GetInstructions())
-                //    {
-                //        Log.Message("socket", "Instruction Received -> " + i.Operation.ToString() + " from " + session.RemoteEndPoint.GetHost());
-
-                //        // Factory Pattern
-                //        ISocketCommand receivedCommand = factory.CreateCommand(i.Operation);
-
-
-                //        // Execute (decide what to do though)
-                //        if (receivedCommand.CanExecute())
-                //        {
-                //            receivedCommand.Execute(session, i.Parameters);
-                //        }
-                //    }
-                //}
-
-                //buffer.RemoveRange(0, terminator + 1);
-
-                //// Look again
-                //terminator = buffer.IndexOf(JCP.TransmissionTerminator);
-
         }
     }
 }
