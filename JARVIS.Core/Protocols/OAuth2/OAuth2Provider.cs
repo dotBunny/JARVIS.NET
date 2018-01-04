@@ -15,7 +15,7 @@ namespace JARVIS.Core.Protocols.OAuth2
         string _refreshToken = string.Empty;
         int _expiresInSeconds;
         string _state;
-        DateTime _expiresOn;
+        DateTime _expiresOn = DateTime.Now;
 
         string _provider = string.Empty;
         string _clientID = string.Empty;
@@ -48,7 +48,7 @@ namespace JARVIS.Core.Protocols.OAuth2
 
         public OAuth2Provider()
         {
-            Token = string.Empty;
+           Reset();
         }
         public OAuth2Provider(string providerName, string clientID, string clientSecret, 
                               string scope, string authorizeEndpoint, string tokenEndpoint, 
@@ -56,7 +56,7 @@ namespace JARVIS.Core.Protocols.OAuth2
         {
 
             // TODO ADD thing to toggle if trailing /
-            Token = string.Empty;
+            Reset();
 
             _provider = providerName;
             _clientID = clientID;
@@ -68,8 +68,6 @@ namespace JARVIS.Core.Protocols.OAuth2
             _callbackRequiresTrailingSlash = callbackRequiresTrailingSlash;
 
             _clientEncoded = (_clientID + ":" + _clientSecret).Base64Encode();
-
-
         }
 
        
@@ -98,7 +96,7 @@ namespace JARVIS.Core.Protocols.OAuth2
             _state = GenerateState();
 
             // These will be split and used in the function itself
-            parameters.Add("endpoint", _authorizeEndpoint);
+            parameters.Add("endpoint",_authorizeEndpoint);
             parameters.Add("title", _provider + " Authentication");
             parameters.Add("message", "JARVIS needs to you to authenticate with your " + _provider + " account for it to be able to poll data.");
 

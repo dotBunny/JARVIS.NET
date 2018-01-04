@@ -37,7 +37,6 @@ namespace JARVIS.Shared.Services.Socket
                             // Factory Pattern
                             ISocketCommand receivedCommand = factory.CreateCommand(i.Operation);
 
-
                             // Execute (decide what to do though)
                             if (receivedCommand.CanExecute(session))
                             {

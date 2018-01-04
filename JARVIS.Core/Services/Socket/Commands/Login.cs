@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JARVIS.Shared.Protocol;
 using JARVIS.Shared.Services.Socket;
 using Microsoft.Extensions.DependencyInjection;
 namespace JARVIS.Core.Services.Socket.Commands
@@ -10,7 +11,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             return true;
         }
 
-        public void Execute(Sender session, Dictionary<string, string> parameters)
+        public void Execute(Sender session, Dictionary<string, InstructionParameter> parameters)
         {
 
             // Get socket service
@@ -19,7 +20,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             if (parameters.ContainsKey("username") && parameters.ContainsKey("password"))
             {
 
-                Database.Rows.UsersRow user = Database.Tables.Users.Login(parameters["username"], parameters["password"]);
+                Database.Rows.UsersRow user = Database.Tables.Users.Login(parameters["username"].ToString(), parameters["password"].ToString());
 
                 if (user.ID != -1)
                 {
@@ -45,7 +46,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             else
             {
                 Shared.Log.Error("Login", "Invalid Login Attempt (E1) from " + session.RemoteEndPoint.GetHost());
-                socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.LOGIN_FAIL);
+                socket.SendToSession(session, Instruction.OpCode.LOGIN_FAIL);
             }
         }
     }

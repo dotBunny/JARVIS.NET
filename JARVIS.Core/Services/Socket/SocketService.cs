@@ -151,31 +151,50 @@ namespace JARVIS.Core.Services.Socket
 
         public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, string> arguments, bool authenticatedUserRequired = true, string requiredScope = "")
         {
-            // Send to sessions
-            foreach(Sender session in Server.Clients)
+            Dictionary<string, InstructionParameter> createdParameters = new Dictionary<string, InstructionParameter>();
+            foreach(KeyValuePair<string, string> p in arguments)
             {
-                if ( authenticatedUserRequired && AuthenticatedUsers.ContainsKey(session)) {
+                createdParameters.Add(p.Key, new InstructionParameter(p.Value));
+            }
+            SendToAllSessions(type, createdParameters, authenticatedUserRequired, requiredScope);
+        }
+
+        public void SendToAllSessions(Instruction.OpCode type, Dictionary<string, InstructionParameter> arguments, bool authenticatedUserRequired = true, string requiredScope = "")
+        {
+            // Send to sessions
+            foreach (Sender session in Server.Clients)
+            {
+                if (authenticatedUserRequired && AuthenticatedUsers.ContainsKey(session))
+                {
 
                     // Check scope
-                    if ( AuthenticatedUsers[session].HasPemission(requiredScope) )
+                    if (AuthenticatedUsers[session].HasPemission(requiredScope))
                     {
-                        SendToSession(session, type, arguments);    
-                    } 
-                   
-                } 
-                else 
+                        SendToSession(session, type, arguments);
+                    }
+
+                }
+                else
                 {
-                    SendToSession(session, type, arguments);                    
+                    SendToSession(session, type, arguments);
                 }
             }
         }
 
         public void SendToSession(Sender session, Instruction.OpCode type)
         {
-            SendToSession(session, type, new Dictionary<string, string> { });
+            SendToSession(session, type, new Dictionary<string, InstructionParameter> { });
         }
-
         public void SendToSession(Sender session, Instruction.OpCode type, Dictionary<string, string> arguments)
+        {
+            Dictionary<string, InstructionParameter> createdParameters = new Dictionary<string, InstructionParameter>();
+            foreach (KeyValuePair<string, string> p in arguments)
+            {
+                createdParameters.Add(p.Key, new InstructionParameter(p.Value));
+            }
+            SendToSession(session, type, createdParameters);
+        }
+        public void SendToSession(Sender session, Instruction.OpCode type, Dictionary<string, InstructionParameter> arguments)
         {
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
             session.Send(Protocol.GetBytes(new Packet(type, arguments)));

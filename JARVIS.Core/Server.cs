@@ -102,6 +102,7 @@ namespace JARVIS.Core
         {
             Shared.Log.Message("System", "Server Shutdown");
 
+            Services.GetService<Services.Streamlabs.StreamlabsService>().Stop();
             Services.GetService<Services.Discord.DiscordService>().Stop();
             Services.GetService<Services.Spotify.SpotifyService>().Stop();
             Services.GetService<Services.Web.WebService>().Stop();

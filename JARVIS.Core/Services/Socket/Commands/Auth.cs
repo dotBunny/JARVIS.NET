@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JARVIS.Shared.Protocol;
 using JARVIS.Shared.Services.Socket;
 using Microsoft.Extensions.DependencyInjection;
 namespace JARVIS.Core.Services.Socket.Commands
@@ -10,7 +11,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             return Server.Services.GetService<SocketService>().AuthenticatedUsers[session].HasPemission(Streamlabs.StreamlabsService.ScopeAuthentication);
         }
 
-        public void Execute(Sender session, Dictionary<string,string> parameters)
+        public void Execute(Sender session, Dictionary<string,InstructionParameter> parameters)
         {
             // Get socket service
             SocketService socket = Server.Services.GetService<SocketService>();
@@ -22,7 +23,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             }
 
             // Send auth request to session
-            socket.SendToSession(session, Shared.Protocol.Instruction.OpCode.AUTH);
+            socket.SendToSession(session, Instruction.OpCode.AUTH);
         }
     }
 }

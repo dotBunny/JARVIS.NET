@@ -86,7 +86,9 @@ namespace JARVIS.Client.Mac.Services.Socket
         }
 
 
-        public void Send(Instruction.OpCode type, Dictionary<string, string> parameters)
+        public void Send(Instruction.OpCode type) => Send(type, new Dictionary<string, InstructionParameter>());
+        public void Send(Instruction.OpCode type, Dictionary<string, string> parameters) => Send(type, Instruction.CreateParametersDictionary(parameters));
+        public void Send(Instruction.OpCode type, Dictionary<string, InstructionParameter> parameters)
         {
             Packet p = new Packet(type, parameters);
             Shared.Log.Message("socket", "Sending " + p.GetOpCodes() + " to " + Settings.ServerAddress + ":" + Settings.ServerPort.ToString());

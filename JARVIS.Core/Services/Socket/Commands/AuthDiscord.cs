@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JARVIS.Shared.Protocol;
 using JARVIS.Shared.Services.Socket;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,7 @@ namespace JARVIS.Core.Services.Socket.Commands
             return Server.Services.GetService<SocketService>().AuthenticatedUsers[session].HasPemission(Discord.DiscordService.ScopeAuthentication);
         }
 
-        public void Execute(Sender session, Dictionary<string, string> parameters)
+        public void Execute(Sender session, Dictionary<string, InstructionParameter> parameters)
         {
             Server.Services.GetService<Discord.DiscordService>().Stop();
             Server.Services.GetService<Discord.DiscordService>().Start();

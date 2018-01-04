@@ -30,7 +30,7 @@ namespace JARVIS.Core.Services.Spotify
         public string Track = "At This Time";
         public string Album;
         public string Artist = "Spotify Unavailable";
-        public List<Image> Images;
+        public List<Image> Images = new List<Image>();
         public string ImageURL;
         public string TrackURL;
 

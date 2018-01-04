@@ -94,7 +94,7 @@ namespace JARVIS.Shared.Protocol
         /// <summary>
         /// The instructions parameters to pass to the operation's command.
         /// </summary>
-        public Dictionary<string, string> Parameters = new Dictionary<string, string>();
+        public Dictionary<string, InstructionParameter> Parameters = new Dictionary<string, InstructionParameter>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:JARVIS.Shared.Protocol.Instruction"/> class.
@@ -109,7 +109,7 @@ namespace JARVIS.Shared.Protocol
         /// </summary>
         /// <param name="operation">The Instruction's Operation.</param>
         /// <param name="parameters">The Instruction's Parameters.</param>
-        public Instruction(OpCode operation, Dictionary<string, string> parameters)
+        public Instruction(OpCode operation, Dictionary<string, InstructionParameter> parameters)
         {
             Operation = operation;
             Parameters = parameters;
@@ -125,33 +125,38 @@ namespace JARVIS.Shared.Protocol
             List<byte> workingPacket = new List<byte>();
             workingPacket.AddRange(data);
 
-            // Identify command
-            int commandEndIndex = workingPacket.IndexOf(JCP.OpCodeTerminator);
-            Operation = GetOpCode(Encoding.UTF8.GetString(workingPacket.GetRange(0, commandEndIndex).ToArray()));
-            workingPacket.RemoveRange(0, commandEndIndex + 1);
+            byte[] operationLengthData = workingPacket.GetRange(0, Platform.ByteSizeOfInt).ToArray();
+            int operationLength = BitConverter.ToInt32(operationLengthData, 0);
 
-            // Breakdown remaining parts of the packet
+            // Get our operation code
+            Operation = GetOpCode(Encoding.UTF8.GetString(workingPacket.GetRange(Platform.ByteSizeOfInt, operationLength).ToArray()));
+
+            // Remove processed operation data
+            workingPacket.RemoveRange(0, Platform.ByteSizeOfInt + operationLength);
+
             bool parsing = true;
-            while (parsing)
+            while(parsing)
             {
-                int findNextChunkEnd = workingPacket.IndexOf(JCP.ParameterValueTerminator, 0);
+                if ( workingPacket.Count > Platform.ByteSizeOfInt)
+                {
 
-                if (findNextChunkEnd < 0)
+                    byte[] parameterKeyLengthData = workingPacket.GetRange(0, Platform.ByteSizeOfInt).ToArray();
+                    int parameterKeyLength = BitConverter.ToInt32(parameterKeyLengthData, 0);
+                    byte[] parameterKeyData = workingPacket.GetRange(Platform.ByteSizeOfInt, parameterKeyLength).ToArray();
+                    workingPacket.RemoveRange(0, Platform.ByteSizeOfInt + parameterKeyLength);
+
+                    byte[] parameterValueLengthData = workingPacket.GetRange(0, Platform.ByteSizeOfInt).ToArray();
+                    int parameterValueLength = BitConverter.ToInt32(parameterValueLengthData, 0);
+                    byte[] parameterValueData = workingPacket.GetRange(Platform.ByteSizeOfInt, parameterValueLength).ToArray();
+                    workingPacket.RemoveRange(0, Platform.ByteSizeOfInt + parameterValueLength);
+
+
+                    Parameters.Add(Encoding.UTF8.GetString(parameterKeyData).Trim(), new InstructionParameter(parameterValueData));
+                }
+                else
                 {
                     parsing = false;
-                    continue;
                 }
-
-                List<byte> chunk = workingPacket.GetRange(0, findNextChunkEnd);
-
-                // Split chunk
-                int endOfName = chunk.IndexOf(JCP.ParameterNameTerminator);
-
-                Parameters.Add(
-                    Encoding.UTF8.GetString(chunk.GetRange(0, endOfName).ToArray()).Trim(),
-                    Encoding.UTF8.GetString(chunk.GetRange(endOfName + 1, chunk.Count - (endOfName + 1)).ToArray()).Trim());
-
-                workingPacket.RemoveRange(0, findNextChunkEnd + 1);
             }
         }
 
@@ -182,22 +187,34 @@ namespace JARVIS.Shared.Protocol
             List<byte> byteBuilder = new List<byte>();
 
             // Add command to bytes
-            byteBuilder.AddRange(Encoding.UTF8.GetBytes(Operation.ToString()));
-
-            // Add end of command mark
-            byteBuilder.Add(JCP.OpCodeTerminator);
+            byte[] operationData = Encoding.UTF8.GetBytes(Operation.ToString());
+            byteBuilder.AddRange(BitConverter.GetBytes(operationData.Length));
+            byteBuilder.AddRange(operationData);
 
             // Handle Parameters
             foreach (string s in Parameters.Keys)
             {
-                // Add name
-                byteBuilder.AddRange(Encoding.UTF8.GetBytes(s.Trim()));
-                byteBuilder.Add(JCP.ParameterNameTerminator);
-                byteBuilder.AddRange(Encoding.UTF8.GetBytes(Parameters[s].Trim()));
-                byteBuilder.Add(JCP.ParameterValueTerminator);
+                // Add key name
+                byte[] keyData = Encoding.UTF8.GetBytes(s.Trim());
+                byteBuilder.AddRange(BitConverter.GetBytes(keyData.Length));
+                byteBuilder.AddRange(keyData);
+
+                // Add key data
+                byteBuilder.AddRange(Parameters[s].GetPacketBytesCountBytes());
+                byteBuilder.AddRange(Parameters[s].GetPacketBytes());
             }
 
             return byteBuilder.ToArray();
+        }
+
+        public static Dictionary<string, InstructionParameter> CreateParametersDictionary(Dictionary<string, string> dictionary)
+        {
+            Dictionary<string, InstructionParameter> createdParameters = new Dictionary<string, InstructionParameter>();
+            foreach (KeyValuePair<string, string> p in dictionary)
+            {
+                createdParameters.Add(p.Key, new InstructionParameter(p.Value));
+            }
+            return createdParameters;
         }
     }
 }

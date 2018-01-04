@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JARVIS.Shared.Services.Socket;
+using JARVIS.Shared.Protocol;
 
 namespace JARVIS.Shared.Services.Socket.Commands
 {
@@ -9,7 +9,7 @@ namespace JARVIS.Shared.Services.Socket.Commands
         {
             return true;
         }
-        public void Execute(Sender session, Dictionary<string, string> parameters)
+        public void Execute(Sender session, Dictionary<string, InstructionParameter> parameters)
         {
             foreach(string s in parameters.Keys) 
             {

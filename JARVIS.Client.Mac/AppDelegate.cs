@@ -1,6 +1,7 @@
 using AppKit;
 using Foundation;
 using JARVIS.Client.Mac.Windows;
+using JARVIS.Shared.Protocol;
 
 namespace JARVIS.Client.Mac
 {
@@ -101,21 +102,21 @@ namespace JARVIS.Client.Mac
         {
             if (Client != null && Client.IsConnected)
             {
-                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_SPOTIFY, new System.Collections.Generic.Dictionary<string, string>());
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_SPOTIFY);
             }
         }
         partial void OnServicesStreamlabsForceAuthentication(NSMenuItem sender)
         {
             if (Client != null && Client.IsConnected)
             {
-                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS, new System.Collections.Generic.Dictionary<string, string>());
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS);
             }
         }
         partial void OnServicesDiscordForceAuthentication(NSMenuItem sender)
         {
             if (Client != null && Client.IsConnected)
             {
-                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS, new System.Collections.Generic.Dictionary<string, string>());
+                Client.Send(Shared.Protocol.Instruction.OpCode.AUTH_STREAMLABS);
             }
         }
 

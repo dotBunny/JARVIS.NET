@@ -29,24 +29,9 @@ namespace JARVIS.Shared.Protocol
         public const byte EncryptedMarker = 0x0f;
 
         /// <summary>
-        /// The indicator byte of the operation code.
-        /// </summary>
-        public const byte OpCodeTerminator = 0x01;
-
-        /// <summary>
-        /// The indicator byte of a parameter name.
-        /// </summary>
-        public const byte ParameterNameTerminator = 0x02;
-
-        /// <summary>
-        /// The indicator byte of a parameter value.
-        /// </summary>
-        public const byte ParameterValueTerminator = 0x03;
-
-        /// <summary>
         /// Protocol Version
         /// </summary>
-        public const int Version = 13;
+        public const int Version = 14;
 
         /// <summary>
         /// Has the JCP protocol session been authenticated? 

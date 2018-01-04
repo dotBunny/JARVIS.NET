@@ -29,7 +29,6 @@ namespace JARVIS.Core.Services.Discord
         string _guildID;
 
         OAuth2Provider OAuth2 = new OAuth2Provider();
-        //IDiscordClient Client = new DiscordClientExtensions.
 
         public DiscordService()
         {

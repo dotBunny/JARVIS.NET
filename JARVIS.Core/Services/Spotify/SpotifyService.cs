@@ -4,6 +4,7 @@ using JARVIS.Core.Protocols.OAuth2;
 using JARVIS.Shared;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using JARVIS.Shared.Protocol;
 
 namespace JARVIS.Core.Services.Spotify
 {
@@ -22,8 +23,8 @@ namespace JARVIS.Core.Services.Spotify
         public bool Enabled { get; private set; }
         OAuth2Provider OAuth2 = new OAuth2Provider();
 
- 
-        DateTime NextPoll;
+
+        DateTime NextPoll = DateTime.Now;
 
         // Track information
         public SpotifyTrack LastTrack = new SpotifyTrack();
@@ -35,7 +36,8 @@ namespace JARVIS.Core.Services.Spotify
         {
             // Initialize Settings
             Enabled = Server.Config.GetBool(SettingsEnabledKey);
-            if ( Enabled ) {
+            if (Enabled)
+            {
                 LoadSettings();
             }
         }
@@ -60,9 +62,6 @@ namespace JARVIS.Core.Services.Spotify
         {
             if (NextPoll > DateTime.Now) return;
 
-            // Check token / authentication
-            if (!OAuth2.CheckToken()) { return;  }
-
             // Create Headers
             Dictionary<string, string> headers = new Dictionary<string, string>
             {
@@ -81,7 +80,7 @@ namespace JARVIS.Core.Services.Spotify
 
                 if (responseObject != null)
                 {
-                    if ( responseObject.Error != null)
+                    if (responseObject.Error != null)
                     {
                         Log.Message("Spotify", "An error (" + responseObject.Error.Code + ") occured while trying to poll the currently playing track. " + responseObject.Error.Description);
                     }
@@ -100,34 +99,38 @@ namespace JARVIS.Core.Services.Spotify
 
 
                         Socket.SocketService socket = Server.Services.GetService<Socket.SocketService>();
-                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_Artist.txt";
                         parameters["content"] = LastTrack.Artist;
-                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_Track.txt";
                         parameters["content"] = LastTrack.Track;
-                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
                         parameters["filename"] = "Spotify_URL.txt";
                         parameters["content"] = LastTrack.TrackURL;
-                        socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
+                        socket.SendToAllSessions(Instruction.OpCode.TEXT_FILE, parameters, true, ScopeOutput);
 
-                        // TODO: Send image data to be saved
                         if (!string.IsNullOrEmpty(LastTrack.ImageURL) && LastTrack.ImageURL != "")
                         {
                             LastTrack.ImageLargeData = Shared.Web.GetBytes(LastTrack.ImageURL);
-                            parameters["filename"] = "Spotify_TrackImage.jpg";
-                            parameters["content"] = Convert.ToBase64String(LastTrack.ImageLargeData);
 
-                            socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
+                            Dictionary<string, InstructionParameter> instructions = new Dictionary<string, InstructionParameter>()
+                            {
+                                { "filename", new InstructionParameter("Spotify_TrackImage.jpg") },
+                                { "content", InstructionParameter.CreateFromUnmarkedBytes(LastTrack.ImageLargeData) }
+                            };
+
+                            socket.SendToAllSessions(Instruction.OpCode.BINARY_FILE, instructions, true, ScopeOutput);
                         }
 
                         // Save track to database
                         LastTrack.SaveToDatabase();
 
-                       // Server.Services.GetService<Streamlabs.StreamlabsService>().Alert(LastTrack.ToInfoString(), "30000", LastTrack.ImageURL);
+                        // Boo it doesnt work like this currently, no custom alert types.
+                        // Server.Services.GetService<Streamlabs.StreamlabsService>().Alert(LastTrack.ToInfoString(), "30000", LastTrack.ImageURL);
 
                         Log.Message("Spotify", LastTrack.ToString());
                     }
@@ -147,13 +150,13 @@ namespace JARVIS.Core.Services.Spotify
         }
 
 
-      
+
         public void Start()
         {
-            if (!Enabled) 
+            if (!Enabled)
             {
                 Log.Message("Spotify", "Unable to start as service is disabled.");
-                return;   
+                return;
             }
 
             if (!OAuth2.CheckToken() && Server.Services.GetService<Socket.SocketService>().AuthenticatedUserCount > 0)
@@ -170,7 +173,7 @@ namespace JARVIS.Core.Services.Spotify
         public void Tick()
         {
             // Don't bother if we haven't authenticated and dont have a token
-            if (!Enabled || !OAuth2.CheckToken()) return;
+            if (!Enabled || OAuth2 == null || !OAuth2.CheckToken()) return;
 
             // To adjust polling speed?
             GetCurrentlyPlaying();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JARVIS.Shared.Protocol;
 using JARVIS.Shared.Services.Socket;
 
 namespace JARVIS.Shard.Services.Socket.Commands
@@ -9,11 +10,11 @@ namespace JARVIS.Shard.Services.Socket.Commands
         {
             return true;
         }
-        public void Execute(Sender session, Dictionary<string, string> parameters)
+        public void Execute(Sender session, Dictionary<string, InstructionParameter> parameters)
         {
             // Send Auth
             Program.Client.Send(
-                Shared.Protocol.Instruction.OpCode.LOGIN, 
+                Instruction.OpCode.LOGIN, 
                 new Dictionary<string, string> {
                     {"username",Program.Username},
                     {"password",Program.Password}

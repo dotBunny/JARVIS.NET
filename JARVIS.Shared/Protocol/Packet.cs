@@ -38,7 +38,7 @@ namespace JARVIS.Shared.Protocol
         /// </summary>
         /// <param name="operation">An Instruction's Operation.</param>
         /// <param name="parameters">An Instruction's Parameters.</param>
-        public Packet(Instruction.OpCode operation, Dictionary<string, string> parameters)
+        public Packet(Instruction.OpCode operation, Dictionary<string, InstructionParameter> parameters)
         {
             AddInstruction(operation, parameters);
         }
@@ -112,9 +112,24 @@ namespace JARVIS.Shared.Protocol
         /// </summary>
         /// <param name="type">The Instruction's operation code.</param>
         /// <param name="parameters">The Instruction's parameters.</param>
-        public void AddInstruction(Instruction.OpCode type, Dictionary<string, string> parameters)
+        public void AddInstruction(Instruction.OpCode type, Dictionary<string, InstructionParameter> parameters)
         {
             Instructions.Add(new Instruction(type, parameters));
+        }
+
+        /// <summary>
+        /// Adds an <see cref="T:JARVIS.Shared.Protocol.Instruction"/> to the packet.
+        /// </summary>
+        /// <param name="type">The Instruction's operation code.</param>
+        /// <param name="parameters">The Instruction's parameters.</param>
+        public void AddInstruction(Instruction.OpCode type, Dictionary<string, string> parameters)
+        {
+            Dictionary<string, InstructionParameter> convertedInstructions = new Dictionary<string, InstructionParameter>();
+            foreach(KeyValuePair<string,string> p in parameters)
+            {
+                convertedInstructions.Add(p.Key, new InstructionParameter(p.Value));
+            }
+            Instructions.Add(new Instruction(type, convertedInstructions));
         }
 
         /// <summary>
