@@ -180,10 +180,5 @@ namespace JARVIS.Core.Services.Socket
             Shared.Log.Message("socket", "Sending " + type.ToString() + " to " + session.RemoteEndPoint);
             session.Send(Protocol.GetBytes(new Packet(type, arguments)));
         }
-
-        public void HandleCallbackAsync(IHttpRequest request)
-        {
-           
-        }
     }
 }

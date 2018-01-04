@@ -66,6 +66,10 @@ namespace JARVIS.Core.Services.Spotify.WebAPI.Responses
             if (item.album.images.Count > 0)
             {
                 newTrack.ImageURL = item.album.images[0].url;
+                foreach(Image i in item.album.images)
+                {
+                    newTrack.Images.Add(new SpotifyTrack.Image(i.url, i.width, i.height));
+                }
             }
 
             return newTrack;

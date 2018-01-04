@@ -1,8 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace JARVIS.Core.Services.Spotify
 {
     public class SpotifyTrack
     {
+        public class Image
+        {
+            public string URL;
+            public int Height;
+            public int Width;
+
+            public Image(string href, int width, int height)
+            {
+                URL = href;
+                Width = width;
+                Height = height;
+            }
+        }
+
         public const string SpotifyCurrentTrackKey = "Spotify.CurrentTrack";
         public const string SpotifyCurrentArtistKey = "Spotify.CurrentArtist";
         public const string SpotifyCurrentAlbumKey = "Spotify.CurrentAlbum";
@@ -14,10 +30,13 @@ namespace JARVIS.Core.Services.Spotify
         public string Track = "At This Time";
         public string Album;
         public string Artist = "Spotify Unavailable";
+        public List<Image> Images;
         public string ImageURL;
         public string TrackURL;
 
-        public byte[] ImageData;
+
+        public byte[] ImageLargeData;
+
 
         public override string ToString()
         {
@@ -36,9 +55,9 @@ namespace JARVIS.Core.Services.Spotify
             Database.Tables.KeyValueString.Set(SpotifyCurrentTrackURLKey, TrackURL); 
             Database.Tables.KeyValueString.Set(SpotifyCurrentImageURLKey, ImageURL); 
 
-            if ( ImageData != null && ImageData.Length > 0) 
+            if ( ImageLargeData != null && ImageLargeData.Length > 0) 
             {
-                Database.Tables.KeyValueBytes.Set(SpotifyCurrentTrackImageKey, ImageData); 
+                Database.Tables.KeyValueBytes.Set(SpotifyCurrentTrackImageKey, ImageLargeData); 
             }
 
         }

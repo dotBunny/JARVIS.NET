@@ -117,12 +117,11 @@ namespace JARVIS.Core.Services.Spotify
                         // TODO: Send image data to be saved
                         if (!string.IsNullOrEmpty(LastTrack.ImageURL) && LastTrack.ImageURL != "")
                         {
-                            LastTrack.ImageData = Shared.Web.GetBytes(LastTrack.ImageURL);
+                            LastTrack.ImageLargeData = Shared.Web.GetBytes(LastTrack.ImageURL);
                             parameters["filename"] = "Spotify_TrackImage.jpg";
-                            parameters["content"] = Convert.ToBase64String(LastTrack.ImageData);
+                            parameters["content"] = Convert.ToBase64String(LastTrack.ImageLargeData);
 
                             socket.SendToAllSessions(Shared.Protocol.Instruction.OpCode.BINARY_FILE, parameters, true, ScopeOutput);
-
                         }
 
                         // Save track to database
