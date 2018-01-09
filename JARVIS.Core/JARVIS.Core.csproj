@@ -25,6 +25,9 @@
     <Folder Include="Protocols\OAuth2\Requests\" />
     <Folder Include="Protocols\OAuth2\Responses\" />
     <Folder Include="Services\Streamlabs\" />
+    <Folder Include="Services\Twitch\" />
+    <Folder Include="Services\YouTube\" />
+    <Folder Include="Services\Mixer\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grapevine" Version="4.1.1" />
